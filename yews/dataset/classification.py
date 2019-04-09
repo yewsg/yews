@@ -15,7 +15,7 @@ class ClassificationDataset(Dataset):
         self.classes = self._find_classes()
         self.class_to_idx = {self.classes[i]: i for i in range(len(self.classes))}
         self.samples = self._make_dataset()
-        self.targets = [self.class_to_idx{s[1]} for s in samples]
+        self.targets = [self.class_to_idx[s[1]] for s in self.samples]
 
         self.transform = transform
         self.target_transform = target_transform
@@ -35,8 +35,7 @@ class ClassificationDataset(Dataset):
         if type(self.source) is str:
             body.append(f"Source location: {self.source}")
         else:
-            body.apppend(f"Source location: array")
-        body.append(self.extra_repr().splitlines())
+            body.append(f"Source location: array")
         if hasattr(self, 'transform') and self.transform is not None:
             body.append(self._foramt_transform_repr(self.transform, "Transforms: "))
         if hasattr(self, 'targe_transform') and self.target_transform is not None:
@@ -50,5 +49,3 @@ class ClassificationDataset(Dataset):
         return (["{}{}".format(head, lines[0])] +
                 ["{}{}".format(" " * len(head), line) for line in lines[1:]])
 
-    def extra_repr(self):
-        return ""
