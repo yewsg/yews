@@ -4,14 +4,7 @@ from .classification import ClassificationDataset
 
 class ClassificationDatasetFolder(ClassificationDataset):
     """A generic dataloader for classification task where the samples are
-    arranaged in folder with following format:
-
-        root/class_x/xxx
-        root/class_x/xxy
-        root/class_x/xxz
-        root/class_y/123
-        root/class_y/nsdf3
-        root/class_y/asd932_
+    arranaged in a folder:
 
     Args:
         root (string): Root directory path.
@@ -50,31 +43,4 @@ class ClassificationDatasetFolder(ClassificationDataset):
             target = self.target_transform(target)
 
         return sample, target
-
-
-    def _find_classes(self):
-        """
-        Finds the class folders in a dataset.
-
-        Returns:
-            tuple: (classes, class_to_idx) where classes are relative to (dir), and class_to_idx is a dictionary.
-
-        Ensures:
-            No class is a subdirectory of another.
-        """
-
-        classes = [d.name for d in Path(self.source).iterdir() if d.is_dir()]
-
-        return classes.sort()
-
-    def _make_dataset(self):
-        samples = []
-        for target in class_to_idx.keys():
-            dir = Path(self.source) / target
-            fnames = [f.stem for f in dir.iterdir() if f.is_file()]
-            for fname in sorted(fnames):
-                path = str(dir / fanme) + '.*'
-                samples.append((path, self.class_to_idx[target]))
-
-        return samples
 
