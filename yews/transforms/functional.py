@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from scipy.special import expit
 
 def _is_numpy_waveform(wav):
     return isinstance(wav, np.ndarray) and (wav.ndim in {1, 2})

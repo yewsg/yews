@@ -3,6 +3,9 @@ from . import functional as F
 __all__ = [
     "Compose",
     "ToTensor",
+    "ZeroMean",
+    "SoftClip",
+    "CutWaveform",
 ]
 
 class Compose(object):
@@ -51,3 +54,47 @@ class ToTensor(object):
     def __repr__(self):
         return self.__class__.__name__ + '()'
 
+
+class SoftClip(object):
+    """Soft clip input to compress large amplitude signals
+
+    """
+
+    def __init__(self, scale=1):
+        self.scale = scale
+
+    def __call__(self, wav):
+        return F.expit(wav * self.scale)
+
+    def __repr__(self):
+        return self.__class__.__name__ + f'(scale = {self.scale})'
+
+
+class ZeroMean(object):
+    """Remove mean from each waveforms
+
+    """
+
+    def __call__(self, wav):
+        wav = wav.T
+        wav -= wav.mean(axis=0)
+        return wav.T
+
+    def __repr__(self):
+        return self.__class__.__name__ + '()'
+
+
+class CutWaveform(object):
+    """Cut a portion of waveform.
+
+    """
+
+    def __init__(self, samplestart, sampleend):
+        self.start = int(samplestart)
+        self.end = int(sampleend)
+
+    def __call__(self, wav):
+        return wav[:, self.start:self.end]
+
+    def __repr__(self):
+        return self.__call__.__name__ + f'(start = {self.start}, end = {self.end})'
