@@ -1,0 +1,254 @@
+from pathlib import Path
+import warnings
+
+import numpy as np
+import torch
+from torch.utils.data import DataLoader
+
+from . import functional as F
+
+__all__ = [
+    "Trainer",
+]
+
+class Trainer(object):
+
+    def __init__(self, dataset, train_sampler, val_sampler, tmp_dir='./tmp'):
+
+        # device
+        self.device = F.get_torch_device()
+        if self.device == 'cpu':
+            warnings.warn("The training process is running on CPU now. "
+                          "Consider training on a machine with GPUs "
+                          "to speed up the process.")
+
+        # architecture
+        self.arch = None
+
+        # model
+        self.model = None
+
+        # data
+        self.dataset = dataset
+        self.train_sampler = train_sampler
+        self.val_sampler = val_sampler
+
+        # optimizer
+        self.criterion = None
+        self.optimizer = None
+        self.scheduler = None
+
+        # training process
+        self.start_epoch = 0
+        self.end_epoch = None
+
+        # results
+        self.best_acc = None
+        self.best_model = None
+        self.train_loss = None
+        self.train_acc = None
+        self.val_loss = None
+        self.val_acc = None
+
+        # tmp files
+        self.tmp_name = None
+        self.tmp_dir = Path(tmp_dir)
+
+        self.reset()
+
+# -----------------------------------------------------------------------------
+#
+# Utility Methods
+#
+# -----------------------------------------------------------------------------
+
+    def get_device(self):
+        return self.device.type
+
+    def reset(self):
+        self._init_model()
+        #self.model = nn.DataParallel(self.model.to(self.device))
+        self.model = F.model_on_device(self.model, self.device)
+
+        self._init_criterion()
+        self._init_optimizer()
+        self._init_scheduler()
+
+        self._reset_results()
+
+        self._reset_temp_name()
+
+    def _reset_results(self):
+        self.best_acc = 0.
+        self.best_model = None
+        self.train_loss = []
+        self.train_acc = []
+        self.val_loss = []
+        self.val_acc = []
+
+    def _reset_temp_name(self):
+        #ts = time.time()
+        #self.tmp_name = f"{self.arch}_{np.floor(ts):.0f}"
+        self.tmp_name = F.generate_tmp_name(self.arch)
+
+    def resume_checkpoint(self, filename):
+
+        checkpoint_dict = F.load_checkpoint(filename)
+
+        if checkpoint_dict:
+            self._load_checkpoint(checkpoint_dict)
+        else:
+            warnings.warn(f"Loading checkpoint {filename} fails. "
+                          f"Trainer state has not been changed.")
+
+    def preserve_checkpoint(self, epoch, **kwargs):
+
+        checkpoint_dict = self._dump_checkpoint(epoch)
+
+        filename = self.tmp_dir / self.tmp_name / f'checkpoint_epoch{epoch}.pth.tar'
+        F.save_checkpoint(checkpoint_dict, filename=filename,
+                        **kwargs)
+
+    def cleanup(self):
+        F.rm_content(self.tmp_dir)
+
+    def clean(self):
+        F.rm_dir_content(self.tmp_dir / self.tmp_name)
+
+    def results(self, epochs=0, save=False):
+        results = {
+            #'model': self.model.module.to(torch.device('cpu')).state_dict(),
+            'model': F.model_off_device(self.model),
+            'train_loss': self.train_loss,
+            'train_acc': self.train_acc,
+            'val_loss': self.val_loss,
+            'val_acc': self.val_acc
+        }
+
+        if save:
+            filename = self.tmp_dir / self.tmp_name / f'results_{self.arch}_epoch{epochs}.pth.tar'
+            torch.save(results, filename)
+
+        return results
+
+
+# -----------------------------------------------------------------------------
+#
+# Primary Usage Methods
+#
+# -----------------------------------------------------------------------------
+
+    def validate(self, print_freq=None, **kwargs):
+
+        val_loader = DataLoader(self.dataset, sampler=self.val_sampler, **kwargs)
+        return F.validate(self.model, val_loader, self.criterion, print_freq)
+
+    def train(self, epochs=100,
+              val_batch_size=1000, val_num_workers=4,
+              train_batch_size=100, train_num_workers=8,
+              resume=None, print_freq=10, save_tmp=True):
+
+        start_epoch = 0
+        end_epoch = epochs
+
+        if resume:
+            self.resume_checkpoint(resume)
+
+        if save_tmp:
+            (self.tmp_dir / self.tmp_name).mkdir(parents=True, exist_ok=False)
+
+        # build dataloader
+        train_loader = DataLoader(dataset=self.dataset,
+                                  sampler=self.train_sampler,
+                                  batch_size=train_batch_size,
+                                  num_workers=train_num_workers)
+        val_loader = DataLoader(dataset=self.dataset,
+                                sampler=self.val_sampler,
+                                batch_size=val_batch_size,
+                                num_workers=val_num_workers)
+
+        # record results for initial model
+        # -validation set
+        acc, loss = F.validate(self.model, val_loader, self.criterion,
+                               print_freq=None)
+        self.val_acc.append(acc)
+        self.val_loss.append(loss)
+
+        for epoch in range(start_epoch, end_epoch):
+            # update learning rate
+            self._update_scheduler()
+
+            # train model for one epoch
+            acc, loss = F.train(self.model, train_loader,
+                                self.criterion, self.optimizer,
+                                epoch, print_freq=print_freq)
+            self.train_acc.append(acc)
+            self.train_loss.append(loss)
+
+            acc, loss = F.validate(self.model, val_loader, self.criterion,
+                                   print_freq=None)
+            self.val_acc.append(acc)
+            self.val_loss.append(loss)
+
+            # preserve current checkpoint and best checkpoint
+            is_best = self.val_acc[-1] > self.best_acc
+            self.best_acc = max(self.val_acc[-1], self.best_acc)
+            if save_tmp:
+                self.preserve_checkpoint(epoch, is_best=is_best)
+
+
+# -----------------------------------------------------------------------------
+#
+# Optional Override Methods (Default Behavior)
+#
+# -----------------------------------------------------------------------------
+
+    def _dump_checkpoint(self, epoch):
+
+        print("=> Pulling checkpoint from Trainer")
+        checkpoint = {
+            'epcoh': epoch,
+            'arch': self.arch,
+            'best_acc': self.best_acc,
+            'model': self.model.state_dict(),
+            'optimizer': self.optimizer.state_dict(),
+            'scheduler': self.scheduler.state_dict(),
+        }
+
+        return checkpoint
+
+    def _load_checkpoint(self, checkpoint):
+
+        if self.arch != checkpoint['arch']:
+            warnings.warn(f"The architecture in checkpoint does not match "
+                          f"model: {checkpoint['arch']} "
+                          f"vs. {self.arch}.")
+        self.start_epoch = checkpoint['epoch'] + 1
+        self.best_acc = checkpoint['best_acc']
+        self.model.load_state_dict(checkpoint['model'])
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
+        self.scheduler.load_state_dict(checkpoint['scheduler'])
+        print("* Trainer has been updated by the checkpoint loaded.")
+
+
+# -----------------------------------------------------------------------------
+#
+# Mandatory Override Methods
+#
+# -----------------------------------------------------------------------------
+
+    def _init_model(self):
+        raise(NotImplementedError)
+
+    def _init_criterion(self):
+        raise(NotImplementedError)
+
+    def _init_optimizer(self):
+        raise(NotImplementedError)
+
+    def _init_scheduler(self):
+        raise(NotImplementedError)
+
+    def _update_scheduler(self):
+        raise(NotImplementedError)
+
