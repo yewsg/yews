@@ -8,5 +8,4 @@ from yews import dataset
 from yews import catalog
 from yews import transforms
 from yews import train
-from yews import utils
 from yews import models
