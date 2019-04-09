@@ -23,17 +23,13 @@ class ClassificationDatasetArray(ClassificationDataset):
 
     def _find_classes(self):
         classes = list(set(self.source[:, 1]))
-        class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes
 
     def _make_dataset(self):
         return [(s[0], s[1]) for s in self.source]
 
     def __getitem__(self, index):
-        if index >= self.__len__():
-            raise IndexError("Index out of range.")
-
-        sample = self.samples[index, 0]
+        sample = self.samples[index][0]
         target = self.targets[index]
 
         if self.transform is not None:

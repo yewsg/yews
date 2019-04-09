@@ -1,9 +1,10 @@
-from .folder import DatasetFolder, ClassFolder
-from .array import DatasetArray
+from .classification import ClassificationDataset
+from .array import ClassificationDatasetArray
+from .folder import ClassificationDatasetFolder
 
 __all__ = (
-    'DatasetFolder',
-    'ClassFolder',
-    'DatasetArray'
+    'ClassificationDataset',
+    'ClassificationDatasetArray',
+    'ClassificationDatasetFolder',
 )
 
