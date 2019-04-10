@@ -1,13 +1,12 @@
 import numpy as np
 import torch
-from torch.utils.data import DataLoader
+from torch import optim
 
 from . import functional as F
 
 class Trainer(object):
 
-    def __init__(self, dataset, model_gen, criterion, optimizer_gen,
-                 scheduler_gen, lr=0.1):
+    def __init__(self, model_gen, criterion, lr=0.1):
         # default device
         self.device = F.get_torch_device()
 
@@ -15,15 +14,10 @@ class Trainer(object):
         self.model_gen = model_gen
         self.model = None
 
-        # dataset
-        self.dataset = dataset
-
         # optimizer
         self.criterion = criterion
-        self.optimizer_gen = optimizer_gen
         self.lr = lr
         self.optimizer = None
-        self.scheduler_gen = scheduler_gen
         self.scheduler = None
 
         # training process
@@ -46,10 +40,21 @@ class Trainer(object):
         self.model = self.model_gen()
         self.model = F.model_on_device(self.model, self.device)
 
-        self.optimizer = self.optimizer_gen(self.model.parameters(), lr=self.lr)
-        self.scheduler = self.scheduler_gen(self.optimizer, verbose=True)
+        self.reset_optimizer()
+        self.reset_scheduler()
 
         self._reset_results()
+
+    def reset_optimizer(self):
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
+
+    def reset_scheduler(self):
+        self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer,
+                                                              verbose=True)
+
+    def _update_scheduler(self):
+        self.scheduler.step(self.val_loss[-1])
+
 
     def _reset_results(self):
         self.best_acc = 0.
@@ -66,9 +71,6 @@ class Trainer(object):
     def update_val_results(self, acc, loss):
         self.val_acc.append(acc)
         self.val_loss.append(loss)
-
-    def prepare_dataloader(self, **kargs):
-        return DataLoader(self.dataset, **kargs)
 
     def validate(self, loader, print_freq=None):
         return F.validate(self.model, loader, self.criterion, print_freq=print_freq)
@@ -91,7 +93,7 @@ class Trainer(object):
         self.update_val_results(acc, loss)
 
         # training loop
-        print("Start trianing ...")
+        print("Start training ...")
         for epoch in range(start_epoch, end_epoch):
             # update learning rate
             self._update_scheduler()
@@ -109,5 +111,3 @@ class Trainer(object):
             self.best_acc = max(self.val_acc[-1], self.best_acc)
         print(f"Training fisihed. Best accuracy is {self.best_acc}")
 
-    def _update_scheduler(self):
-        self.scheduler.step()
