@@ -6,6 +6,12 @@ Yews is a deep learning toolbox for processing seismic waveform made with flexib
 Installation
 ============
 
+pip:
+
+.. code: bash
+
+   pip install yews
+
 From source:
 
 .. code:: bash
