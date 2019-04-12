@@ -6,12 +6,14 @@ with open("yews/__about__.py") as fp:
 
 requirements = [
     'numpy',
-    'torch',
+    'torch>=1.0.0',
 ]
 
 if __name__ == '__main__':
 
     setup(
+        python_requires='>=3.6',  # Your supported Python ranges
+
         # metadata
         name=about['__title__'],
         version=about['__version__'],
