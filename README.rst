@@ -1,4 +1,4 @@
-.. image:: https://github.com/lijunzh/yews/blob/master/logo/logo_text.gif
+.. image:: https://github.com/lijunzh/yews/blob/master/logo/logo.gif
    :scale: 50 %
    :alt: Yews Logo
    :align: center
