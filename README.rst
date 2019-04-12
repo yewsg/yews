@@ -2,9 +2,11 @@
    :scale: 50 %
    :alt: Yews Logo
    :align: center
-
 ============================
 
+.. image:: https://travis-ci.org/lijunzh/yews.svg?branch=master
+    :target: https://travis-ci.org/lijunzh/yews
+    
 
 Yews | Your Earthquake Waveform Solution
 ========================================
