@@ -6,7 +6,10 @@
 
 .. image:: https://travis-ci.org/lijunzh/yews.svg?branch=master
     :target: https://travis-ci.org/lijunzh/yews
-    
+
+.. image:: https://codecov.io/gh/lijunzh/yews/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/lijunzh/yews
+
 
 Yews | Your Earthquake Waveform Solution
 ========================================
