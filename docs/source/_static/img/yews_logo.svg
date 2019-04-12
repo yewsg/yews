@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="76.5 154.5 1526.0043 417" width="1526.0043" height="417">
+  <defs>
+    <font-face font-family="Roboto" font-size="355" units-per-em="1000" underline-position="-73.24219" underline-thickness="48.828125" slope="0" x-height="528.3203" cap-height="710.9375" ascent="927.7344" descent="-244.14062" font-weight="400">
+      <font-face-src>
+        <font-face-name name="Roboto-Regular"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.10.2 
+    <dc:date>2019-04-12 20:17:55 +0000</dc:date>
+  </metadata>
+  <g id="Canvas_1" stroke-opacity="1" fill="none" fill-opacity="1" stroke="none" stroke-dasharray="none">
+    <title>Canvas 1</title>
+    <g id="Canvas_1: Logo">
+      <title>Logo</title>
+      <g id="Line_17">
+        <path d="M 316.317 474.0271 C 316.317 474.0271 312.34804 353.66997 364.18096 289.68017 C 416.0139 225.69036 499.275 248.15816 499.275 248.15816" stroke="#2d572c" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"/>
+      </g>
+      <g id="Line_18">
+        <path d="M 499.275 248.15816 C 499.275 248.15816 501.4217 304.84778 467.76033 347.40496 C 434.09897 389.96214 380.45833 398.375 380.45833 398.375" stroke="#2d572c" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"/>
+      </g>
+      <g id="Line_20">
+        <path d="M 269 398.375 C 269 398.375 210.59145 387.9828 175.25 345.16667 C 139.90855 302.3505 144.25301 247.24407 144.25301 247.24407" stroke="#2d572c" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"/>
+      </g>
+      <g id="Line_21">
+        <path d="M 144.25301 247.24407 C 144.25301 247.24407 193.38137 236.00782 234.625 254.625 C 275.86863 273.24218 289.83333 312.95833 289.83333 312.95833" stroke="#2d572c" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"/>
+      </g>
+    </g>
+    <g id="Canvas_1: Text">
+      <title>Text</title>
+      <g id="Graphic_24">
+        <text transform="translate(562 154.5)" fill="#424242">
+          <tspan font-family="Roboto" font-size="355" font-weight="400" fill="#424242" x="0" y="329">Yews</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>
