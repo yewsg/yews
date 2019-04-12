@@ -1,22 +1,41 @@
 Yews | Your Earthquake Waveform Solution
 ========================================
 
-Yews is a deep learning toolbox for processing seismic waveform made with flexibility, speed, and usability in mind. It is built upon `PyTorch <https://github.com/pytorch/pytorch>`_ and `ObsPy <https://github.com/obspy/obspy>`_ for researchers interested in applying deep learning techniques on seismic waveform data.
+Yews is a deep learning toolbox for processing seismic waveform made with flexibility, speed, and usability in mind. It is built upon `PyTorch <https://github.com/pytorch/pytorch>`_ for researchers interested in applying deep learning techniques on seismic waveform data.
+
+
 
 Installation
 ============
 
+conda:
+
+.. code:: bash
+
+   conda install yews -c lijunzhu
+
+
 pip:
 
-.. code: bash
+.. code:: bash
 
    pip install yews
+
 
 From source:
 
 .. code:: bash
 
     python setup.py install
+
+
+Note:
+
+1. These assume that you have `PyTorch <https://pytorch.org/get-started/locally/>`_ installed via the default method.
+
+2. Yews can be installed via *conda-forge* with all dependencies handled automatically; however, it only supports the **CPU** version as *PyTorch* does not have a **GPU** version for the conda-forge channel.
+
+
 
 Documentation
 =============
