@@ -2,7 +2,7 @@
    :scale: 50 %
    :alt: Yews Logo
    :align: center
-   
+
 ============================
 
 
