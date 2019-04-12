@@ -1,8 +1,10 @@
+dist: xenial   # required for Python >= 3.7
 language: python
 
 matrix:
   include:
     - python: "3.6"
+    - python: "3.7"
 
 before_install:
   - sudo apt-get update
@@ -35,7 +37,7 @@ install:
     cd -
 
 script:
-  - pytest --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH test
+  - pytest --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests
 
 after_success:
   # Necessary to run coverage combine to rewrite paths from
