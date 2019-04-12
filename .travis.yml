@@ -35,7 +35,7 @@ install:
     cd -
 
 script:
-  - pytest --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH test
+  - pytest --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests
 
 after_success:
   # Necessary to run coverage combine to rewrite paths from
