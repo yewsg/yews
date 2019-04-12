@@ -76,7 +76,7 @@ class ZeroMean(object):
     """
 
     def __call__(self, wav):
-        wav = wav.T
+        wav = wav.astype(float).T
         wav -= wav.mean(axis=0)
         return wav.T
 

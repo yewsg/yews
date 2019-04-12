@@ -39,3 +39,27 @@ class TestToTensor:
         tensor = F.torch.zeros(3, 10,dtype=F.torch.float)
         assert F.torch.allclose(F._to_tensor(wav), tensor)
 
+class TestMandatoryMethods:
+    def test_call_method(self):
+        assert all([hasattr(getattr(transforms, t), '__call__') for t in
+                    transforms.transforms.__all__])
+
+    def test_repr_method(self):
+        assert all([hasattr(getattr(transforms, t), '__repr__') for t in
+                    transforms.transforms.__all__])
+
+class TestTransformCorrectness:
+    def test_compose(self):
+        wav = F.np.array([1, 3])
+        assert F.torch.allclose(transforms.Compose([
+            transforms.ZeroMean(),
+            transforms.ToTensor(),
+        ])(wav), F.torch.tensor([[-1, 1]], dtype=F.torch.float))
+
+    def test_to_tensor_dtype(self):
+        wav = F.np.array([1])
+        assert F.torch.allclose(F.torch.tensor([[1]], dtype=F.torch.float),
+                                transforms.ToTensor()(wav))
+    def test_to_tensor_shape(self):
+        wav = F.np.array([1])
+        assert transforms.ToTensor()(wav).shape == (1,1)
