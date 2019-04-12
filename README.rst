@@ -1,3 +1,5 @@
+![Yews Logo](https://github.com/lijunzh/yews/blob/master/logo/logo_text.gif)
+
 Yews | Your Earthquake Waveform Solution
 ========================================
 
