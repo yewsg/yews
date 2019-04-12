@@ -49,7 +49,7 @@ class ToTensor(object):
         Returns:
             Tensor: Converted tensor.
         """
-        return F.to_tensor(wav)
+        return F._to_tensor(wav)
 
     def __repr__(self):
         return self.__class__.__name__ + '()'

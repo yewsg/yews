@@ -23,7 +23,7 @@ if __name__ == '__main__':
         license=about['__license__'],
 
         # package info
-        packages=find_packages(exclude=('test', 'examples')),
+        packages=find_packages(exclude=('tests', 'examples')),
 
         zip_safe=True,
         install_requires=requirements,
