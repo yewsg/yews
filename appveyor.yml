@@ -73,9 +73,10 @@ install:
   # package in $PWD rather than the installed v
   - ps: |
       cd $HOME
+      pwd
       YEWS_INSTALL_PATH="$(python -c 'import os; import yews; print(os.path.dirname(os.path.abspath(yews.__file__)))')"
       echo "$YEWS_INSTALL_PATH"
-      cd -
+      cd yews
 
 # Not a .NET project, build in the install setup
 build: false
