@@ -71,13 +71,11 @@ install:
   # Move to home dir, otherwise we'll end up with the path to the
   # package in $PWD rather than the installed v
   - ps: |
-      pwd
-      ROOT=pwd
+      $ROOT = pwd
       echo $ROOT
       cd $HOME
-      pwd
-      YEWS_INSTALL_PATH="$(python -c 'import os; import yews; print(os.path.dirname(os.path.abspath(yews.__file__)))')"
-      echo "$YEWS_INSTALL_PATH"
+      YEWS_INSTALL_PATH = "$(python -c 'import os; import yews; print(os.path.dirname(os.path.abspath(yews.__file__)))')"
+      echo $YEWS_INSTALL_PATH
       cd $ROOT
       pwd
 
