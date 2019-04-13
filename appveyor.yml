@@ -68,27 +68,10 @@ install:
   # test version to iron out installation file-inclusion bugs but can
   # also collect coverage.
   - pip install .
-  # Move to home dir, otherwise we'll end up with the path to the
-  # package in $PWD rather than the installed v
-  - ps: |
-      $ROOT = pwd
-      echo $ROOT
-      cd $HOME
-      YEWS_INSTALL_PATH = "$(python -c 'import os; import yews; print(os.path.dirname(os.path.abspath(yews.__file__)))')"
-      echo $YEWS_INSTALL_PATH
-      cd $ROOT
-      pwd
 
 # Not a .NET project, build in the install setup
 build: false
 
 test_script:
-  - pytest --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests
-
-on_success:
-  # Necessary to run coverage combine to rewrite paths from
-  # /travis/env/path/site-packages/yews to actual path
-  - coverage combine .coverage
-  - coverage report
-  - codecov
+  - pytest tests
 
