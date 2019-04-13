@@ -1,0 +1,92 @@
+environment:
+  global:
+    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+    # /E:ON and /V:ON options are not enabled in the batch script intepreter
+    # See: http://stackoverflow.com/a/13751649/163740
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+
+  matrix:
+
+    - PYTHON: "C:\\Python36"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "64"
+
+    - PYTHON: "C:\\Python37"
+      PYTHON_VERSION: "3.7.x"
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python37-x64"
+      PYTHON_VERSION: "3.7.x"
+      PYTHON_ARCH: "64"
+
+init:
+  # If there is a newer build queued for the same PR, cancel this one.
+  # The AppVeyor 'rollout builds' option is supposed to serve the same
+  # purpose but it is problematic because it tends to cancel builds pushed
+  # directly to master instead of just PR builds (or the converse).
+  # credits: JuliaLang developers.
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
+        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
+        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
+          throw "There are newer queued builds for this pull request, failing early." }
+  - ps: |
+      If (($env:SKIP_NOTAG -eq "true") -and ($env:APPVEYOR_REPO_TAG -ne "true")) {
+          throw "Skipping Python version, not a tag."
+      }
+
+install:
+  # Prepend newly installed Python to the PATH of this build (this cannot be
+  # done from inside the powershell script as it would require to restart
+  # the parent CMD process).
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+
+  # Check that we have the expected version and architecture for Python
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+
+  # Upgrade to the latest version of pip to avoid it displaying warnings
+  # about it being out of date.
+  - "python -m pip install --upgrade pip"
+
+  # Install the build and runtime dependencies of the project.
+  - "conda config --set always_yes yes --set changeps1 no"
+  - "conda update -q conda"
+  # Useful for debugging any issues with conda
+  - "conda info -a"
+  # Create a conda environment using the required ObsPy packages.
+  - "conda create -q --yes -n test python=%PYTHON_VERSION% pytorch scipy -c pytorch"
+  - "activate test"
+  - "pip install pytest pytest-cov codecov"
+  # list package versions
+  - "conda list"
+  # Using pip instead of setup.py ensures we install a non-compressed version of the package
+  # (as opposed to an egg), which is necessary to collect coverage.
+  # We still get the benefit of testing an installed version over the
+  # test version to iron out installation file-inclusion bugs but can
+  # also collect coverage.
+  - "pip install ."
+  # Move to home dir, otherwise we'll end up with the path to the
+  # package in $PWD rather than the installed v
+  - ps: |
+      cd $HOME
+      export YEWS_INSTALL_PATH="$(python -c 'import os; import yews; print(os.path.dirname(os.path.abspath(yews.__file__)))')"
+      echo "$YEWS_INSTALL_PATH"
+      cd -
+
+# Not a .NET project, build in the install setup
+build: false
+
+test_script:
+  - "pytest --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests"
+
+on_success:
+  # Necessary to run coverage combine to rewrite paths from
+  # /travis/env/path/site-packages/yews to actual path
+  - "coverage combine .coverage"
+  - "coverage report"
+  - "codecov"
+
