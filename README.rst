@@ -13,8 +13,15 @@
 .. image:: https://codecov.io/gh/lijunzh/yews/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/lijunzh/yews
 
+.. image:: https://anaconda.org/lijunzhu/yews/badges/version.svg   
+    :target: https://anaconda.org/lijunzhu/yews
+
+.. image:: https://badge.fury.io/py/yews.svg
+    :target: https://badge.fury.io/py/yews
+
 .. image:: https://pepy.tech/badge/yews
     :target: https://pepy.tech/project/yews
+
 
 Yews | Your Earthquake Waveform Solution
 ========================================
