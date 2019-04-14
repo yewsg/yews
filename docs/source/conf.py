@@ -15,7 +15,6 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-import yews
 import sphinx_rtd_theme
 
 
@@ -26,7 +25,7 @@ copyright = '2019, Lijun Zhu'
 author = 'Lijun Zhu'
 
 # The short X.Y version
-version = 'master (' + yews.__version__ + ')'
+version = 'master (' + '0.0.1' + ')'
 # The full version, including alpha/beta/rc tags
 release = 'master'
 
