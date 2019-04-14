@@ -34,6 +34,8 @@ Yews is a deep learning toolbox for processing seismic waveform made with flexib
 Installation
 ============
 
+First install `PyTorch <https://github.com/pytorch/pytorch>`_ using the offical guide: https://pytorch.org/get-started/locally/ . Then, install `Yews <https://github.com/lijunzh/yews>`_ via one of the following approaches:
+
 conda:
 
 .. code:: bash
