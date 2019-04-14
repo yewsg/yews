@@ -4,8 +4,11 @@
    :align: center
 ============================
 
-.. image:: https://travis-ci.org/lijunzh/yews.svg?branch=master
-    :target: https://travis-ci.org/lijunzh/yews
+.. image:: https://travis-ci.com/lijunzh/yews.svg?branch=master
+    :target: https://travis-ci.com/lijunzh/yews
+
+.. image:: https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true
+    :target: https://ci.appveyor.com/project/lijunzh/yews
 
 .. image:: https://codecov.io/gh/lijunzh/yews/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/lijunzh/yews
