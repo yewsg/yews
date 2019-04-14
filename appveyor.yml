@@ -49,13 +49,15 @@ install:
   # and the user has the necessary permissions to make environment changes. In a CI
   # environment these are not necessary and slow things down noticeably on Windows.
   - conda config --set always_yes yes --set changeps1 no --set auto_update_conda no --set safety_checks disabled
-  - conda install -q conda 
+  - conda install -q conda
   - conda info -a
 
-
-  # Create a conda environment using the required ObsPy packages.
-  - conda create -q --yes -n test python=%PYTHON_VERSION% pytorch scipy -c pytorch
+  # Upgrade to the latest version of pip to avoid it displaying warnings
+  # about it being out of date.
   - pip install --upgrade pip
+
+  # Create a conda environment using the required packages.
+  - conda create -q --yes -n test python=%PYTHON_VERSION% pytorch scipy -c pytorch
   - activate test
   - pip install pytest pytest-cov codecov
   # list package versions

@@ -17,9 +17,13 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
 
+  # Upgrade to the latest version of pip to avoid it displaying warnings
+  # about it being out of date.
+  - pip install --upgrade pip
+
+  # Create a conda environment using the required packages
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pytorch scipy -c pytorch
   - activate test-environment
-  - pip install --upgrade pip
   - pip install pytest pytest-cov codecov
 
 install:
