@@ -66,3 +66,17 @@ class TestTransformCorrectness:
     def test_to_tensor_shape(self):
         wav = np.array([1])
         assert transforms.ToTensor()(wav).shape == (1,1)
+
+    def test_zero_mean_channel_mean(self):
+        wav = np.random.rand(3, 2000)
+        assert all([np.allclose(ch.mean(), 0) for ch in transforms.ZeroMean()(wav)])
+
+    def test_cut_waveform_shape(self):
+        wav = np.random.randn(3, 2000)
+        assert transforms.CutWaveform(100, 1900)(wav).shape == (3, 1800)
+
+    def test_cut_waveform_value(self):
+        wav = np.random.randn(3, 2000)
+        assert np.allclose(transforms.CutWaveform(100, 1900)(wav),
+                           wav[:, 100:1900])
+
