@@ -34,7 +34,7 @@ Yews is a deep learning toolbox for processing seismic waveform made with flexib
 Installation
 ============
 
-First install `PyTorch <https://github.com/pytorch/pytorch>`_ using the offical guide: https://pytorch.org/get-started/locally/ . Then, install `Yews <https://github.com/lijunzh/yews>`_ via one of the following approaches:
+It is recommened to first install `PyTorch <https://github.com/pytorch/pytorch>`_ using the offical guide: https://pytorch.org/get-started/locally/ . Then, install `Yews <https://github.com/lijunzh/yews>`_ via one of the following approaches:
 
 conda:
 
@@ -61,7 +61,11 @@ Note:
 
 1. These assume that you have `PyTorch <https://pytorch.org/get-started/locally/>`_ installed via the default method.
 
-2. Yews can be installed via *conda-forge* with all dependencies handled automatically; however, it only supports the **CPU** version as *PyTorch* does not have a **GPU** version for the conda-forge channel.
+2. If, however, yews is installed without going through the official PyTorch installation, it will still be installed properly using the pip method
+
+3. The lateset PyTorch 1.0.1 has been manually uploaded to lijunzhu channel on anaconda cloud, which makes it possible to install PyTorch automatically as a dependency using the conda method. However, it does not support older PyTorch versions for now. Future updates of PyTorch will be added ASAP.
+
+4. Yews can be installed via *conda-forge* with all dependencies handled automatically; however, it only supports the **CPU** version as *PyTorch* does not have a **GPU** version for the conda-forge channel.
 
 
 
