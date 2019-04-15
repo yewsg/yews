@@ -4,7 +4,7 @@ from yews.__about__ import (
     __summary__,
 )
 
-from yews import dataset
+from yews import datasets
 from yews import transforms
 from yews import train
 from yews import models

@@ -5,7 +5,9 @@ from torch import optim
 from . import functional as F
 
 class Trainer(object):
+    """Mega class for training process.
 
+    """
     def __init__(self, model_gen, criterion, lr=0.1):
         # default device
         self.device = F.get_torch_device()
@@ -73,6 +75,10 @@ class Trainer(object):
         self.val_loss.append(loss)
 
     def validate(self, loader, print_freq=None):
+        """Validate the model on a given datset using the dataloader provided.
+
+        """
+
         return F.validate(self.model, loader, self.criterion, print_freq=print_freq)
 
     def train_one_epoch(self, loader, epoch, print_freq=None):
@@ -80,7 +86,9 @@ class Trainer(object):
                        epoch, print_freq=print_freq)
 
     def train(self, train_loader, val_loader, epochs=100, print_freq=None):
+        """Train the model on a given datset using the dataloader provided.
 
+        """
         start_epoch = 0
         end_epoch = epochs
 

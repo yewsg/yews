@@ -1,10 +1,16 @@
+# TO-DO: need to add model_zoo utility and pretrained models.
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 __all__ = [
     'Cpic',
+    'cpic64',
 ]
+
+model_urls = {
+    'cpic64': 'https://lijunzhu.info'
+}
 
 class Cpic(nn.Module):
 
@@ -140,3 +146,14 @@ class Cpic(nn.Module):
 
         return out
 
+def cpic64(pretrained=False, **kwargs):
+    r"""CPIC model architecture from the
+    `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on Wenchuan)
+    """
+    model = Cpic(**kwargs)
+    if pretrained:
+        model.load_state_dict(model_zoo.load_url(model_urls['cpic64']))
+    return model
