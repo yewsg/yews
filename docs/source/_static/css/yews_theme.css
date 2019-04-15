@@ -1,10 +1,17 @@
 body {
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+		font-size: 1.2em;
+		line-height: 2.0;
 }
 
 /* Default header fonts are ugly */
 h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend, p.caption {
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+}
+
+/* Transform the title to uppercase */
+h1 {
+	text-transform: uppercase;
 }
 
 /* Use white for docs background */
@@ -59,8 +66,7 @@ h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend, p.capti
 
 /* Use our red for literals (it's very similar to the original color) */
 .rst-content tt.literal, .rst-content tt.literal, .rst-content code.literal {
-    /*color: #F05732;*/
-    color: #2D572C;
+    color: #2980b9;
 }
 
 .rst-content tt.xref, a .rst-content tt, .rst-content tt.xref,
@@ -69,21 +75,17 @@ h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend, p.capti
 }
 
 /* Change link colors (except for the menu) */
-
 a {
-    /*color: #F05732;*/
-    color: #386D37;
+    color: #2980b9;
 }
 
 a:hover {
-    /*color: #F05732;*/
-    color: #386D37;
+    color: #2980b9;
 }
 
 
 a:visited {
-    /*color: #D44D2C;*/
-    color: #244623
+    color: #2980b9;
 }
 
 .wy-menu a {

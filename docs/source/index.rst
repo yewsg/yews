@@ -10,8 +10,8 @@ seismic transformation for processing seismic waveforms using deep learning.
 
    dataset
    models
-   transform
+   transforms
    train
 
 .. automodule:: yews
-
+   :members:

@@ -17,7 +17,7 @@ Yews | Your Earthquake Waveform Solution
 .. image:: https://codecov.io/gh/lijunzh/yews/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/lijunzh/yews
 
-.. image:: https://anaconda.org/lijunzhu/yews/badges/version.svg   
+.. image:: https://anaconda.org/lijunzhu/yews/badges/version.svg
     :target: https://anaconda.org/lijunzhu/yews
 
 .. image:: https://badge.fury.io/py/yews.svg
@@ -72,7 +72,7 @@ Note:
 Documentation
 =============
 
-Under construction.
+You can find the API documentation on the yews website: https://yews.info
 
 Contributing
 ============
