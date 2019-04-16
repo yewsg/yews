@@ -72,7 +72,7 @@ Note:
 Documentation
 =============
 
-You can find the API documentation on the yews website: https://yews.info
+You can find the API documentation on the yews website: https://www.yews.info
 
 Contributing
 ============
