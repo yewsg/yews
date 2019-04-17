@@ -117,3 +117,14 @@ class TestTransformCorrectness:
         wav = np.array([-1, -0.5, 0, 0.5, 1])
         assert np.allclose(transforms.SoftClip()(wav),
                            np.array([0.26894142, 0.37754067, 0.5, 0.62245933, 0.73105858]))
+
+
+class TestToInt:
+
+    def test_lookup_table(self):
+        with pytest.raises(ValueError):
+            transforms.ToInt(lookup=[])
+        with pytest.raises(ValueError):
+            transforms.ToInt(lookup={'a': '0'})
+        assert transforms.ToInt(lookup={'a': 0})('a') == 0
+

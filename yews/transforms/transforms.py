@@ -3,6 +3,7 @@ from . import functional as F
 
 __all__ = [
     "ToTensor",
+    "ToInt",
     "ZeroMean",
     "SoftClip",
     "CutWaveform",
@@ -22,6 +23,26 @@ class ToTensor(BaseTransform):
             Tensor: Converted tensor.
         """
         return F._to_tensor(wav)
+
+
+class ToInt(BaseTransform):
+    """Convert a label to int based on the given lookup table.
+
+    Args:
+        lookup (dict): Lookup table to convert a label to int.
+
+    """
+
+    def __init__(self, lookup):
+        if type(lookup) is dict:
+            self.lookup = lookup
+        else:
+            raise ValueError("Lookup table needs to be a dictionary.")
+        if any([type(val) is not int for val in self.lookup.values()]):
+            raise ValueError("Values of the lookup table need to be Int.")
+
+    def __call__(self, label):
+        return self.lookup[label]
 
 
 class SoftClip(BaseTransform):
