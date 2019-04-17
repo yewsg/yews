@@ -4,7 +4,7 @@ from torch.nn import CrossEntropyLoss
 from torch.utils.data import random_split, DataLoader
 
 import yews.transforms as transforms
-from yews.dataset import ClassificationDatasetArray as CDA
+from yews.datasets import DatasetArray
 from yews.train import Trainer
 from yews.models import Cpic
 
@@ -17,10 +17,17 @@ if __name__ == '__main__':
         transforms.SoftClip(1e-4),
         transforms.ToTensor(),
     ])
+    lookup = {
+        'N': 0,
+        'P': 1,
+        'S': 2,
+    }
+    target_transform = transforms.ToInt(lookup)
 
     # Prepare dataset
-    samples = np.load('/data/wenchuan/samples.npy')
-    wenchuan_dataset = CDA(samples, transform=waveform_transform)
+    wenchuan_dataset = DatasetArray(root='/data/wenchuan/samples.npy',
+                                    sample_transform=waveform_transform,
+                                    target_transform=target_transform)
 
     # Split datasets into training and validation
     train_length = int(len(wenchuan_dataset) * 0.8)
