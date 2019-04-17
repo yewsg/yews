@@ -71,7 +71,7 @@ class BaseDataset(data.Dataset):
             sample = self.sample_transform(sample)
 
         if self.target_transform is not None:
-            target = transform_transform(target)
+            target = self.target_transform(target)
 
         return sample, target
 
@@ -121,3 +121,6 @@ class PathDataset(BaseDataset):
     def __init__(self, **kwargs):
         super(PathDataset, self).__init__(**kwargs)
         self.root = Path(self.root).resolve()
+        if not self.root.exists():
+            raise ValueError(f"{self.root} does not exists.")
+
