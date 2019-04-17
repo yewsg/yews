@@ -1,9 +1,8 @@
 from .base import BaseDataset, PathDataset, is_dataset
-from .file import FileDataset, DatasetArray
-from .dir import DirDataset, DatasetFolder, DatasetArrayFolder
+from .files import FileDataset, DatasetArray
+from .dirs import DirDataset, DatasetFolder, DatasetArrayFolder
 
 __all__ = (
-    'is_dataset',
     'BaseDataset',
     'PathDataset',
     'FileDataset',

@@ -3,6 +3,11 @@ import numpy as np
 
 from .base import PathDataset
 
+__all__ = [
+    'FileDataset',
+    'DatasetArray',
+]
+
 
 class FileDataset(PathDataset):
     """An abstract class representing a Dataset in a file.
@@ -54,5 +59,4 @@ class DatasetArray(FileDataset):
     def build_dataset(self):
         data = np.load(self.root)
         return data[:, 0], data[:, 1]
-
 

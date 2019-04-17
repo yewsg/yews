@@ -1,4 +1,11 @@
 from .base import PathDataset
+import numpy as np
+
+__all__ = [
+    'DirDataset',
+    'DatasetArrayFolder',
+    'DatasetFolder',
+]
 
 
 class DirDataset(PathDataset):
@@ -41,7 +48,7 @@ class DatasetArrayFolder(DirDataset):
 
     Attributes:
         samples (list): List of samples in the dataset.
-        targets (list): List of targets in teh dataset.
+        targets (list): List of targets in the dataset.
 
     """
 
@@ -92,16 +99,16 @@ class DatasetFolder(DirDataset):
             self.loader = loader
 
         def __getitem__(self, index):
-            return self.loader(self.file_list[index])
+            return self.loader(self.files[index])
 
         def __len__(self):
-            return len(file_list)
+            return len(self.files)
 
     def __init__(self, loader, **kwargs):
-        super(DatasetFolder, self).__init__(**kwargs)
         self.loader = loader
+        super(DatasetFolder, self).__init__(**kwargs)
 
-    def make_dataset(self):
+    def build_dataset(self):
         files = [p for p in self.root.glob("**/*") if p.is_file()]
         labels = [p.name.split('.')[0] for p in files]
         samples = self.FilesLoader(files, self.loader)
