@@ -5,7 +5,19 @@ import yews.transforms.functional as F
 import torch
 import numpy as np
 
+
+class DummpyBaseTransform(transforms.BaseTransform):
+
+    def __init__(self, a=0, b=1):
+        self.a = a
+        self.b = b
+
+    def __call__(self, data):
+        return data
+
+
 class TestIsNumpyWaveform:
+
     def test_single_channel_waveform_vector(self):
         wav = np.empty(10)
         assert F._is_numpy_waveform(wav)
@@ -26,7 +38,9 @@ class TestIsNumpyWaveform:
         wav = torch.tensor(10)
         assert not F._is_numpy_waveform(wav)
 
+
 class TestToTensor:
+
     def test_type_exception(self):
         wav = torch.tensor(10)
         with pytest.raises(TypeError):
@@ -42,7 +56,19 @@ class TestToTensor:
         tensor = torch.zeros(3, 10,dtype=torch.float)
         assert torch.allclose(F._to_tensor(wav), tensor)
 
+class TestBaseTransform:
+
+    def test_raise_call_notimplementederror(self):
+        with pytest.raises(NotImplementedError):
+            t = transforms.BaseTransform()
+            t(0)
+
+    def test_repr(self):
+        t = transforms.BaseTransform()
+        assert type(t.__repr__()) is str
+
 class TestMandatoryMethods:
+
     def test_call_method(self):
         assert all([hasattr(getattr(transforms, t), '__call__') for t in
                     transforms.transforms.__all__])
@@ -50,6 +76,13 @@ class TestMandatoryMethods:
     def test_repr_method(self):
         assert all([hasattr(getattr(transforms, t), '__repr__') for t in
                     transforms.transforms.__all__])
+
+
+class TestComposeTransform:
+
+    def test_repr(self):
+        t = transforms.Compose([DummpyBaseTransform()])
+        assert type(t.__repr__()) is str
 
 class TestTransformCorrectness:
     def test_compose(self):
@@ -80,3 +113,7 @@ class TestTransformCorrectness:
         assert np.allclose(transforms.CutWaveform(100, 1900)(wav),
                            wav[:, 100:1900])
 
+    def test_soft_clip(self):
+        wav = np.array([-1, -0.5, 0, 0.5, 1])
+        assert np.allclose(transforms.SoftClip()(wav),
+                           np.array([0.26894142, 0.37754067, 0.5, 0.62245933, 0.73105858]))
