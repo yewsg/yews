@@ -40,7 +40,7 @@ conda:
 
 .. code:: bash
 
-   conda install -c lijunzhu yews
+   conda install -c lijunzhu -c pytorch yews
 
 
 pip:
