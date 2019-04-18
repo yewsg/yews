@@ -13,7 +13,7 @@ class FileDataset(PathDataset):
     """An abstract class representing a Dataset in a file.
 
     Args:
-        root (object): File of the dataset.
+        root (object): File of the file.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -44,19 +44,22 @@ class DatasetArray(FileDataset):
     where both samples and targets can be arrays.
 
     Args:
-        root (object): Path to the dataset.
+        root (object): Path to the ``.npy`` file.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
             a target and transform it.
 
     Attributes:
-        samples (list): List of samples in the dataset.
-        targets (list): List of targets in teh dataset.
+        samples: List of samples in the dataset.
+        targets: List of targets in teh dataset.
 
     """
 
     def build_dataset(self):
+        """Returns samples and targets.
+
+        """
         data = np.load(self.root)
         return data[:, 0], data[:, 1]
 
