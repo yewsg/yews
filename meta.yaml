@@ -6,12 +6,12 @@ package:
   version: {{ version }}
 
 source:
-  git_url: https://github.com/lijunzh/yews.git
-  git_tag: {{ version }}
+  path: .
+  #git_url: https://github.com/lijunzh/yews.git
+  #git_tag: {{ version }}
 
 build:
   noarch: python
-  number: 0
   script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
@@ -31,7 +31,7 @@ test:
 about:
   home: https://github.com/lijunzh/yews
   license: Apache 2.0
-  license_family: Apache
+  license_family: APACHE
   license_file: LICENSE
   summary: 'Yews: Your Earthquake Waveform Solutions.'
 
