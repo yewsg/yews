@@ -4,6 +4,9 @@ about = {}
 with open("yews/__about__.py") as fp:
     exec(fp.read(), about)
 
+with open("README.rst", encoding='utf-8') as f:
+    long_description = f.read()
+
 requirements = [
     'numpy',
     'torch>=1.0.0',
@@ -21,6 +24,10 @@ if __name__ == '__main__':
         author_email=about['__email__'],
         description="Deep learning toolbox for seismic waveform processing.",
         license=about['__license__'],
+
+        # README
+        long_description=long_description,
+        long_description_content_type='text/x-rst',
 
         # package info
         packages=find_packages(exclude=('tests', 'examples')),

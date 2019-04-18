@@ -54,7 +54,9 @@ class SoftClip(BaseTransform):
         self.scale = scale
 
     def __call__(self, wav):
-        return F.expit(wav * self.scale)
+        from scipy.special import expit
+
+        return expit(wav * self.scale)
 
 
 class ZeroMean(BaseTransform):

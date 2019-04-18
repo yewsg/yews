@@ -1,4 +1,4 @@
-.. image:: https://github.com/lijunzh/yews/blob/master/logo/logo.gif
+.. image:: https://raw.githubusercontent.com/lijunzh/yews/master/logo/logo.gif
    :scale: 50 %
    :alt: Yews Logo
    :align: center
@@ -59,7 +59,7 @@ From source:
 
 Note:
 
-1. These assume that you have `PyTorch <https://pytorch.org/get-started/locally/>`_ installed via the default method.
+1. These assume that you have PyTorch installed via the default method.
 
 2. If, however, yews is installed without going through the official PyTorch installation, it will still be installed properly using the pip method
 
