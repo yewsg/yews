@@ -4,17 +4,6 @@ class BaseTransform(object):
     All other transform should subclass it. All subclasses should override
     ``__call__`` which performs the transform.
 
-    Args:
-        root (object): Source of the dataset.
-        sample_transform (callable, optional): A function/transform that takes
-            a sample and returns a transformed version.
-        target_transform (callable, optional): A function/transform that takes
-            a target and transform it.
-
-    Attributes:
-        samples (dataset-like object): Dataset-like object for samples.
-        targets (dataset-like object): Dataset-like object for targets.
-
     """
 
     def __call__(self, data):
@@ -29,13 +18,15 @@ class BaseTransform(object):
 
 class Compose(BaseTransform):
     """Composes several transforms together.
+
     Args:
         transforms (list of ``Transform`` objects): list of transforms to compose.
     Example:
         >>> transforms.Compose([
-        >>>     transforms.CenterCrop(10),
+        >>>     transforms.ZeroMean(),
         >>>     transforms.ToTensor(),
         >>> ])
+
     """
 
     def __init__(self, transforms):

@@ -12,7 +12,7 @@ class DirDataset(PathDataset):
     """An abstract class representing a Dataset in a directory.
 
     Args:
-        root (object): Directory of the dataset.
+        root (object): Directory of the directory.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -40,7 +40,7 @@ class DatasetArrayFolder(DirDataset):
     where both samples and targets can be arrays.
 
     Args:
-        root (object): Path to the dataset.
+        root (object): Path to the dataset folder.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -53,6 +53,9 @@ class DatasetArrayFolder(DirDataset):
     """
 
     def build_dataset(self):
+        """Returns samples and targets.
+
+        """
         samples = np.load(self.root / 'samples.npy', mmap_mode='r')
         targets = np.load(self.root / 'targets.npy', mmap_mode='r')
 
@@ -92,6 +95,7 @@ class DatasetFolder(DirDataset):
         Args:
             files (list): List of file paths
             loader (callable): Function that load one file.
+
         """
 
         def __init__(self, files, loader):
@@ -109,6 +113,9 @@ class DatasetFolder(DirDataset):
         super(DatasetFolder, self).__init__(**kwargs)
 
     def build_dataset(self):
+        """Return samples and targets.
+
+        """
         files = [p for p in self.root.glob("**/*") if p.is_file()]
         labels = [p.name.split('.')[0] for p in files]
         samples = self.FilesLoader(files, self.loader)

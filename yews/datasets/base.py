@@ -55,7 +55,8 @@ class BaseDataset(data.Dataset):
         self.target_transform = target_transform
 
     def build_dataset(self):
-        """
+        """Method to construct ``samples`` and ``targets`` from ``self.root``.
+
         Returns:
             samples (ndarray): List of samples.
             labels (ndarray): List of labels.

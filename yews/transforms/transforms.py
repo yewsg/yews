@@ -11,18 +11,11 @@ __all__ = [
 ]
 
 class ToTensor(BaseTransform):
-    """Convert a ``numpy.ndarray`` to tensor.
+    """Converts a numpy.ndarray C x S) to a torch.FloatTensor of shape (C x S).
 
-    Converts a numpy.ndarray (C x S) to a torch.FloatTensor of shape (C x S).
     """
 
     def __call__(self, wav):
-        """
-        Args:
-            wav: Waveform to be converted to tensor.
-        Returns:
-            Tensor: Converted tensor.
-        """
         return F._to_tensor(wav)
 
 
@@ -47,7 +40,7 @@ class ToInt(BaseTransform):
 
 
 class SoftClip(BaseTransform):
-    """Soft clip input to compress large amplitude signals
+    """Soft clip input to compress large amplitude signals.
 
     """
 
@@ -59,7 +52,7 @@ class SoftClip(BaseTransform):
 
 
 class ZeroMean(BaseTransform):
-    """Remove mean from each waveforms
+    """Remove mean from each waveforms.
 
     """
 
@@ -70,7 +63,7 @@ class ZeroMean(BaseTransform):
 
 
 class CutWaveform(BaseTransform):
-    """Cut a portion of waveform.
+    """Cut a portion of the input waveform.
 
     """
 
