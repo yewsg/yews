@@ -9,6 +9,7 @@ with open("README.rst", encoding='utf-8') as f:
 
 requirements = [
     'numpy',
+    'scipy',
     'torch>=1.0.0',
 ]
 
@@ -34,8 +35,4 @@ if __name__ == '__main__':
 
         zip_safe=True,
         install_requires=requirements,
-        extras_require={
-            "scipy": ["scipy"],
-            "obspy": ["obspy"],
-        },
     )

@@ -1,5 +1,6 @@
 from .base import BaseTransform
 from . import functional as F
+from scipy.special import expit
 
 __all__ = [
     "ToTensor",
@@ -54,8 +55,6 @@ class SoftClip(BaseTransform):
         self.scale = scale
 
     def __call__(self, wav):
-        from scipy.special import expit
-
         return expit(wav * self.scale)
 
 
