@@ -1,24 +1,29 @@
 #!/bin/sh
 
-.PHONY: clean test coverage conda pypi
+.PHONY: clean test anaconda pypi build wait release
 
-conda:
-	conda build . -c pytorch
+release: test wait build wait
 	anaconda upload $(shell conda build . --output)
-
-pypi:
-	python setup.py sdist bdist_wheel
-	twine check dist/*
 	twine upload dist/* -r pypi
 
 test:
-	pytest -v --cov-report term-missing --cov yews tests
+	python setup.py test
+	coverage report
 
-coverage:
-	coverage html
+wait:
+	sleep 10
+
+build: anaconda pypi
+
+anaconda:
+	time conda build . -c pytorch
+
+pypi:
+	python setup.py dists
+	twine check dist/*
 
 clean:
 	find . | grep -E "(__pycache__|\.pyc|\.pyo)" | xargs rm -rf
-	rm -rf dist yews.egg-info
+	rm -rf build dist yews.egg-info htmlcov
 
 
