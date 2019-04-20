@@ -1,5 +1,6 @@
-from .base import PathDataset
 import numpy as np
+
+from .base import PathDataset
 
 __all__ = [
     'DirDataset',
@@ -12,7 +13,7 @@ class DirDataset(PathDataset):
     """An abstract class representing a Dataset in a directory.
 
     Args:
-        root (object): Directory of the directory.
+        root (object): Path to the directory.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -24,10 +25,14 @@ class DirDataset(PathDataset):
 
     """
 
-    def __init__(self, **kwargs):
-        super(DirDataset, self).__init__(**kwargs)
-        if not self.root.is_dir():
-            raise ValueError(f"{self.root} is not a directory.")
+    @staticmethod
+    def valid(root):
+        """Determine if root is a valid directory.
+
+        """
+        path_exists = super(DirDataset, DirDataset).valid(root)
+        valid_dir = root.is_dir()
+        return path_exists and valid_dir
 
 
 class DatasetArrayFolder(DirDataset):
@@ -35,7 +40,7 @@ class DatasetArrayFolder(DirDataset):
     arranged in the following way: ::
 
         root/samples.npy: each row is a sample
-        root/targets.npy: each row is a label
+        root/targets.npy: each row is a target
 
     where both samples and targets can be arrays.
 
@@ -51,6 +56,16 @@ class DatasetArrayFolder(DirDataset):
         targets (list): List of targets in the dataset.
 
     """
+
+    @staticmethod
+    def valid(root):
+        """Determine if root is a valid array folder.
+
+        """
+        valid_dir = super(DatasetArrayFolder, DatasetArrayFolder).valid(root)
+        has_samples = (root / 'samples.npy').exists()
+        has_targets = (root / 'targets.npy').exists()
+        return  valid_dir and has_samples and has_targets
 
     def build_dataset(self):
         """Returns samples and targets.
@@ -109,8 +124,9 @@ class DatasetFolder(DirDataset):
             return len(self.files)
 
     def __init__(self, loader, **kwargs):
+        # TO-DO: check if root directory is empty
         self.loader = loader
-        super(DatasetFolder, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def build_dataset(self):
         """Return samples and targets.
@@ -121,4 +137,3 @@ class DatasetFolder(DirDataset):
         samples = self.FilesLoader(files, self.loader)
 
         return samples, labels
-
