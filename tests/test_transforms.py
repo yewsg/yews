@@ -56,6 +56,7 @@ class TestToTensor:
         tensor = torch.zeros(3, 10,dtype=torch.float)
         assert torch.allclose(F._to_tensor(wav), tensor)
 
+
 class TestBaseTransform:
 
     def test_raise_call_notimplementederror(self):
@@ -66,6 +67,7 @@ class TestBaseTransform:
     def test_repr(self):
         t = transforms.BaseTransform()
         assert type(t.__repr__()) is str
+
 
 class TestMandatoryMethods:
 

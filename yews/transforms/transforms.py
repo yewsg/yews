@@ -1,12 +1,10 @@
 from .base import BaseTransform
 from . import functional as F
-from scipy.special import expit
 
 __all__ = [
     "ToTensor",
     "ToInt",
     "ZeroMean",
-    "SoftClip",
     "CutWaveform",
 ]
 
@@ -37,18 +35,6 @@ class ToInt(BaseTransform):
 
     def __call__(self, label):
         return self.lookup[label]
-
-
-class SoftClip(BaseTransform):
-    """Soft clip input to compress large amplitude signals.
-
-    """
-
-    def __init__(self, scale=1):
-        self.scale = scale
-
-    def __call__(self, wav):
-        return expit(wav * self.scale)
 
 
 class ZeroMean(BaseTransform):
