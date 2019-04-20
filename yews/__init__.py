@@ -1,8 +1,5 @@
-from yews.__about__ import (
-    __title__,
-    __version__,
-    __summary__,
-)
+import pkg_resources
+__version__ = pkg_resources.get_distribution('pip')
 
 from yews import datasets
 from yews import transforms
