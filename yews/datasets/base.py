@@ -1,5 +1,6 @@
-from torch.utils import data
 from pathlib import Path
+
+from torch.utils import data
 
 
 def is_dataset(obj):
@@ -119,9 +120,23 @@ class PathDataset(BaseDataset):
 
     """
 
-    def __init__(self, **kwargs):
-        super(PathDataset, self).__init__(**kwargs)
-        self.root = Path(self.root).resolve()
-        if not self.root.exists():
-            raise ValueError(f"{self.root} does not exists.")
+    def __init__(self, root, **kwargs):
+        root = Path(root).resolve()
+        if self.valid(root):
+            super().__init__(root, **kwargs)
+        else:
+            self.handle_invalid(root)
 
+    @staticmethod
+    def valid(root):
+        """Determine if the root path is valid.
+
+        Other subclasses should overload this method if valid paths are defined
+        differently.
+
+        """
+
+        return root.exists()
+
+    def handle_invalid(self, root):
+        raise ValueError(f"{root} is not valid.")
