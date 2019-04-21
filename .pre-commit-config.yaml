@@ -15,6 +15,7 @@ repos:
     -   id: debug-statements
     -   id: mixed-line-ending
     -   id: name-tests-test
+        args: [--django]
     -   id: sort-simple-yaml
     -   id: trailing-whitespace
 
