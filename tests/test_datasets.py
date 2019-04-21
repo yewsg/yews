@@ -8,6 +8,7 @@ import yews.transforms as transforms
 
 root_dir = Path('tests/assets').resolve()
 
+@pytest.mark.smoke
 def test_is_dataset():
     assert not datasets.is_dataset(0)
     assert datasets.is_dataset([])
@@ -25,6 +26,7 @@ class DummpyDatasetlike(object):
     def __len__(self):
         return self.size
 
+@pytest.mark.smoke
 class TestMandatoryMethods:
 
     def test_call_method(self):
@@ -35,6 +37,7 @@ class TestMandatoryMethods:
         assert all([hasattr(getattr(datasets, t), '__len__') for t in
                     datasets.__all__])
 
+@pytest.mark.smoke
 class TestBaseDataset:
 
     class DummyBaseDataset(datasets.BaseDataset):
@@ -106,6 +109,7 @@ class TestBaseDataset:
         assert type(dset.__repr__()) is str
 
 
+@pytest.mark.smoke
 class TestPathDataset:
 
     class DummyPathDataset(datasets.PathDataset):
