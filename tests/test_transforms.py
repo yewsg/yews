@@ -1,9 +1,9 @@
+import numpy as np
 import pytest
+import torch
+
 import yews.transforms as transforms
 import yews.transforms.functional as F
-
-import torch
-import numpy as np
 
 
 class DummpyBaseTransform(transforms.BaseTransform):
@@ -57,6 +57,7 @@ class TestToTensor:
         assert torch.allclose(F._to_tensor(wav), tensor)
 
 
+@pytest.mark.smoke
 class TestBaseTransform:
 
     def test_raise_call_notimplementederror(self):
@@ -69,6 +70,7 @@ class TestBaseTransform:
         assert type(t.__repr__()) is str
 
 
+@pytest.mark.smoke
 class TestMandatoryMethods:
 
     def test_call_method(self):
@@ -80,6 +82,7 @@ class TestMandatoryMethods:
                     transforms.transforms.__all__])
 
 
+@pytest.mark.smoke
 class TestComposeTransform:
 
     def test_repr(self):
@@ -120,13 +123,9 @@ class TestTransformCorrectness:
         assert np.allclose(transforms.SoftClip()(wav),
                            np.array([0.26894142, 0.37754067, 0.5, 0.62245933, 0.73105858]))
 
-
-class TestToInt:
-
     def test_lookup_table(self):
         with pytest.raises(ValueError):
             transforms.ToInt(lookup=[])
         with pytest.raises(ValueError):
             transforms.ToInt(lookup={'a': '0'})
         assert transforms.ToInt(lookup={'a': 0})('a') == 0
-
