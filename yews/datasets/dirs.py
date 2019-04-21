@@ -33,6 +33,9 @@ class DirDataset(PathDataset):
         valid_dir = self.root.is_dir()
         return path_exists and valid_dir
 
+    def handle_invalid(self):
+        raise ValueError(f"{self.root} is not a valid directory.")
+
 
 class DatasetArrayFolder(DirDataset):
     """A generic data loader for a folder of ``.npy`` files where samples are
@@ -64,6 +67,9 @@ class DatasetArrayFolder(DirDataset):
         has_samples = (self.root / 'samples.npy').exists()
         has_targets = (self.root / 'targets.npy').exists()
         return  valid_dir and has_samples and has_targets
+
+    def handle_invalid(self):
+        raise ValueError(f"{self.root} is not a valid array folder. Requires samples.npy and targets.npy.")
 
     def build_dataset(self):
         """Returns samples and targets.
