@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import numpy as np
 
 from .base import PathDataset
@@ -13,7 +14,7 @@ class FileDataset(PathDataset):
     """An abstract class representing a Dataset in a file.
 
     Args:
-        root (object): File of the file.
+        path (object): File of the file.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -25,10 +26,11 @@ class FileDataset(PathDataset):
 
     """
 
-    def __init__(self, **kwargs):
-        super(FileDataset, self).__init__(**kwargs)
-        if not self.root.is_file():
-            raise ValueError(f"{self.root} is not a file.")
+    def is_valid(self):
+        return self.root.is_file()
+
+    def handle_invalid(self):
+        raise ValueError(f"{self.root} is not a file.")
 
 
 class DatasetArray(FileDataset):
@@ -44,7 +46,7 @@ class DatasetArray(FileDataset):
     where both samples and targets can be arrays.
 
     Args:
-        root (object): Path to the ``.npy`` file.
+        path (object): Path to the ``.npy`` file.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -62,4 +64,3 @@ class DatasetArray(FileDataset):
         """
         data = np.load(self.root)
         return data[:, 0], data[:, 1]
-

@@ -37,7 +37,7 @@ class BaseDataset(data.Dataset):
     def __init__(self, root=None, sample_transform=None, target_transform=None):
         self.root = root
 
-        if self.root is not None:
+        if self.is_valid():
             self.samples, self.targets = self.build_dataset()
             # verify self.samples and self.targets are dataset-like object
             if not is_dataset(self.samples):
@@ -50,10 +50,16 @@ class BaseDataset(data.Dataset):
             else:
                 raise ValueError("Samples and targets have different lengths.")
         else:
-            self.size = 0
+            self.handle_invalid()
 
         self.sample_transform = sample_transform
         self.target_transform = target_transform
+
+    def is_valid(self):
+        return self.root is not None
+
+    def handle_invalid(self):
+        self.size = 0
 
     def build_dataset(self):
         """Method to construct ``samples`` and ``targets`` from ``self.root``.
@@ -108,7 +114,7 @@ class PathDataset(BaseDataset):
     """An abstract class representing a Dataset defined by a Path.
 
     Args:
-        root (object): Path to the dataset.
+        path (object): Path to the dataset.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -120,15 +126,11 @@ class PathDataset(BaseDataset):
 
     """
 
-    def __init__(self, root, **kwargs):
-        root = Path(root).resolve()
-        if self.valid(root):
-            super().__init__(root, **kwargs)
-        else:
-            self.handle_invalid(root)
+    def __init__(self, path, **kwargs):
+        path = Path(path).resolve()    # make a Path object regardless of existence
+        super().__init__(root=path, **kwargs)
 
-    @staticmethod
-    def valid(root):
+    def is_valid(self):
         """Determine if the root path is valid.
 
         Other subclasses should overload this method if valid paths are defined
@@ -136,7 +138,44 @@ class PathDataset(BaseDataset):
 
         """
 
-        return root.exists()
+        return self.root.exists()
 
-    def handle_invalid(self, root):
-        raise ValueError(f"{root} is not valid.")
+    def handle_invalid(self, **kwargs):
+        raise ValueError(f"{self.root} is not valid.")
+
+
+class UrlDataset(BaseDataset):
+    """An abstract class representing a Dataset defined by a URL.
+
+    Args:
+        url (object): URL to the dataset.
+        sample_transform (callable, optional): A function/transform that takes
+            a sample and returns a transformed version.
+        target_transform (callable, optional): A function/transform that takes
+            a target and transform it.
+
+    Attributes:
+        samples (list): List of samples in the dataset.
+        targets (list): List of targets in teh dataset.
+
+    """
+
+
+    def __init__(self, url, **kwargs):
+
+        url = request.Request(url)
+        super().__init__(root=url, **kwargs)
+
+    def is_valid(self):
+        """Determine if the root url is valid.
+
+        Other subclasses shoudl overload this method if valie urls are defined
+        differently.
+
+        """
+
+        self.code = request.urlopen(self.root).getcode()
+        return self.code == 200
+
+    def handle_invalid(self, **kwargs):
+        raise ValueError(f"{self.root} is not valid with code {self.code}.")

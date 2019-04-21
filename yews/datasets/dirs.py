@@ -13,7 +13,7 @@ class DirDataset(PathDataset):
     """An abstract class representing a Dataset in a directory.
 
     Args:
-        root (object): Path to the directory.
+        path (object): Path to the directory.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -25,13 +25,12 @@ class DirDataset(PathDataset):
 
     """
 
-    @staticmethod
-    def valid(root):
+    def is_valid(self):
         """Determine if root is a valid directory.
 
         """
-        path_exists = super(DirDataset, DirDataset).valid(root)
-        valid_dir = root.is_dir()
+        path_exists = super().is_valid()
+        valid_dir = self.root.is_dir()
         return path_exists and valid_dir
 
 
@@ -45,7 +44,7 @@ class DatasetArrayFolder(DirDataset):
     where both samples and targets can be arrays.
 
     Args:
-        root (object): Path to the dataset folder.
+        path (object): Path to the dataset folder.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.
         target_transform (callable, optional): A function/transform that takes
@@ -57,14 +56,13 @@ class DatasetArrayFolder(DirDataset):
 
     """
 
-    @staticmethod
-    def valid(root):
+    def is_valid(self):
         """Determine if root is a valid array folder.
 
         """
-        valid_dir = super(DatasetArrayFolder, DatasetArrayFolder).valid(root)
-        has_samples = (root / 'samples.npy').exists()
-        has_targets = (root / 'targets.npy').exists()
+        valid_dir = super().is_valid()
+        has_samples = (self.root / 'samples.npy').exists()
+        has_targets = (self.root / 'targets.npy').exists()
         return  valid_dir and has_samples and has_targets
 
     def build_dataset(self):
@@ -90,7 +88,7 @@ class DatasetFolder(DirDataset):
         root/.../blass_y.jlk2
 
     Args:
-        root (path): Path to the dataset.
+        path (path): Path to the dataset.
         loader (callable): Function that load one sample from a file.
         sample_transform (callable, optional): A function/transform that takes
             a sample and returns a transformed version.

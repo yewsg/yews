@@ -1,9 +1,10 @@
+from pathlib import Path
+
+import numpy as np
 import pytest
+
 import yews.datasets as datasets
 import yews.transforms as transforms
-
-from pathlib import Path
-import numpy as np
 
 root_dir = Path('tests/assets').resolve()
 
@@ -114,12 +115,12 @@ class TestPathDataset:
 
     def test_root_is_path(self):
         # check existing path
-        dset = self.DummyPathDataset(root='.')
+        dset = self.DummyPathDataset(path='.')
         # check path resolved
         assert dset.root == Path(dset.root).resolve()
         # check non-existing path
         with pytest.raises(ValueError):
-            dset = self.DummyPathDataset(root='abc')
+            dset = self.DummyPathDataset(path='abc')
 
 
 class TestDirDataset:
@@ -129,23 +130,27 @@ class TestDirDataset:
         def build_dataset(self):
             return DummpyDatasetlike(), DummpyDatasetlike()
 
-    def test_dir_check(self):
-        dset = self.DummyDirDataset(root='.')
+    def test_invalid_root(self):
+        dset = self.DummyDirDataset(path='.')
         with pytest.raises(ValueError):
-            dset = self.DummyDirDataset(root='setup.py')
+            dset = self.DummyDirDataset(path='setup.py')
 
 
 class TestDatasetArrayFolder:
 
     def test_loading_npy(self):
-        dset = datasets.DatasetArrayFolder(root=root_dir / 'array_folder')
+        dset = datasets.DatasetArrayFolder(path=root_dir / 'array_folder')
         assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
+
+    def test_invalid_root(self):
+        with pytest.raises(ValueError):
+            dset = datasets.DatasetArrayFolder(path=root_dir)
 
 
 class TestDatasetFolder:
 
     def test_loading_folder(self):
-        dset = datasets.DatasetFolder(root=root_dir/ 'folder', loader=np.load)
+        dset = datasets.DatasetFolder(path=root_dir/ 'folder', loader=np.load)
         assert all([dset[0][0].shape == (3, 100), type(dset[0][1]) is str])
 
 
@@ -157,14 +162,13 @@ class TestFileDataset:
             return DummpyDatasetlike(), DummpyDatasetlike()
 
     def test_file_check(self):
-        dset = self.DummpyFileDataset(root='setup.py')
+        dset = self.DummpyFileDataset(path='setup.py')
         with pytest.raises(ValueError):
-            dset = self.DummpyFileDataset(root='.')
+            dset = self.DummpyFileDataset(path='.')
 
 
 class TestDatasetArray:
 
     def test_loading_array(self):
-        dset = datasets.DatasetArray(root=root_dir / 'array/data.npy')
+        dset = datasets.DatasetArray(path=root_dir / 'array/data.npy')
         assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
-
