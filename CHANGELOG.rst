@@ -18,6 +18,7 @@ Version 0.0.4, current
 - add CHANGELOOG.rst
 - add ``is_valid()`` and ``handle_invalid`` to ``yews.datasets.BaseDatasets``
 - add ``yews.datasets.utils`` to handle urls and bz2 files.
+- add ``yews.datasets.wenchuan``
 
 Version 0.0.3, 2019-04-18
 -------------------------
