@@ -28,6 +28,7 @@ class TestUrlUtils():
         assert utils.sizeof_fmt(1e22) == '8.5ZB'
         assert utils.sizeof_fmt(1e25) == '8.3YB'
 
+    @pytest.mark.internet
     def test_URL(self):
         # good url
         url = utils.URL('https://www.dropbox.com/s/qxf6ki0eruv66w5/test.txt?dl=1')

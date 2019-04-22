@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import numpy as np
@@ -13,6 +14,11 @@ def test_is_dataset():
     assert not datasets.is_dataset(0)
     assert datasets.is_dataset([])
 
+def rm(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
 
 class DummpyDatasetlike(object):
 
@@ -176,3 +182,33 @@ class TestDatasetArray:
     def test_loading_array(self):
         dset = datasets.DatasetArray(path=root_dir / 'array/data.npy')
         assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
+
+
+class TestWenchuan:
+
+    def test_download_flag(self):
+        with pytest.raises(ValueError):
+            datasets.Wenchuan(path='.', download=None)
+        with pytest.raises(ValueError):
+            datasets.Wenchuan(path='.')
+
+    @pytest.mark.internet
+    def test_wenchuan_download(self):
+        # prepare root folder
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('wenchuan.tar.bz2')
+        # test download and extract
+        datasets.Wenchuan(path='.', download=True)
+        # test extract only
+        rm('samples.npy')
+        rm('targets.npy')
+        datasets.Wenchuan(path='.', download=True)
+        # test ready dataset
+        dset = datasets.Wenchuan(path='.', download=True)
+        assert dset[0][1] == 1
+        assert len(dset) == 60276
+        # clean root folder
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('wenchuan.tar.bz2')
