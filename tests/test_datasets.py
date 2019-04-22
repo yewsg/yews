@@ -151,6 +151,11 @@ class TestDatasetArrayFolder:
     def test_loading_npy(self):
         dset = datasets.DatasetArrayFolder(path=root_dir / 'array_folder')
         assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
+        default_memory_limit = datasets.utils.get_memory_limit()
+        datasets.utils.set_memory_limit(1)
+        dset = datasets.DatasetArrayFolder(path=root_dir / 'array_folder')
+        assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
+        datasets.utils.set_memory_limit(default_memory_limit)
 
     def test_invalid_root(self):
         with pytest.raises(ValueError):

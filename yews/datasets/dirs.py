@@ -1,5 +1,6 @@
 import numpy as np
 
+from . import utils
 from .base import PathDataset
 
 __all__ = [
@@ -75,8 +76,21 @@ class DatasetArrayFolder(DirDataset):
         """Returns samples and targets.
 
         """
-        samples = np.load(self.root / 'samples.npy', mmap_mode='r')
-        targets = np.load(self.root / 'targets.npy', mmap_mode='r')
+        samples_path = self.root / 'samples.npy'
+        targets_path = self.root / 'targets.npy'
+        print(f"Current memory limit is {utils.sizeof_fmt(utils.get_memory_limit())}")
+        if utils.over_memory_limit(samples_path):
+            print(f"Loading memory map of {samples_path} into memory")
+            samples = np.load(samples_path, mmap_mode='r')
+        else:
+            print(f"Loading {samples_path} directly into memory")
+            samples = np.load(samples_path)
+        if utils.over_memory_limit(targets_path):
+            print(f"Loading memory map of {targets_path} into memory")
+            targets = np.load(targets_path, mmap_mode='r')
+        else:
+            print(f"Loading {targets_path} directly into memory")
+            targets = np.load(targets_path)
 
         return samples, targets
 
