@@ -5,11 +5,13 @@ from urllib import request
 
 from torch.utils.model_zoo import tqdm
 
+
 ################################################################################
 #
 #                           Utilities for URLs
 #
 ################################################################################
+
 def test_url(url):
     try:
         with request.urlopen(url) as req:

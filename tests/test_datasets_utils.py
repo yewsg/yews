@@ -14,7 +14,6 @@ class TestBz2Utils():
         os.remove('test.txt')
 
 
-
 class TestUrlUtils():
 
     def test_sizeof_fmt(self):

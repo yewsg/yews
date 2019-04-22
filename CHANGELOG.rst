@@ -16,6 +16,8 @@ Version 0.0.4, current
 - use Scipy as an extra for special transforms
 - add pre-commit for automaticall commit checking
 - add CHANGELOOG.rst
+- add ``is_valid()`` and ``handle_invalid`` to ``yews.datasets.BaseDatasets``
+- add ``yews.datasets.utils`` to handle urls and bz2 files.
 
 Version 0.0.3, 2019-04-18
 -------------------------
@@ -47,4 +49,3 @@ Version 0.0.1, 2019-04-10
 - add ``yews.models`` for CPIC models
 - add an example for Wenchuan aftershock dataset
 - add release in pypi
-
