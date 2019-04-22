@@ -1,10 +1,23 @@
 import math
+import os
 import tarfile
 from pathlib import Path
 from urllib import request
 
 from torch.utils.model_zoo import tqdm
 
+# dynamically change this limit by Python code.
+MEMORY_LIMIT =  2 * 1024 ** 3        # 2 GB limit
+
+def over_memory_limit(path):
+    return os.stat(path).st_size > MEMORY_LIMIT
+
+def set_memory_limit(limit):
+    global MEMORY_LIMIT
+    MEMORY_LIMIT = limit
+
+def get_memory_limit():
+    return MEMORY_LIMIT
 
 ################################################################################
 #

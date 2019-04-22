@@ -5,6 +5,18 @@ import pytest
 
 from yews.datasets import utils
 
+class TestMemoeryLimit():
+
+    def test_default_memory_limit(self):
+        assert utils.get_memory_limit() == 2 * 1024 ** 3
+
+    def test_set_memory_limit(self):
+        default_memory_limit = utils.get_memory_limit()
+        utils.set_memory_limit(1)
+        assert utils.get_memory_limit() == 1
+        utils.set_memory_limit(default_memory_limit)
+
+
 class TestBz2Utils():
 
     def test_bz2_extraction(self):
