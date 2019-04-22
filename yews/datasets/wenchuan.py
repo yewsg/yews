@@ -6,8 +6,8 @@ class Wenchuan(DatasetArrayFolder):
     """`Wenchuan <https://arxiv.org/abs/1901.06396>`_ Dataset.
 
     Args:
-        path (str): Root directory where ``wenchuan/processed/data.npy`
-            and ``wenchuan/processed/labels.npy`` exists.
+        path (str): Root directory where ``wenchuan/samples.npy`
+            and ``wenchuan/targets.npy`` exists.
         download (bool, optional): If True, downloads the dataset from internet
             and puts it in root directory. If dataset is already downloaded, it
             will not be downloaded again.
