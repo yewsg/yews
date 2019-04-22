@@ -20,14 +20,14 @@ class Wenchuan(DatasetArrayFolder):
 
     url = URL('https://www.dropbox.com/s/enr75zt2ukx118r/wenchuan.tar.bz2?dl=1')
 
-    def __init__(self, path, download=False, **kwargs):
+    def __init__(self, download=False, **kwargs):
         # verify download flag
-        if type(download) is not bool:
+        if not isinstance(download, bool):
             raise ValueError("`download` needs to be True or False.")
 
         # verify if dataset is ready
         try:
-            super().__init__(path=path, **kwargs)
+            super().__init__(**kwargs)
         except ValueError:
             if download:
                 # download compressed file from source if not exists
@@ -38,7 +38,7 @@ class Wenchuan(DatasetArrayFolder):
                 print("Extracting dataset ...")
                 extract_bz2(fpath, self.root)
                 # try initiate DatasetArrayFolder again
-                super().__init__(path=path, **kwargs)
+                super().__init__(**kwargs)
             else:
                 raise ValueError(f"{self.root} contains no valid dataset. "
                                  f"Consider set `download=True` and remove broken bz2 file.")
