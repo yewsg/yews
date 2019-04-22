@@ -1,4 +1,4 @@
-.. image:: https://raw.githubusercontent.com/lijunzh/yews-docs/master/source/_static/img/logo/yews_logo.svg
+.. image:: https://raw.githubusercontent.com/lijunzh/yews-docs/master/source/_static/img/logo/yews_logo.gif
    :scale: 50 %
    :alt: Yews Logo
    :align: center
