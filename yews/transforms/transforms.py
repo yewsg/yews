@@ -1,5 +1,5 @@
-from .base import BaseTransform
 from . import functional as F
+from .base import BaseTransform
 
 __all__ = [
     "ToTensor",
@@ -26,11 +26,11 @@ class ToInt(BaseTransform):
     """
 
     def __init__(self, lookup):
-        if type(lookup) is dict:
+        if isinstance(lookup, dict):
             self.lookup = lookup
         else:
             raise ValueError("Lookup table needs to be a dictionary.")
-        if any([type(val) is not int for val in self.lookup.values()]):
+        if any([not isinstance(val, int) for val in self.lookup.values()]):
             raise ValueError("Values of the lookup table need to be Int.")
 
     def __call__(self, label):
@@ -59,4 +59,3 @@ class CutWaveform(BaseTransform):
 
     def __call__(self, wav):
         return wav[:, self.start:self.end]
-

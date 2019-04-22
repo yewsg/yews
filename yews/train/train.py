@@ -1,5 +1,3 @@
-import numpy as np
-import torch
 from torch import optim
 
 from . import functional as F
@@ -118,4 +116,3 @@ class Trainer(object):
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
         print(f"Training fisihed. Best accuracy is {self.best_acc}")
-

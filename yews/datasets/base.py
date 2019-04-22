@@ -9,6 +9,11 @@ def is_dataset(obj):
     """
     return getattr(obj, '__getitem__', None) and getattr(obj, '__len__', None)
 
+def _format_transform_repr(transform, head):
+    lines = transform.__repr__().splitlines()
+    return (["{}{}".format(head, lines[0])] +
+            ["{}{}".format(" " * len(head), line) for line in lines[1:]])
+
 
 class BaseDataset(data.Dataset):
     """An abstract class representing a Dataset.
@@ -93,18 +98,13 @@ class BaseDataset(data.Dataset):
             body.append("Root location: {}".format(self.root))
         body += self.extra_repr().splitlines()
         if self.sample_transform is not None:
-            body += self._format_transform_repr(self.sample_transform,
-                                                "Sample transforms: ")
+            body += _format_transform_repr(self.sample_transform,
+                                           "Sample transforms: ")
         if self.target_transform is not None:
-            body += self._format_transform_repr(self.target_transform,
-                                                "Target transforms: ")
+            body += _format_transform_repr(self.target_transform,
+                                           "Target transforms: ")
         lines = [head] + [" " * self._repr_indent + line for line in body]
         return '\n'.join(lines)
-
-    def _format_transform_repr(self, transform, head):
-        lines = transform.__repr__().splitlines()
-        return (["{}{}".format(head, lines[0])] +
-                ["{}{}".format(" " * len(head), line) for line in lines[1:]])
 
     def extra_repr(self):
         return ""
@@ -140,5 +140,5 @@ class PathDataset(BaseDataset):
 
         return self.root.exists()
 
-    def handle_invalid(self, **kwargs):
+    def handle_invalid(self):
         raise ValueError(f"{self.root} is not a valid path.")

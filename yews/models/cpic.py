@@ -1,7 +1,5 @@
 # TO-DO: need to add model_zoo utility and pretrained models.
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 __all__ = [
     'Cpic',

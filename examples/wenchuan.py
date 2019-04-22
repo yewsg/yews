@@ -1,12 +1,11 @@
-import numpy as np
-
 from torch.nn import CrossEntropyLoss
-from torch.utils.data import random_split, DataLoader
+from torch.utils.data import DataLoader
+from torch.utils.data import random_split
 
 import yews.transforms as transforms
 from yews.datasets import DatasetArray
-from yews.train import Trainer
 from yews.models import Cpic
+from yews.train import Trainer
 
 
 if __name__ == '__main__':

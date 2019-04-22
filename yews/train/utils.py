@@ -1,5 +1,3 @@
-import numpy as np
-
 __all__ = [
     "MovingAverageMeter",
     "ExponentialMovingAverageMeter",
@@ -19,10 +17,10 @@ class MovingAverageMeter(object):
         self.avg = None
         self.count = 0
 
-    def reset(self, *args):
+    def reset(self):
         raise NotImplementedError
 
-    def update(self, *args):
+    def update(self):
         raise NotImplementedError
 
 
@@ -73,4 +71,3 @@ class CumulativeMovingAverageMeter(MovingAverageMeter):
 
         self.val = val
         self.count += n
-
