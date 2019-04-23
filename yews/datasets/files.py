@@ -60,5 +60,5 @@ class DatasetArray(FileDataset):
         """Returns samples and targets.
 
         """
-        data = np.load(self.root)
+        data = np.load(self.root, allow_pickle=True)
         return data[:, 0], data[:, 1]
