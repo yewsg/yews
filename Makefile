@@ -24,4 +24,4 @@ pypi:
 
 clean:
 	find . | grep -E "(__pycache__|\.pyc|\.pyo)" | xargs rm -rf
-	rm -rf build dist yews.egg-info htmlcov *.npy *.tar.bz2
+	rm -rf build dist .eggs yews.egg-info htmlcov *.npy *.tar.bz2
