@@ -8,7 +8,14 @@ Development versions
 Experimental versions
 =====================
 
-Version 0.0.4, current
+Version 0.0.5, Under Development
+--------------------------------
+
+- fix setup.cfg bug (tests_require instead of test_require)
+- sync meta.yaml and setup.cfg for consistent build
+- documents improvements
+
+Version 0.0.4, 2019-04-18
 -------------------------
 
 - single source installation metadata in setup.cfg
