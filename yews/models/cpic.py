@@ -1,145 +1,125 @@
 # TO-DO: need to add model_zoo utility and pretrained models.
 import torch.nn as nn
+from torch.utils import model_zoo
 
 __all__ = [
-    'Cpic',
-    'cpic64',
+    'CpicOriginal',
+    'cpic_original',
 ]
 
 model_urls = {
-    'cpic64': 'https://lijunzhu.info'
+    'cpic_original': 'https://lijunzhu.info'
 }
 
-class Cpic(nn.Module):
+class CpicOriginal(nn.Module):
 
     def __init__(self):
-        super(Cpic, self).__init__()
-        # 2000 -> 1000
+        super().__init__()
+        # 2000 -> 1024
         self.layer1 = nn.Sequential(
-            nn.Conv1d(3, 16, kernel_size=5, stride=1, padding=26, bias=False),
+            nn.Conv1d(3, 16, kernel_size=5, stride=1, padding=26, bias=True),
             nn.BatchNorm1d(16),
             nn.ReLU(),
             # nn.Sigmoid(),
             nn.MaxPool1d(2)
         )
 
-        # 1000 -> 500
+        # 1024 -> 512
         self.layer2 = nn.Sequential(
-            nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2, bias=False),
+            nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2, bias=True),
             nn.BatchNorm1d(32),
             nn.ReLU(),
             # nn.Sigmoid(),
             nn.MaxPool1d(2)
         )
 
-        # 500 -> 250
+        # 512 -> 256
         self.layer3 = nn.Sequential(
-            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 250 -> 125
+        # 256 -> 128
         self.layer4 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 126 -> 63
+        # 128 -> 64
         self.layer5 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 63 -> 31
+        # 64 -> 32
         self.layer6 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 31 -> 15
+        # 32 -> 16
         self.layer7 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 15 -> 7
+        # 16 -> 8
         self.layer8 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 7 -> 3
+        # 8 -> 4
         self.layer9 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 3 -> 1
+        # 4 -> 2
         self.layer10 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        # 3 -> 2
+        # 2 -> 1
         self.layer11 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
-
-        # # 3 -> 2
-        # self.layer11 = nn.Sequential(
-        #     nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-        #     nn.BatchNorm1d(64),
-        #     nn.ReLU(),
-        #     nn.MaxPool1d(2)
-        # )
 
         self.fc = nn.Linear(64 * 1, 3)
 
     def forward(self, x):
-        # print(x.size())
         out = self.layer1(x)
-        # print(out.size())
         out = self.layer2(out)
-        # print(out.size())
         out = self.layer3(out)
-        # print(out.size())
         out = self.layer4(out)
-        # print(out.size())
         out = self.layer5(out)
-        # print(out.size())
         out = self.layer6(out)
-        # print(out.size())
         out = self.layer7(out)
-        # print(out.size())
         out = self.layer8(out)
-        # print(out.size())
         out = self.layer9(out)
-        # print(out.size())
         out = self.layer10(out)
-        # print(out.size())
         out = self.layer11(out)
-        # print(out.size())
         out = out.view(out.size(0), -1)
-        # print(out.size())
         out = self.fc(out)
 
         return out
@@ -153,5 +133,5 @@ def cpic64(pretrained=False, **kwargs):
     """
     model = Cpic(**kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['cpic64']))
+        model.load_state_dict(model_zoo.load_url(model_urls['cpic_original']))
     return model
