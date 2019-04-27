@@ -1,9 +1,22 @@
 import os
 from pathlib import Path
 
+import obspy
 import pytest
 
 from yews.datasets import utils
+
+
+class TestObspyIO():
+
+    def TestStream2Array(self):
+        st = obspy.read()
+        assert utils.stream2array(st).shape == (3, 3000)
+
+    def TestReadFrameObspy(self):
+        path = 'tests/assets/sac/*.sac'
+        assert utils.read_frame_obspy(path).shape == (3, 3000)
+
 
 class TestMemoeryLimit():
 
@@ -15,6 +28,25 @@ class TestMemoeryLimit():
         utils.set_memory_limit(1)
         assert utils.get_memory_limit() == 1
         utils.set_memory_limit(default_memory_limit)
+
+
+class TestLoadNpy():
+
+    npy_file = 'tests/assets/array.npy'
+    default_memory_limit = utils.get_memory_limit()
+
+    def test_default_memory_limit(self):
+        utils.load_npy(self.npy_file)
+        assert utils.get_memory_limit() == self.default_memory_limit
+        memory_limit = utils.get_memory_limit()
+        utils.set_memory_limit(1)
+        utils.load_npy(self.npy_file)
+        utils.set_memory_limit(memory_limit)
+
+    def test_custom_memory_limit(self):
+        assert utils.get_memory_limit() == self.default_memory_limit
+        utils.load_npy(self.npy_file, memory_limit=1)
+        assert utils.get_memory_limit() == self.default_memory_limit
 
 
 class TestBz2Utils():
