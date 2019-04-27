@@ -257,7 +257,7 @@ class TestWenchuanPackage:
         rm('samples.npy')
         rm('targets.npy')
         rm('wenchuan.tar.bz2')
-        datasets.Mariana(path='.', download=True)
+        datasets.Wenchuan(path='.', download=True)
         rm('samples.npy')
         rm('targets.npy')
         rm('wenchuan.tar.bz2')
