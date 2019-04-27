@@ -51,6 +51,7 @@ conda:
 conda-forge:
 
 .. code:: bash
+
    conda install -c conda-forge yews
 
 
