@@ -24,7 +24,8 @@ requirements:
     - pytest-runner
   run:
     - python >=3.6
-    - pytorch >=1.0.0
+    - numpy >=1.16
+    - pytorch >=1.0
 
 test:
   imports:
