@@ -76,20 +76,26 @@ Note:
    the GPU PyTorch by default. Please refer to
    https://pytorch.org/get-started/locally/ for details.
 
-#. ``Yews`` by itself is ``noarch``, which means it is pure Python and OS
+#. ``yews`` by itself is ``noarch``, which means it is pure Python and OS
    independent. Most inconsistenciews between OS's are primarily due to the
-   upstream difference (e.g. PyTorch, NumPy).
+   upstream difference (e.g. PyTorch and NumPy).
 
-#. ``SciPy`` is an optional dependence, which is installed by default in
-   Anaconda; however, ``Yews``'s core functionalities do not depend on
-   ``Scipy``. From 0.0.5 and above, ``conda`` and ``pip`` will not
-   automatically install ``SciPy``.
+#. ``obspy`` is an optional dependency, which is used for seismic waveform I/O;
+   however, ``yews``'s core functionalities do not depend on ``obspy``.
 
-#. You can install all ``Yews`` dependencies via ``pip``:
+#. You can install all ``yews`` optional dependencies via
+   ``pip install yews[all]``.
 
-.. code:: bash
+#. Below are the instructions to each optional dependencies to install them
+   separately in ``conda``.
 
-   pip install yews[all]
+   ==========  ======================================
+   Dependency  Instructions
+   ==========  ======================================
+   ``obspy``   ``conda install -c conda-forge obspy``
+   ``scipy``   ``conda install scipy``
+   ``tqdm``    ``conda install tqdm``
+   ==========  ======================================
 
 
 
