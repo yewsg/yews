@@ -250,7 +250,6 @@ class TestPackagedDataset:
         rm('dummy_packaged_dataset.tar.bz2')
 
 
-@pytest.mark.password
 class TestWenchuanPackage:
 
     @pytest.mark.internet
