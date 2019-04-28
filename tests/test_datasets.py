@@ -250,9 +250,10 @@ class TestPackagedDataset:
         rm('dummy_packaged_dataset.tar.bz2')
 
 
-class TestWenchuanPackage:
+class TestWenchuanDataset:
 
     @pytest.mark.internet
+    @pytest.mark.large_download
     def test_url(self):
         rm('samples.npy')
         rm('targets.npy')
@@ -263,10 +264,25 @@ class TestWenchuanPackage:
         rm('wenchuan.tar.bz2')
 
 
-@pytest.mark.password
-class TestMarianaPackage:
+class TestSCSNDataset:
 
     @pytest.mark.internet
+    @pytest.mark.large_download
+    def test_url(self):
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('scsn.tar.bz2')
+        datasets.SCSN(path='.', download=True)
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('scsn.tar.bz2')
+
+
+@pytest.mark.password
+class TestMarianaDataset:
+
+    @pytest.mark.internet
+    @pytest.mark.large_download
     def test_url(self):
         rm('samples.npy')
         rm('targets.npy')
