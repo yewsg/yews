@@ -44,7 +44,7 @@ install:
     cd -
 
 script:
-  - pytest -m "not password" --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests
+  - pytest -m "not password" -m "not large_download" --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests
 
 after_success:
   # Necessary to run coverage combine to rewrite paths from
