@@ -36,7 +36,7 @@ class PackagedDataset(DatasetArrayFolder):
                 if not fpath.is_file():
                     url.download(self.root)
                 # extract file under root directory
-                print("Extracting dataset ...")
+                print("Extracting dataset (this may minutes to hours) ...")
                 extract_bz2(fpath, self.root)
                 # try initiate DatasetArrayFolder again
                 super().__init__(**kwargs)
@@ -81,3 +81,22 @@ class Mariana(PackagedDataset):
     """
 
     url = 'https://www.dropbox.com/s/6wqjhvk6hkxnuis/mariana.tar.bz2?dl=1'
+
+
+class SCSN(PackagedDataset):
+    """`SCSN https://service.scedc.caltech.edu/ftp/ross_etal_2018_bssa/scsn_ps_2000_2017_shuf.hdf5`_ Dataset.
+
+    Args:
+        path (str): Root directory where ``scsn/samples.npy`
+            and ``scsn/targets.npy`` exists.
+        download (bool, optional): If True, downloads the dataset from internet
+            and puts it in root directory. If dataset is already downloaded, it
+            will not be downloaded again.
+        sample_transform (callable, optional): A function/transform that takes
+            a sample and returns a transformed version.
+        target_transform (callable, optional): A function/transform that takes
+            a target and transform it.
+
+    """
+
+    url = 'https://www.dropbox.com/s/8r9rv9hudn7jt1q/scsn.tar.bz2?dl=1'
