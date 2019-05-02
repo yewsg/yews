@@ -1,11 +1,19 @@
 from . import functional as F
 from .base import BaseTransform
 
+try:
+    from scipy.special import expit
+except ModuleNotFoundError:
+    # fake expit if scipy is not installed
+    import numpy as np
+    expit = lambda x: 1 / (1 + np.exp(-x))
+
 __all__ = [
     "ToTensor",
     "ToInt",
     "ZeroMean",
     "CutWaveform",
+    "SoftClip",
 ]
 
 class ToTensor(BaseTransform):
@@ -35,6 +43,19 @@ class ToInt(BaseTransform):
 
     def __call__(self, label):
         return self.lookup[label]
+
+
+class SoftClip(object):
+    """Soft clip input to compress large amplitude signals.
+
+    """
+
+    def __init__(self, scale=1):
+        super(SoftClip, self).__init__()
+        self.scale = scale
+
+    def __call__(self, wav):
+        return expit(wav * self.scale)
 
 
 class ZeroMean(BaseTransform):

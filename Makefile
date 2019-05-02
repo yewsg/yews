@@ -2,13 +2,12 @@
 
 .PHONY: clean test anaconda pypi build wait release
 
-release: test wait build wait
+release: test wait clean build wait
 	anaconda upload $(shell conda build . --output)
 	twine upload dist/* -r pypi
 
 test:
-	python setup.py test
-	coverage report
+	pytest -m "not password" --cov-config .coveragerc --cov yews tests
 
 wait:
 	sleep 10
@@ -24,4 +23,4 @@ pypi:
 
 clean:
 	find . | grep -E "(__pycache__|\.pyc|\.pyo)" | xargs rm -rf
-	rm -rf build dist .eggs yews.egg-info htmlcov *.npy *.tar.bz2
+	rm -rf build dist .eggs htmlcov *.npy *.tar.bz2 ._* .coverage .pytest_cache

@@ -2,27 +2,41 @@ from pathlib import Path
 
 from torch.utils import data
 
+from .utils import create_npy
+
+try:
+    from tqdm import tqdm
+except ModuleNotFoundError:
+    # fake tqdm if it's not installed
+    def tqdm(iterator):
+        for i, item in enumerate(iterator):
+            if i % 1000 == 0:
+                print(f"{i} / {len(iterator)}")
+            yield item
 
 def is_dataset(obj):
-    """Verfy if a object is a ``dataset-like`` object.
+    r"""Verfy if a object is ``dataset-like`` defined in
+    :class:`torch.utils.data.Dataset`.
+
+    Args:
+        obj: Object to be determined.
+
+    Returns:
+        bool: True for ``dataset-like`` object, false otherwise.
 
     """
-    return getattr(obj, '__getitem__', None) and getattr(obj, '__len__', None)
-
-def _format_transform_repr(transform, head):
-    lines = transform.__repr__().splitlines()
-    return (["{}{}".format(head, lines[0])] +
-            ["{}{}".format(" " * len(head), line) for line in lines[1:]])
+    return hasattr(obj, '__getitem__') and hasattr(obj, '__len__')
 
 
 class BaseDataset(data.Dataset):
-    """An abstract class representing a Dataset.
+    r"""An abstract class representing a Dataset.
 
     All other datasets should subclass it. All subclasses should override
     ``build_dataset`` which construct the dataset-like object from root.
 
-    A dataset-like object has both ``__len__`` and ``__getitem__`` implmented.
-    Typical dataset-like objects include python list and numpy ndarray.
+    Note:
+        A dataset-like object has both ``__len__`` and ``__getitem__``
+        impolemented.
 
     Args:
         root (object): Source of the dataset.
@@ -34,6 +48,7 @@ class BaseDataset(data.Dataset):
     Attributes:
         samples (dataset-like object): Dataset-like object for samples.
         targets (dataset-like object): Dataset-like object for targets.
+
 
     """
 
@@ -70,13 +85,47 @@ class BaseDataset(data.Dataset):
         """Method to construct ``samples`` and ``targets`` from ``self.root``.
 
         Returns:
-            samples (ndarray): List of samples.
-            labels (ndarray): List of labels.
+            Constructed dataset-like objects of samples and targets. They will
+            be stored in ``self.samples`` and ``self.targets`` by ``__init__``.
 
         """
         raise NotImplementedError
 
+    def export_dataset(self, path):
+        path = Path(path)
+        # get array shape
+        samples_shape = (self.__len__(), ) + self.__getitem__(0)[0].shape
+        targets_shape = (self.__len__(), ) + self.__getitem__(0)[1].shape
+        # get array dtype
+        samples_dtype = self.__getitem__(0)[0].dtype
+        targets_dtype = self.__getitem__(0)[1].dtype
+        # rseerve disk space
+        fs = create_npy(path / 'samples.npy', samples_shape, samples_dtype)
+        ft = create_npy(path / 'targets.npy', targets_shape, targets_dtype)
+
+        # populate memmap numpy array
+        for i in tqdm(range(self.__len__())):
+            # add one item in the dataset
+            fs[i] = self[i][0]
+            ft[i] = self[i][1]
+
+            # update disk files
+            fs.flush()
+            ft.flush()
+
+        del fs
+        del ft
+
     def __getitem__(self, index):
+        """Indexing the dataset.
+
+        Args:
+            index (int): Index.
+
+        Returns:
+            Tuple of (samples, targets) combination.
+
+        """
         sample = self.samples[index]
         target = self.targets[index]
 
@@ -98,13 +147,29 @@ class BaseDataset(data.Dataset):
             body.append("Root location: {}".format(self.root))
         body += self.extra_repr().splitlines()
         if self.sample_transform is not None:
-            body += _format_transform_repr(self.sample_transform,
-                                           "Sample transforms: ")
+            body += self._format_transform_repr(self.sample_transform,
+                                                "Sample transforms: ")
         if self.target_transform is not None:
-            body += _format_transform_repr(self.target_transform,
-                                           "Target transforms: ")
+            body += self._format_transform_repr(self.target_transform,
+                                                "Target transforms: ")
         lines = [head] + [" " * self._repr_indent + line for line in body]
         return '\n'.join(lines)
+
+    @staticmethod
+    def _format_transform_repr(transform, head):
+        """Format transform representation for ``BaseDataset``.
+
+        Args:
+            transform (transform-like): Transform to be formated
+            head (str): Formating string.
+
+        Returns:
+            str: Formated string.
+
+        """
+        lines = transform.__repr__().splitlines()
+        return (["{}{}".format(head, lines[0])] +
+                ["{}{}".format(" " * len(head), line) for line in lines[1:]])
 
     def extra_repr(self):
         return ""

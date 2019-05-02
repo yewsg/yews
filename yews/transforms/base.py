@@ -1,8 +1,24 @@
+def is_transform(obj):
+    """Verfy if a object is a ``transform-like`` object.
+
+    Args:
+        obj: Object to be determined.
+
+    Returns:
+        bool: True for ``transform-like`` object, false otherwise.
+
+    """
+    return hasattr(obj, '__call__')
+
 class BaseTransform(object):
     """An abstract class representing a Transform.
 
     All other transform should subclass it. All subclasses should override
     ``__call__`` which performs the transform.
+
+    Note:
+        A transform-like object has ``__call__`` implmented. Typical
+        transform-like objects include python functions and methods.
 
     """
 
