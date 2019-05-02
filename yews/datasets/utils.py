@@ -24,7 +24,7 @@ def stream2array(st):
 
     """
     if has_obspy:
-        return np.stack([tr.data for tr in st])
+        return np.stack([tr.data[:int(np.floor(len(tr.data) / 10) * 10)] for tr in st])
     else:
         raise ModuleNotFoundError("Consider installing ObsPy for seismic I/O.")
 
