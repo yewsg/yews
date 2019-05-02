@@ -2,7 +2,7 @@ import numpy as np
 import torch
 
 def _is_numpy_waveform(wav):
-    return isinstance(wav, np.ndarray) and (wav.ndim in {1, 2})
+    return isinstance(wav, np.ndarray)
 
 def _to_tensor(wav):
     """Convert a ``numpy.ndarray`` to tensor.
