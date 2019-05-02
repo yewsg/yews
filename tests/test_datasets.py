@@ -9,16 +9,12 @@ import yews.transforms as transforms
 
 root_dir = Path('tests/assets').resolve()
 
-@pytest.mark.smoke
-def test_is_dataset():
-    assert not datasets.is_dataset(0)
-    assert datasets.is_dataset([])
-
 def rm(path):
     try:
         os.remove(path)
     except OSError:
         pass
+
 
 class DummpyDatasetlike(object):
 
@@ -31,6 +27,13 @@ class DummpyDatasetlike(object):
 
     def __len__(self):
         return self.size
+
+
+@pytest.mark.smoke
+def test_is_dataset():
+    assert not datasets.is_dataset(0)
+    assert datasets.is_dataset([])
+
 
 @pytest.mark.smoke
 class TestMandatoryMethods:
@@ -73,6 +76,28 @@ class TestBaseDataset:
 
         def __call__(self, data):
             return "transformed"
+
+    class DummyNumericDataset(datasets.BaseDataset):
+
+        def build_dataset(self):
+            samples = np.ones((10, 3, 100))
+            targets = np.ones(10) * 2
+            return samples, targets
+
+
+    def test_export_dataset(self):
+        rm('samples.npy')
+        rm('targets.npy')
+        dset = self.DummyNumericDataset(root='.')
+        dset.export_dataset('.')
+        samples = np.load('samples.npy')
+        targets = np.load('targets.npy')
+        assert samples.shape == (10, 3, 100)
+        assert np.allclose(samples, np.ones((10, 3, 100)))
+        assert targets.shape == (10, )
+        assert np.allclose(targets, np.ones(10) * 2)
+        rm('samples.npy')
+        rm('targets.npy')
 
     def test_empty_construct(self):
         dset = datasets.BaseDataset()
@@ -189,31 +214,80 @@ class TestDatasetArray:
         assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
 
 
-class TestWenchuan:
+class TestPackagedDataset:
+
+    class DummyPackagedDataset(datasets.PackagedDataset):
+
+        url = 'https://www.dropbox.com/s/kvnphsnjtnhlrrx/dummy_packaged_dataset.tar.bz2?dl=1'
 
     def test_download_flag(self):
         with pytest.raises(ValueError):
-            datasets.Wenchuan(path='.', download=None)
+            self.DummyPackagedDataset(path='.', download=None)
+        rm('samples.npy')
+        rm('targets.npy')
         with pytest.raises(ValueError):
-            datasets.Wenchuan(path='.')
+            self.DummyPackagedDataset(path='.')
 
     @pytest.mark.internet
-    def test_wenchuan_download(self):
+    def test_dummy_download(self):
         # prepare root folder
         rm('samples.npy')
         rm('targets.npy')
-        rm('wenchuan.tar.bz2')
+        rm('dummy_packaged_dataset.tar.bz2')
         # test download and extract
-        datasets.Wenchuan(path='.', download=True)
+        self.DummyPackagedDataset(path='.', download=True)
         # test extract only
         rm('samples.npy')
         rm('targets.npy')
-        datasets.Wenchuan(path='.', download=True)
+        self.DummyPackagedDataset(path='.', download=True)
         # test ready dataset
-        dset = datasets.Wenchuan(path='.', download=True)
-        assert dset[0][1] == 1
-        assert len(dset) == 60276
+        dset = self.DummyPackagedDataset(path='.', download=True)
+        assert dset[0][1] == 0
+        assert len(dset) == 1
         # clean root folder
         rm('samples.npy')
         rm('targets.npy')
+        rm('dummy_packaged_dataset.tar.bz2')
+
+
+class TestWenchuanDataset:
+
+    @pytest.mark.internet
+    @pytest.mark.large_download
+    def test_url(self):
+        rm('samples.npy')
+        rm('targets.npy')
         rm('wenchuan.tar.bz2')
+        datasets.Wenchuan(path='.', download=True)
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('wenchuan.tar.bz2')
+
+
+class TestSCSNDataset:
+
+    @pytest.mark.internet
+    @pytest.mark.large_download
+    def test_url(self):
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('scsn.tar.bz2')
+        datasets.SCSN(path='.', download=True)
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('scsn.tar.bz2')
+
+
+@pytest.mark.password
+class TestMarianaDataset:
+
+    @pytest.mark.internet
+    @pytest.mark.large_download
+    def test_url(self):
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('mariana.tar.bz2')
+        datasets.Mariana(path='.', download=True)
+        rm('samples.npy')
+        rm('targets.npy')
+        rm('mariana.tar.bz2')

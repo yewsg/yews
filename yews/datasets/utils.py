@@ -4,7 +4,54 @@ import tarfile
 from pathlib import Path
 from urllib import request
 
+import numpy as np
 from torch.utils.model_zoo import tqdm
+
+try:
+    from obspy import read
+    from obspy import UTCDateTime
+    has_obspy = True
+except ModuleNotFoundError:
+    has_obspy = False
+
+################################################################################
+#
+#                       ObsPy related reading and loading
+#
+################################################################################
+def stream2array(st):
+    """Convert seismic frame from obspy.Stream to numpy.ndarray.
+
+    """
+    if has_obspy:
+        return np.stack([tr.data for tr in st])
+    else:
+        raise ModuleNotFoundError("Consider installing ObsPy for seismic I/O.")
+
+
+def read_frame_obspy(path, **kwargs):
+    """Read a seismic frame using ObsPy read.
+
+    Args:
+        path (path): Path to seismic files (SAC, mseed, etc.).
+        starttime (UTCDateTime, optional): Frame starting time.
+        endtime (UTCDateTime, optional): Frame ending time.
+
+    Returns:
+        Cutted frame numpy array of single or multiple component seismogram.
+
+    """
+    if has_obspy:
+        return stream2array(read(path, **kwargs))
+    else:
+        raise ModuleNotFoundError("Consider installing ObsPy for seismic I/O.")
+
+
+################################################################################
+#
+#                   Read and Write with Memory Constraints
+#
+################################################################################
 
 # dynamically change this limit by Python code.
 MEMORY_LIMIT =  2 * 1024 ** 3        # 2 GB limit
@@ -18,6 +65,26 @@ def set_memory_limit(limit):
 
 def get_memory_limit():
     return MEMORY_LIMIT
+
+def load_npy(path, memory_limit=None):
+    default_memory_limit = get_memory_limit()
+
+    if memory_limit:
+        set_memory_limit(memory_limit)
+    print(f"Current memory limit is {sizeof_fmt(get_memory_limit())}")
+
+    if over_memory_limit(path):
+        print(f"Loading memory map of {path} into memory")
+        data = np.load(path, mmap_mode='r')
+    else:
+        print(f"Loading {path} directly into memory")
+        data = np.load(path)
+    set_memory_limit(default_memory_limit)
+
+    return data
+
+def create_npy(path, shape, dtype=np.float32):
+    return np.lib.format.open_memmap(path, mode='w+', dtype=dtype, shape=shape)
 
 ################################################################################
 #

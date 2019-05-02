@@ -5,6 +5,22 @@ import torch
 import yews.transforms as transforms
 import yews.transforms.functional as F
 
+class TestIsTransform():
+
+    class GoodTransform(object):
+
+        def __call__(self):
+            pass
+
+    class BadTransform(object):
+
+        pass
+
+    def test_is_transform(self):
+        assert transforms.is_transform(self.GoodTransform()) == True
+        assert transforms.is_transform(self.BadTransform()) == False
+
+
 
 class DummpyBaseTransform(transforms.BaseTransform):
 

@@ -22,8 +22,10 @@ before_install:
   - pip install --upgrade pip
 
   # Create a conda environment using the required packages
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pytorch scipy -c pytorch
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
   - source activate test-environment
+  - conda install pytorch -c pytorch
+  - conda install obspy -c conda-forge
   - pip install pytest pytest-cov codecov
 
 install:
@@ -42,7 +44,7 @@ install:
     cd -
 
 script:
-  - pytest --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests
+  - pytest -m "not password" -m "not large_download" --cov-config .coveragerc --cov yews --cov $YEWS_INSTALL_PATH tests
 
 after_success:
   # Necessary to run coverage combine to rewrite paths from
@@ -50,4 +52,3 @@ after_success:
   - coverage combine .coverage
   - coverage report
   - codecov
-

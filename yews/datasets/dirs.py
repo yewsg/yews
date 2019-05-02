@@ -9,6 +9,9 @@ __all__ = [
     'DatasetFolder',
 ]
 
+def get_files_under_dir(path, pattern):
+    return [p for p in path.glob(pattern) if p.is_file()]
+
 
 class DirDataset(PathDataset):
     """An abstract class representing a Dataset in a directory.
@@ -78,19 +81,9 @@ class DatasetArrayFolder(DirDataset):
         """
         samples_path = self.root / 'samples.npy'
         targets_path = self.root / 'targets.npy'
-        print(f"Current memory limit is {utils.sizeof_fmt(utils.get_memory_limit())}")
-        if utils.over_memory_limit(samples_path):
-            print(f"Loading memory map of {samples_path} into memory")
-            samples = np.load(samples_path, mmap_mode='r')
-        else:
-            print(f"Loading {samples_path} directly into memory")
-            samples = np.load(samples_path)
-        if utils.over_memory_limit(targets_path):
-            print(f"Loading memory map of {targets_path} into memory")
-            targets = np.load(targets_path, mmap_mode='r')
-        else:
-            print(f"Loading {targets_path} directly into memory")
-            targets = np.load(targets_path)
+
+        samples = utils.load_npy(samples_path)
+        targets = utils.load_npy(targets_path)
 
         return samples, targets
 
@@ -150,7 +143,7 @@ class DatasetFolder(DirDataset):
         """Return samples and targets.
 
         """
-        files = [p for p in self.root.glob("**/*") if p.is_file()]
+        files = get_files_under_dir(self.root, '**/*')
         labels = [p.name.split('.')[0] for p in files]
         samples = self.FilesLoader(files, self.loader)
 

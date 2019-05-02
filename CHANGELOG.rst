@@ -14,6 +14,16 @@ Version 0.0.5, Under Development
 - fix setup.cfg bug (tests_require instead of test_require)
 - sync meta.yaml and setup.cfg for consistent build
 - documents improvements
+- put packaged datasets in a separate module
+- wenchuan dataset packaged (link disable temporarily for release grant)
+- mariana dataset packaged (link disable temporarily for release grant)
+- redo numpy memmap related block
+- add export_dataset() method to ``BaseDataset``
+- add obspy I/O support w/ tests
+- mariana dataset from source w/o tests
+- add prgress bar for ``export_dataset()`` method in ``BaseDataset``
+- fake ``scipy.special.expit`` to simplify dependency
+- partially fake ``tqdm.tdqm`` to simplify dependency
 
 Version 0.0.4, 2019-04-18
 -------------------------
@@ -23,7 +33,7 @@ Version 0.0.4, 2019-04-18
 - use Scipy as an extra for special transforms
 - add pre-commit for automaticall commit checking
 - add CHANGELOOG.rst
-- add ``is_valid()`` and ``handle_invalid`` to ``yews.datasets.BaseDatasets``
+- add ``is_valid()`` and ``handle_invalid`` to ``yews.datasets.BaseDataset``
 - add ``yews.datasets.utils`` to handle urls and bz2 files.
 - add ``yews.datasets.wenchuan``
 - add ``memory limit`` to ``yews.datasets`` to determine when to load the
