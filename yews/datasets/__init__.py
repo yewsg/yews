@@ -8,6 +8,7 @@ from .files import DatasetArray
 from .files import FileDataset
 from .packaged_datasets import Mariana
 from .packaged_datasets import PackagedDataset
+from .packaged_datasets import SCSN
 from .packaged_datasets import Wenchuan
 from .sac import MarianaFromSource
 from .utils import *
@@ -23,5 +24,6 @@ __all__ = (
     'PackagedDataset',
     'Wenchuan',
     'Mariana',
+    'SCSN',
     'MarianaFromSource',
 )

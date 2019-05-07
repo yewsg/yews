@@ -1,9 +1,9 @@
 from .dirs import DatasetArrayFolder
-from .utils import extract_bz2
+from .utils import extract_tar
 from .utils import URL
 
 class PackagedDataset(DatasetArrayFolder):
-    """Packaged Dataset in .tar.bz2 foramt.
+    """Packaged Dataset in .tar.* foramt.
 
     Args:
         path (str): Root directory where ``dataset_name/samples.npy`
@@ -36,8 +36,8 @@ class PackagedDataset(DatasetArrayFolder):
                 if not fpath.is_file():
                     url.download(self.root)
                 # extract file under root directory
-                print("Extracting dataset (this may minutes to hours) ...")
-                extract_bz2(fpath, self.root)
+                print("Extracting dataset (this may take minutes to hours) ...")
+                extract_tar(fpath, self.root)
                 # try initiate DatasetArrayFolder again
                 super().__init__(**kwargs)
             else:
@@ -99,4 +99,4 @@ class SCSN(PackagedDataset):
 
     """
 
-    url = 'https://www.dropbox.com/s/8r9rv9hudn7jt1q/scsn.tar.bz2?dl=1'
+    url = 'https://www.dropbox.com/s/u16lkjxliw8fouj/scsn.tar?dl=1'
