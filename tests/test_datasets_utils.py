@@ -49,10 +49,10 @@ class TestLoadNpy():
         assert utils.get_memory_limit() == self.default_memory_limit
 
 
-class TestBz2Utils():
+class TestTarUtils():
 
-    def test_bz2_extraction(self):
-        utils.extract_bz2('tests/assets/test.tar.bz2')
+    def test_tar_extraction(self):
+        utils.extract_tar('tests/assets/test.tar.bz2')
         with Path('test.txt').open('r') as f:
             assert f.readlines() == ['test\n']
         os.remove('test.txt')

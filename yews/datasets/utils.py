@@ -158,10 +158,11 @@ class URL(object):
 
 ################################################################################
 #
-#                           Utilities for Bz2
+#                           Utilities for Tarfile
 #
 ################################################################################
 
-def extract_bz2(infile, outdir='.'):
-    with tarfile.open(infile, 'r:bz2') as tar:
+
+def extract_tar(infile, outdir='.', mode='r:*'):
+    with tarfile.open(infile, mode=mode) as tar:
         tar.extractall(outdir)
