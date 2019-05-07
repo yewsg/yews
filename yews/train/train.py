@@ -35,9 +35,9 @@ class Trainer(object):
         # reset
         self.reset()
 
-
     def reset(self):
         self.model = self.model_gen()
+        self.arch = self.model.__class__
         self.model = F.model_on_device(self.model, self.device)
 
         self.reset_optimizer()
