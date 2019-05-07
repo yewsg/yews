@@ -17,7 +17,7 @@ class CpicOriginal(nn.Module):
         super().__init__()
         # 2000 -> 1024
         self.layer1 = nn.Sequential(
-            nn.Conv1d(3, 16, kernel_size=5, stride=1, padding=26, bias=True),
+            nn.Conv1d(3, 16, kernel_size=5, stride=1, padding=26, bias=False),
             nn.BatchNorm1d(16),
             nn.ReLU(),
             # nn.Sigmoid(),
@@ -26,7 +26,7 @@ class CpicOriginal(nn.Module):
 
         # 1024 -> 512
         self.layer2 = nn.Sequential(
-            nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2, bias=True),
+            nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2, bias=False),
             nn.BatchNorm1d(32),
             nn.ReLU(),
             # nn.Sigmoid(),
@@ -35,7 +35,7 @@ class CpicOriginal(nn.Module):
 
         # 512 -> 256
         self.layer3 = nn.Sequential(
-            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -43,7 +43,7 @@ class CpicOriginal(nn.Module):
 
         # 256 -> 128
         self.layer4 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -51,7 +51,7 @@ class CpicOriginal(nn.Module):
 
         # 128 -> 64
         self.layer5 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -59,7 +59,7 @@ class CpicOriginal(nn.Module):
 
         # 64 -> 32
         self.layer6 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -67,7 +67,7 @@ class CpicOriginal(nn.Module):
 
         # 32 -> 16
         self.layer7 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -75,7 +75,7 @@ class CpicOriginal(nn.Module):
 
         # 16 -> 8
         self.layer8 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -83,7 +83,7 @@ class CpicOriginal(nn.Module):
 
         # 8 -> 4
         self.layer9 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -91,7 +91,7 @@ class CpicOriginal(nn.Module):
 
         # 4 -> 2
         self.layer10 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
@@ -99,7 +99,7 @@ class CpicOriginal(nn.Module):
 
         # 2 -> 1
         self.layer11 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=True),
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2)
