@@ -26,7 +26,7 @@ class Trainer(object):
 
         # results
         self.best_acc = None
-        self.best_model = None
+        self.best_model_state = None
         self.train_loss = None
         self.train_acc = None
         self.val_loss = None
@@ -45,9 +45,36 @@ class Trainer(object):
 
         self._reset_results()
 
+    def save_checkpoint(self, path=None):
+        print("=> Pulling checkpoint from Trainer ...")
+        checkpoint = {
+            'arch': self.arch,
+            'best_acc': self.best_acc,
+            'current_moel': F.model_off_device(self.model),
+            'best_model': self.best_model_state,
+            'optimizer': self.optimizer.state_dict(),
+            'scheduler': self.scheduler.state_dict(),
+        }
+        if path:
+            print("=> Saving checkpoint ...")
+            torch.save(checkpoint, path)
+            print(f"=> Checkpoint saved to '{path}'")
+
+    def load_checkpoint(self, path):
+        print(f"=> Loading checkpoint from '{path}' ... ")
+        checkpoint = torch.load(path)
+
+        if self.arch != checkpoint['arch']:
+            raise ValueError(f"Architecture {checkpoint['arch']} in checkpoint does not match that on model ({self.arch})")
+        self.model.load_state_dict(F.model_on_device(checkpoint['current_moel']))
+        self.best_acc = checkpoint['best_acc']
+        self.best_model_state = checkpoint['best_model']
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
+        self.scheduler.load_state_dict(checkpoint['scheduler'])
+
     def results(self, path=None):
         results = {
-            'model': F.model_off_device(self.model),
+            'model': self.best_model_state,
             'train_loss': self.train_loss,
             'train_acc': self.train_acc,
             'val_loss': self.val_loss,
@@ -129,4 +156,5 @@ class Trainer(object):
             # preserve best model and accuracy
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
+            self.best_model_state = F.model_off_device(self.model)
         print(f"Training fisihed. Best accuracy is {self.best_acc}")
