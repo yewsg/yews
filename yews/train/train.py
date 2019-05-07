@@ -45,6 +45,20 @@ class Trainer(object):
 
         self._reset_results()
 
+    def results(self, path=None):
+        results = {
+            'model': F.model_off_device(self.model),
+            'train_loss': self.train_loss,
+            'train_acc': self.train_acc,
+            'val_loss': self.val_loss,
+            'val_acc': self.val_acc,
+        }
+
+        if path:
+            torch.save(results, path)
+
+        return results
+
     def reset_optimizer(self):
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
