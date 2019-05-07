@@ -124,7 +124,7 @@ class CpicOriginal(nn.Module):
 
         return out
 
-def cpic64(pretrained=False, **kwargs):
+def cpic_original(pretrained=False, **kwargs):
     r"""CPIC model architecture from the
     `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper.
 
