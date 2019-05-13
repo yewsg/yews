@@ -124,12 +124,15 @@ class Trainer(object):
         return F.train(self.model, loader, self.criterion, self.optimizer,
                        epoch, print_freq=print_freq)
 
-    def train(self, train_loader, val_loader, epochs=100, print_freq=None):
+    def train(self, train_loader, val_loader, epochs=100, print_freq=None, resume=None):
         """Train the model on a given datset using the dataloader provided.
 
         """
         start_epoch = 0
         end_epoch = epochs
+
+        if resume:
+            self.load_checkpoint(resume)
 
         # record results for initial model
         print("Validation on training set.")
@@ -157,4 +160,6 @@ class Trainer(object):
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
             self.best_model_state = F.model_off_device(self.model)
+
+        # training finished
         print(f"Training fisihed. Best accuracy is {self.best_acc}")
