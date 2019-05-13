@@ -1,4 +1,34 @@
 import numpy as np
+import torch
+from scipy.ndimage.filters import gaussian_filter1d
+from scipy.special import expit
+
+def probs2cfs(probs, sigma=3):
+    cf_p = np.log10(probs[1] / (probs[0] + 1e-5))
+    cf_s = np.log10(probs[2] / (probs[0] + 1e-5))
+    cf_p[probs.argmax(axis=0) != 1] = 0
+    cf_s[probs.argmax(axis=0) != 2] = 0
+    cf_p = gaussian_filter1d(cf_p, sigma=sigma)
+    cf_s = gaussian_filter1d(cf_s, sigma=sigma)
+
+    return cf_p, cf_s
+
+def compute_probs(model, transform, waveform, shape, step):
+    model.eval()
+    with torch.no_grad():
+        windows = sliding_window_view(waveform, shape, step)
+        windows = transform(np.squeeze(windows))
+        outputs = model(windows)
+
+    if next(model.parameters()).is_cuda:
+        outputs = outputs.cpu().numpy()
+    else:
+        outputs = outputs.numpy()
+
+    probs = expit(outputs).T
+    probs /= probs.sum(axis=0)
+
+    return probs
 
 # Copyright: Fanjin Zeng, obtained from https://gist.github.com/Fnjn/b061b28c05b5b0e768c60964d2cafa8d#file-sliding_window_view-py
 def sliding_window_view(x, shape, step=None, subok=False, writeable=False):
