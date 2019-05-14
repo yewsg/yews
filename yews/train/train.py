@@ -47,14 +47,16 @@ class Trainer(object):
 
     def save_checkpoint(self, path=None):
         print("=> Pulling checkpoint from Trainer ...")
+        self.model = F.model_off_device(self.model)
         checkpoint = {
             'arch': self.arch,
             'best_acc': self.best_acc,
-            'current_moel': F.model_off_device(self.model),
+            'current_model': self.model.state_dict,
             'best_model': self.best_model_state,
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
         }
+        self.model = F.model_on_device(sefl.model, self.device)
         if path:
             print("=> Saving checkpoint ...")
             torch.save(checkpoint, path)
@@ -66,7 +68,7 @@ class Trainer(object):
 
         if self.arch != checkpoint['arch']:
             raise ValueError(f"Architecture {checkpoint['arch']} in checkpoint does not match that on model ({self.arch})")
-        self.model.load_state_dict(F.model_on_device(checkpoint['current_moel']))
+        self.model.load_state_dict(checkpoint['current_moel'])
         self.best_acc = checkpoint['best_acc']
         self.best_model_state = checkpoint['best_model']
         self.optimizer.load_state_dict(checkpoint['optimizer'])
@@ -159,7 +161,9 @@ class Trainer(object):
             # preserve best model and accuracy
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
-            self.best_model_state = F.model_off_device(self.model)
+            self.model = F.model_off_device(self.model)
+            self.best_model_state = self.model.state_dict
+            self.model = F.model_on_device(self.model, self.device)
 
         # training finished
         print(f"Training fisihed. Best accuracy is {self.best_acc}")

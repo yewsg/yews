@@ -17,7 +17,7 @@ if __name__ == '__main__':
     ])
 
     # Prepare dataset
-    dset = dsets.Wenchuan(path='.', download=True,
+    dset = dsets.Wenchuan(path='.wenchuan', download=True,
                           sample_transform=waveform_transform)
 
     # Split datasets into training and validation
