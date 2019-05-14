@@ -71,4 +71,4 @@ install:
 build: false
 
 test_script:
-  - pytest tests
+  - pytest -m "not password" -m "not large_download" tests
