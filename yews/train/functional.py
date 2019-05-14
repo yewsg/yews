@@ -1,6 +1,7 @@
-from pathlib import Path
 import shutil
 import time
+from pathlib import Path
+
 import numpy as np
 import torch
 
@@ -13,7 +14,7 @@ def model_on_device(model, device):
     return torch.nn.DataParallel(model.to(device))
 
 def model_off_device(model):
-    return model.module.to(torch.device('cpu')).state_dict()
+    return model.module.to(torch.device('cpu'))
 
 def generate_tmp_name(prefix):
     return f"{prefix}_{np.floor(time.time()):.0f}"
