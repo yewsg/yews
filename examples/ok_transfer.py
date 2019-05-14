@@ -7,7 +7,8 @@ class TransferOK(DatasetFolder):
         """Return samples and targets.
 
         """
-        files = self.get_files_under_dir(self.root, '**/*')
+        path = self.root
+        files = [p for p in path.glob('*/*') if p.is_file()]
         labels = [p.name.split('.')[2] for p in files]
         samples = self.FilesLoader(files, self.loader)
 
