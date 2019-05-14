@@ -46,10 +46,6 @@ class TestIsNumpyWaveform:
         wav = np.empty((3, 10))
         assert F._is_numpy_waveform(wav)
 
-    def test_invalid_waveform_wrong_dimension(self):
-        wav = np.empty((1,1,10))
-        assert not F._is_numpy_waveform(wav)
-
     def test_invalid_waveform_wrong_type(self):
         wav = torch.tensor(10)
         assert not F._is_numpy_waveform(wav)
