@@ -9,9 +9,6 @@ __all__ = [
     'DatasetFolder',
 ]
 
-def get_files_under_dir(path, pattern):
-    return [p for p in path.glob(pattern) if p.is_file()]
-
 
 class DirDataset(PathDataset):
     """An abstract class representing a Dataset in a directory.
@@ -139,11 +136,15 @@ class DatasetFolder(DirDataset):
         self.loader = loader
         super().__init__(**kwargs)
 
+    @staticmethod
+    def get_files_under_dir(path, pattern):
+        return [p for p in path.glob(pattern) if p.is_file()]
+
     def build_dataset(self):
         """Return samples and targets.
 
         """
-        files = get_files_under_dir(self.root, '**/*')
+        files = self.get_files_under_dir(self.root, '**/*')
         labels = [p.name.split('.')[0] for p in files]
         samples = self.FilesLoader(files, self.loader)
 
