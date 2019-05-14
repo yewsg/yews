@@ -8,9 +8,9 @@ class TransferOK(DatasetFolder):
 
         """
         path = self.root
-        files = [str(p) for p in path.glob('*/*') if p.is_file()]
+        files = [p for p in path.glob('*/*') if p.is_file()]
         labels = [p.name.split('.')[2] for p in files]
-        samples = self.FilesLoader(files, self.loader)
+        samples = self.FilesLoader([str(p) for p in files], self.loader)
 
         return samples, labels
 
