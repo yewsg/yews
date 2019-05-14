@@ -12,13 +12,6 @@ class TransferOK(DatasetFolder):
         return samples, labels
 
 if __name__ == '__main__':
-    # Preprocessing
-    waveform_transform = transforms.Compose([
-        transforms.ZeroMean(),
-        transforms.SoftClip(1e-4),
-        transforms.ToTensor(),
-    ])
-
     dset = TransferOK(path='/home/chenyu/wenchuan/src/data/ok_transfer')
 
     print(len(dset))
