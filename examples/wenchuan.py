@@ -4,7 +4,7 @@ from torch.utils.data import random_split
 
 import yews.datasets as dsets
 import yews.transforms as transforms
-from yews.models import Cpic
+from yews.models import cpic
 from yews.train import Trainer
 
 
@@ -30,7 +30,10 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=1000, shuffle=False, num_workers=8)
 
     # Prepare trainer
-    trainer = Trainer(Cpic, CrossEntropyLoss(), lr=0.1)
+    trainer = Trainer(cpic, CrossEntropyLoss(), lr=0.1)
 
     # Train model over training dataset
     trainer.train(train_loader, val_loader, epochs=30, print_freq=100)
+
+    # Save training results to disk
+    trainer.results(path='.')
