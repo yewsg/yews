@@ -1,3 +1,5 @@
+from obspy import read
+
 from yews.datasets import DatasetFolder
 
 class TransferOK(DatasetFolder):
@@ -12,6 +14,7 @@ class TransferOK(DatasetFolder):
         return samples, labels
 
 if __name__ == '__main__':
-    dset = TransferOK(path='/home/chenyu/wenchuan/src/data/ok_transfer')
+    dset = TransferOK(path='/home/chenyu/wenchuan/src/data/ok_transfer',
+                      loader=read)
 
     print(len(dset))
