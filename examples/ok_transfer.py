@@ -1,4 +1,4 @@
-from yews.dataset import DatasetFolder
+from yews.datasets import DatasetFolder
 
 class TransferOK(DatasetFolder):
     def build_dataset(self):
