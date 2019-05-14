@@ -2,7 +2,6 @@ import numpy as np
 
 from . import utils
 from .dirs import DatasetFolder
-from .dirs import get_files_under_dir
 
 def load_three_component_sac(sample):
     """Read a seismic frame given a sample from datasets.
@@ -39,7 +38,7 @@ class MarianaFromSource(DatasetFolder):
         """
 
         # get file patterns and arrival times
-        files = get_files_under_dir(self.root, '**/*.BH*')
+        files = self.get_files_under_dir(self.root, '**/*.BH*')
         patterns = [p.parent / (p.name.split('.BH')[0] + '.BH*') for p in files]
         arrivals = [p.name.split('-')[2].split('_') for p in patterns]
         arrivals = [f"{c[0]}-{c[1]}T{c[2]}:{c[3]}:{c[4]}" for c in arrivals]
