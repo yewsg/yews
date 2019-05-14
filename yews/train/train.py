@@ -26,7 +26,7 @@ class Trainer(object):
 
         # results
         self.best_acc = None
-        self.best_model = None
+        self.best_model_state = None
         self.train_loss = None
         self.train_acc = None
         self.val_loss = None
@@ -35,15 +35,56 @@ class Trainer(object):
         # reset
         self.reset()
 
-
     def reset(self):
         self.model = self.model_gen()
+        self.arch = self.model.__class__
         self.model = F.model_on_device(self.model, self.device)
 
         self.reset_optimizer()
         self.reset_scheduler()
 
         self._reset_results()
+
+    def save_checkpoint(self, path=None):
+        print("=> Pulling checkpoint from Trainer ...")
+        checkpoint = {
+            'arch': self.arch,
+            'best_acc': self.best_acc,
+            'current_moel': F.model_off_device(self.model),
+            'best_model': self.best_model_state,
+            'optimizer': self.optimizer.state_dict(),
+            'scheduler': self.scheduler.state_dict(),
+        }
+        if path:
+            print("=> Saving checkpoint ...")
+            torch.save(checkpoint, path)
+            print(f"=> Checkpoint saved to '{path}'")
+
+    def load_checkpoint(self, path):
+        print(f"=> Loading checkpoint from '{path}' ... ")
+        checkpoint = torch.load(path)
+
+        if self.arch != checkpoint['arch']:
+            raise ValueError(f"Architecture {checkpoint['arch']} in checkpoint does not match that on model ({self.arch})")
+        self.model.load_state_dict(F.model_on_device(checkpoint['current_moel']))
+        self.best_acc = checkpoint['best_acc']
+        self.best_model_state = checkpoint['best_model']
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
+        self.scheduler.load_state_dict(checkpoint['scheduler'])
+
+    def results(self, path=None):
+        results = {
+            'model': self.best_model_state,
+            'train_loss': self.train_loss,
+            'train_acc': self.train_acc,
+            'val_loss': self.val_loss,
+            'val_acc': self.val_acc,
+        }
+
+        if path:
+            torch.save(results, path)
+
+        return results
 
     def reset_optimizer(self):
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
@@ -83,12 +124,15 @@ class Trainer(object):
         return F.train(self.model, loader, self.criterion, self.optimizer,
                        epoch, print_freq=print_freq)
 
-    def train(self, train_loader, val_loader, epochs=100, print_freq=None):
+    def train(self, train_loader, val_loader, epochs=100, print_freq=None, resume=None):
         """Train the model on a given datset using the dataloader provided.
 
         """
         start_epoch = 0
         end_epoch = epochs
+
+        if resume:
+            self.load_checkpoint(resume)
 
         # record results for initial model
         print("Validation on training set.")
@@ -115,4 +159,7 @@ class Trainer(object):
             # preserve best model and accuracy
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
+            self.best_model_state = F.model_off_device(self.model)
+
+        # training finished
         print(f"Training fisihed. Best accuracy is {self.best_acc}")
