@@ -33,7 +33,7 @@ if __name__ == '__main__':
     trainer = Trainer(cpic, CrossEntropyLoss(), lr=0.1)
 
     # Train model over training dataset
-    trainer.train(train_loader, val_loader, epochs=30, print_freq=100)
+    trainer.train(train_loader, val_loader, epochs=1, print_freq=100)
 
     # Save training results to disk
     trainer.results(path='.')
