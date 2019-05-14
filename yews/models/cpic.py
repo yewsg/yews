@@ -1,11 +1,9 @@
 # TO-DO: need to add model_zoo utility and pretrained models.
 import torch.nn as nn
-from torch.utils import model_zoo
 
-__all__ = [
-    'CpicOriginal',
-    'cpic_original',
-]
+from .utils import load_state_dict_from_url
+
+__all__ = ['CpicOriginal', 'cpic',]
 
 model_urls = {
     'cpic_original': 'https://lijunzhu.info'
@@ -124,14 +122,18 @@ class CpicOriginal(nn.Module):
 
         return out
 
-def cpic_original(pretrained=False, **kwargs):
-    r"""CPIC model architecture from the
-    `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper.
+def cpic(pretrained=False, progress=True, **kwargs):
+    r"""Original CPIC model architecture from the
+    `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper. The
+    pretrained model is trained on 60,000 Wenchuan aftershock dataset
+    demonstrated in the paper.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on Wenchuan)
     """
-    model = Cpic(**kwargs)
+    model = CpicOriginal(**kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['cpic_original']))
+        state_dict = load_state_dict_from_url(model_urls['cpic'],
+                                              progress=progress)
+        model.load_state_dict(state_dict)
     return model
