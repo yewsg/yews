@@ -5,4 +5,4 @@ from yews import datasets
 from yews import transforms
 from yews import models
 from yews import train
-from yews import deploy
+from yews import cpic
