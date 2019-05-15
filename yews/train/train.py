@@ -82,7 +82,7 @@ class Trainer(object):
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
         }
-        self.model = F.model_on_device(sefl.model, self.device)
+        self.model = F.model_on_device(self.model, self.device)
         if path:
             print("=> Saving checkpoint ...")
             torch.save(checkpoint, path)
@@ -94,7 +94,9 @@ class Trainer(object):
 
         if self.arch != checkpoint['arch']:
             raise ValueError(f"Architecture {checkpoint['arch']} in checkpoint does not match that on model ({self.arch})")
-        self.model.load_state_dict(checkpoint['current_moel'])
+        self.model = F.model_off_device(self.model)
+        self.model.load_state_dict(checkpoint['current_model'])
+        self.model = F.model_on_device(self.model, self.device)
         self.best_acc = checkpoint['best_acc']
         self.best_model_state = checkpoint['best_model']
         self.optimizer.load_state_dict(checkpoint['optimizer'])
@@ -125,7 +127,8 @@ class Trainer(object):
         return F.train(self.model, loader, self.criterion, self.optimizer,
                        epoch, print_freq=print_freq)
 
-    def train(self, train_loader, val_loader, epochs=100, print_freq=None, resume=None):
+    def train(self, train_loader, val_loader, epochs=100,
+              print_freq=None, resume=None):
         """Train the model on a given datset using the dataloader provided.
 
         """
@@ -157,6 +160,9 @@ class Trainer(object):
             acc, loss = self.validate(val_loader)
             self.update_val_results(acc, loss)
 
+            # save checkpoint
+            self.save_checkpoint(path=f'checkpoint_current.pth.tar')
+
             # preserve best model and accuracy
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
@@ -165,6 +171,7 @@ class Trainer(object):
                 self.model = F.model_off_device(self.model)
                 self.best_model_state = self.model.state_dict()
                 self.model = F.model_on_device(self.model, self.device)
+                self.save_checkpoint(path='checkpoint_best.pth.tar')
 
         # training finished
         print(f"Training fisihed. Best accuracy is {self.best_acc}")
