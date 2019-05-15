@@ -7,13 +7,12 @@ class Trainer(object):
     """Mega class for training process.
 
     """
-    def __init__(self, model_gen, criterion, lr=0.1):
+    def __init__(self, model, criterion, lr=0.1):
         # default device
         self.device = F.get_torch_device()
 
         # model
-        self.model_gen = model_gen
-        self.model = None
+        self.model = model
 
         # optimizer
         self.criterion = criterion
@@ -37,7 +36,6 @@ class Trainer(object):
         self.reset()
 
     def reset(self):
-        self.model = self.model_gen()
         self.arch = self.model.__class__
         self.model = F.model_on_device(self.model, self.device)
 
@@ -46,13 +44,40 @@ class Trainer(object):
 
         self._reset_results()
 
+    def reset_optimizer(self):
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
+
+    def reset_scheduler(self):
+        self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer,
+                                                              verbose=True)
+
+    def update_scheduler(self):
+        self.scheduler.step(self.val_loss[-1])
+
+
+    def _reset_results(self):
+        self.best_acc = 0.
+        self.best_model = None
+        self.train_loss = []
+        self.train_acc = []
+        self.val_loss = []
+        self.val_acc = []
+
+    def update_train_results(self, acc, loss):
+        self.train_acc.append(acc)
+        self.train_loss.append(loss)
+
+    def update_val_results(self, acc, loss):
+        self.val_acc.append(acc)
+        self.val_loss.append(loss)
+
     def save_checkpoint(self, path=None):
         print("=> Pulling checkpoint from Trainer ...")
         self.model = F.model_off_device(self.model)
         checkpoint = {
             'arch': self.arch,
             'best_acc': self.best_acc,
-            'current_model': self.model.state_dict,
+            'current_model': self.model.state_dict(),
             'best_model': self.best_model_state,
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
@@ -89,33 +114,6 @@ class Trainer(object):
 
         return results
 
-    def reset_optimizer(self):
-        self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
-
-    def reset_scheduler(self):
-        self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer,
-                                                              verbose=True)
-
-    def _update_scheduler(self):
-        self.scheduler.step(self.val_loss[-1])
-
-
-    def _reset_results(self):
-        self.best_acc = 0.
-        self.best_model = None
-        self.train_loss = []
-        self.train_acc = []
-        self.val_loss = []
-        self.val_acc = []
-
-    def update_train_results(self, acc, loss):
-        self.train_acc.append(acc)
-        self.train_loss.append(loss)
-
-    def update_val_results(self, acc, loss):
-        self.val_acc.append(acc)
-        self.val_loss.append(loss)
-
     def validate(self, loader, print_freq=None):
         """Validate the model on a given datset using the dataloader provided.
 
@@ -149,7 +147,7 @@ class Trainer(object):
         print("Start training ...")
         for epoch in range(start_epoch, end_epoch):
             # update learning rate
-            self._update_scheduler()
+            self.update_scheduler()
 
             # train model for one epoch
             acc, loss = self.train_one_epoch(train_loader, epoch, print_freq=print_freq)
@@ -163,7 +161,7 @@ class Trainer(object):
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
             self.model = F.model_off_device(self.model)
-            self.best_model_state = self.model.state_dict
+            self.best_model_state = self.model.state_dict()
             self.model = F.model_on_device(self.model, self.device)
 
         # training finished

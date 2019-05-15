@@ -1,3 +1,4 @@
+import torch
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
@@ -30,10 +31,17 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=1000, shuffle=False, num_workers=8)
 
     # Prepare trainer
-    trainer = Trainer(cpic, CrossEntropyLoss(), lr=0.1)
+    trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
 
     # Train model over training dataset
     trainer.train(train_loader, val_loader, epochs=1, print_freq=100)
 
     # Save training results to disk
     trainer.results(path='wenchuan_results.pth.tar')
+
+    # Validate saved model
+    results = torch.load('wenchuan_results.pth.tar')
+    model = cpic()
+    model.load_state_dict(results['model'])
+    trainer = Trainer(model, CrossEntropyLoss(), lr=0.1)
+    trainer.validate(val_loader, print_freq=100)
