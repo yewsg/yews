@@ -6,7 +6,7 @@ from .utils import load_state_dict_from_url
 __all__ = ['CpicOriginal', 'cpic',]
 
 model_urls = {
-    'cpic_original': 'https://lijunzhu.info'
+    'cpic': 'https://www.dropbox.com/s/ckb4glf35agi9xa/cpic_wenchuan-bdd92da2.pth?dl=1'
 }
 
 class CpicOriginal(nn.Module):
