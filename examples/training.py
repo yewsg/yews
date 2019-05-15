@@ -31,10 +31,10 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=1000, shuffle=False, num_workers=8)
 
     # Prepare trainer
-    trainer = Trainer(cpic(pretrained=True), CrossEntropyLoss(), lr=0.1)
+    trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
 
     # Train model over training dataset
-    trainer.train(train_loader, val_loader, epochs=2, print_freq=100)
+    trainer.train(train_loader, val_loader, epochs=100, print_freq=100)
                   #resume='checkpoint_best.pth.tar')
 
     # Save training results to disk
