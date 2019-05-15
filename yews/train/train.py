@@ -160,9 +160,11 @@ class Trainer(object):
             # preserve best model and accuracy
             is_best = self.val_acc[-1] > self.best_acc
             self.best_acc = max(self.val_acc[-1], self.best_acc)
-            self.model = F.model_off_device(self.model)
-            self.best_model_state = self.model.state_dict()
-            self.model = F.model_on_device(self.model, self.device)
+            print(f" @ Best\t\t{self.best_acc:.3f}")
+            if is_best:
+                self.model = F.model_off_device(self.model)
+                self.best_model_state = self.model.state_dict()
+                self.model = F.model_on_device(self.model, self.device)
 
         # training finished
         print(f"Training fisihed. Best accuracy is {self.best_acc}")
