@@ -61,7 +61,7 @@ class Wenchuan(PackagedDataset):
 
     """
 
-    url = 'https://www.dropbox.com/s/enr75zt2ukx118r/wenchuan.tar.bz2?dl=1'
+    url = 'https://www.dropbox.com/s/idk4eyyleodof2q/wenchuan.tar?dl=1'
 
 
 class Mariana(PackagedDataset):
@@ -80,7 +80,7 @@ class Mariana(PackagedDataset):
 
     """
 
-    url = 'https://www.dropbox.com/s/6wqjhvk6hkxnuis/mariana.tar.bz2?dl=1'
+    url = 'https://www.dropbox.com/s/2hpurxeoo2ungim/mariana.tar?dl=1'
 
 
 class SCSN(PackagedDataset):
