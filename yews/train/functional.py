@@ -151,6 +151,6 @@ def validate(model, val_loader, criterion, print_freq=None):
                           f"Loss {losses.val:.4f} ({losses.avg:.4f})\t"
                           f"Prec@1 {top1.val:.3f} ({top1.avg:.3f})")
 
-    print(f" * Prec@1 {top1.avg:.3f}")
+    print(f" * Prec@1\t{top1.avg:.3f}")
 
     return top1.avg, losses.avg
