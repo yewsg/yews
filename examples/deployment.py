@@ -1,150 +1,39 @@
 import numpy as np
+import obspy
 import torch
-from obspy import read
 from torch import nn
 
 import yews.transforms as tf
+from yews.cpic import detect
+from yews.cpic import pick
 from yews.datasets.utils import stream2array
-from yews.deploy import detect
-from yews.deploy import pick
+from yews.models import cpic
 
-class CNN64(nn.Module):
-    def __init__(self):
-        super(CNN64, self).__init__()
-        # 2000 -> 1000
-        self.layer1 = nn.Sequential(
-            nn.Conv1d(3, 16, kernel_size=5, stride=1, padding=2),
-            nn.BatchNorm1d(16),
-            nn.ReLU(),
-            # nn.Sigmoid(),
-            nn.MaxPool1d(2)
-        )
-
-        # 1000 -> 500
-        self.layer2 = nn.Sequential(
-            nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2),
-            nn.BatchNorm1d(32),
-            nn.ReLU(),
-            # nn.Sigmoid(),
-            nn.MaxPool1d(2)
-        )
-
-        # 500 -> 250
-        self.layer3 = nn.Sequential(
-            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 250 -> 127
-        self.layer4 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=4),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 127 -> 64
-        self.layer5 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 64 -> 32
-        self.layer6 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 31 -> 16
-        self.layer7 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 16 -> 8
-        self.layer8 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 8 -> 4
-        self.layer9 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 4 -> 2
-        self.layer10 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 2 -> 1
-        self.layer11 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        self.fc = nn.Linear(64 * 1, 3)
-
-    def forward(self, x):
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = self.layer5(out)
-        out = self.layer6(out)
-        out = self.layer7(out)
-        out = self.layer8(out)
-        out = self.layer9(out)
-        out = self.layer10(out)
-        out = self.layer11(out)
-        out = out.view(out.size(0), -1)
-        out = self.fc(out)
-
-        return out
-
-st = read('/data/mariana/PA01-Y40/event_p/PA01-Y40off-2017_027_08_20_14.472-m37.BH*')
+st = obspy.read('/data/sp.mseed',
+                starttime=obspy.UTCDateTime('2019-05-14T12:58:26.000000Z'),
+                endtime=obspy.UTCDateTime('2019-05-14T16:08:00.000000Z'))
 array = stream2array(st)
-model = CNN64()
+model = cpic(pretrained=True)
 model = nn.DataParallel(model)
-model.load_state_dict(torch.load('mariana_model.pth',
-                                 map_location=lambda sto, loc: sto))
 
 transform = tf.Compose([
     tf.ZeroMean(),
-    tf.SoftClip(1e-4),
+    tf.SoftClip(1e-6),
     tf.ToTensor(),
 ])
 
-detect_results = detect(array, 100, 20, model, transform, 2, threshold=0.5)
-pick_results = pick(array, 100, 20, model, transform, 0.2)
-
+#detect_results = detect(array, 100, 20, model, transform, 2, threshold=0.5)
+pick_results = pick(array, 100, 20, model, transform, 0.5)
+#
 import matplotlib.pyplot as plt
-fig, ax1 = plt.subplots()
-ts = np.linspace(0, 240, array.shape[1])
-ax1.plot(ts, array[2], 'k')
-ax2 = ax1.twinx()
-td = np.linspace(5, 225, len(detect_results['detect_p']))
-tp = np.linspace(5, 225, len(pick_results['cf_p']))
-ax2.plot(td, detect_results['detect_p'])
-ax2.plot(td, detect_results['detect_s'])
+fig, axes = plt.subplots(2, 1)
+ts = st[0].times()
+axes[0].plot(ts, array[2], 'k')
+ax2 = axes[0].twinx()
+#td = np.linspace(5, ts[-1]-15, len(detect_results['detect_p']))
+#ax2.plot(td, detect_results['detect_p'])
+#ax2.plot(td, detect_results['detect_s'])
+tp = np.linspace(5, ts[-1]-15, len(pick_results['cf_p']))
 ax2.plot(tp, pick_results['cf_p'])
 ax2.plot(tp, pick_results['cf_s'])
 plt.show()
