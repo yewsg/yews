@@ -125,7 +125,7 @@ Now we can install PyTorch from source, which contains both ``torch`` and
       export USE_DISTRIBUTED=0
       export USE_MKLDNN=0
       export USE_NNPACK=0
-      export USE_QNNPACK=1
+      export USE_QNNPACK=0
       export BUILD_CAFFE2_OPS=0
 
 #. Build from source
