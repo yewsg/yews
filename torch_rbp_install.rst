@@ -119,10 +119,14 @@ Now we can install PyTorch from source, which contains both ``torch`` and
    .. code-block::
 
       export NO_CUDA=1
-      export NO_DISTRIBUTED=1
-      export NO_MKLDNN=1
-      export NO_NNPACK=1
-      export NO_QNNPACK=1
+      export USE_FBGEMM=0
+      export BUILD_TEST=0
+      export USE_MIOPEN=0
+      export USE_DISTRIBUTED=0
+      export USE_MKLDNN=0
+      export USE_NNPACK=0
+      export USE_QNNPACK=1
+      export BUILD_CAFFE2_OPS=0
 
 #. Build from source
 
