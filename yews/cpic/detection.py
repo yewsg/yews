@@ -2,26 +2,8 @@ import numpy as np
 import torch
 from scipy.special import expit
 
+from .utils import compute_probs
 from .utils import sliding_window_view
-
-
-def compute_probs(model, transform, waveform, shape, step):
-    model.eval()
-    with torch.no_grad():
-        windows = sliding_window_view(waveform, shape, step)
-        windows = transform(np.squeeze(windows))
-        outputs = model(windows)
-
-    if next(model.parameters()).is_cuda:
-        outputs = outputs.cpu().numpy()
-    else:
-        outputs = outputs.numpy()
-
-    probs = expit(outputs).T
-    probs /= probs.sum(axis=0)
-
-    return probs
-
 
 def find_nonzero_runs(a):
     # source: https://stackoverflow.com/

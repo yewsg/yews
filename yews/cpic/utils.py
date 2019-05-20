@@ -16,8 +16,8 @@ def probs2cfs(probs, sigma=3):
 def compute_probs(model, transform, waveform, shape, step):
     model.eval()
     with torch.no_grad():
-        windows = sliding_window_view(waveform, shape, step)
-        windows = transform(np.squeeze(windows))
+        windows = np.squeeze(sliding_window_view(waveform, shape, step))
+        windows = np.stack([transform(window) for window in windows])
         outputs = model(windows)
 
     if next(model.parameters()).is_cuda:
