@@ -38,7 +38,7 @@ Prerequisities
 
   .. code-block::
 
-      sudo apt install git cmake ninja
+      sudo apt install git cmake ninja gfortran
 
 
 Berryconda
@@ -64,39 +64,6 @@ Berryconda
       conda activate
       conda install cython m4 cmake pyyaml numpy
       conda deactivate
-
-
-Google Protobuf
----------------
-
-Unfortunately, Google's protobuf does not have a conda pre-build package
-available on armv7l platform. We will have to build it from source.
-
-#. Download and install the protobuf from source:
-
-   .. code-block::
-
-      mkdir git & cd git
-      git clone https://github.com/protocolbuffers/protobuf
-      cd protobuf/python
-      conda activate
-      python setup.py install
-      conda deactivate
-      cd
-
-#. Test installation
-
-   .. code-block::
-
-      conda activate
-      python
-      from google import protobuf
-      exit()
-      conda deactivate
-
-Note:
-   If the protobuf can be properly imported, it is correctly installed.
-
 
 PyTorch
 -------
