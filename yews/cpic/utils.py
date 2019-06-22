@@ -17,7 +17,7 @@ def compute_probs(model, transform, waveform, shape, step):
     model.eval()
     with torch.no_grad():
         windows = np.squeeze(sliding_window_view(waveform, shape, step))
-        windows = np.stack([transform(window) for window in windows])
+        windows = torch.stack([transform(window) for window in windows])
         outputs = model(windows)
 
     if next(model.parameters()).is_cuda:
