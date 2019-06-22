@@ -99,7 +99,7 @@ class BaseDataset(data.Dataset):
         # get array dtype
         samples_dtype = self.__getitem__(0)[0].dtype
         targets_dtype = self.__getitem__(0)[1].dtype
-        # rseerve disk space
+        # reserve disk space
         fs = create_npy(path / 'samples.npy', samples_shape, samples_dtype)
         ft = create_npy(path / 'targets.npy', targets_shape, targets_dtype)
 
