@@ -1,5 +1,5 @@
 import numpy as np
-import obspy
+#import obspy
 
 from . import utils
 from .dirs import DatasetFolder
