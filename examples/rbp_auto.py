@@ -17,11 +17,10 @@ t0 = time.time()
 waveform = np.load('rbp.npy')
 print(f"Loading data takes {time.time() - t0} seconds.")
 t0 = time.time()
-model = cpic_v1(pretrained=False)
-with open('cpic_model.pickle', 'rb') as f:
+model = cpic_v2(pretrained=False)
+with open('cpic_simplified.pickle', 'rb') as f:
     state_dict = pickle.load(f)
 model.load_state_dict(state_dict)
-model = cpic_v2(pretrained=True)
 model.eval()
 print(f"Loading model takes {time.time() - t0} seconds.")
 
