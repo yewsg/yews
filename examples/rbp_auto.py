@@ -11,6 +11,7 @@ from yews.cpic import pick
 from yews.cpic.utils import sliding_window_view
 from yews.datasets.utils import stream2array
 from yews.models import cpic_v1
+from yews.models import cpic_v2
 
 t0 = time.time()
 waveform = np.load('rbp.npy')
@@ -20,6 +21,7 @@ model = cpic_v1(pretrained=False)
 with open('cpic_model.pickle', 'rb') as f:
     state_dict = pickle.load(f)
 model.load_state_dict(state_dict)
+model = cpic_v2(pretrained=True)
 model.eval()
 print(f"Loading model takes {time.time() - t0} seconds.")
 
