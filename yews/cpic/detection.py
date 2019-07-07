@@ -17,10 +17,12 @@ def find_nonzero_runs(a):
     return ranges - [0, 1]
 
 
-def detect(waveform, fs, wl, model, transform, g, threshold=0.5):
+def detect(waveform, fs, wl, model, transform, g, threshold=0.5,
+           batch_size=None):
     probs = compute_probs(model, transform, waveform,
                           shape=[3, fs * wl],
-                          step=[1, int(g * fs)])
+                          step=[1, int(g * fs)],
+                          batch_size=batch_size)
 
     probs[probs < threshold] = 0
     p_prob, s_prob = probs[1:]

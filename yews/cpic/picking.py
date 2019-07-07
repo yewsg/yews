@@ -19,10 +19,11 @@ def pick_arrivals(cf):
     return (np.nan, np.nan)
 
 
-def pick(waveform, fs, wl, model, transform, g=0.1):
+def pick(waveform, fs, wl, model, transform, g=0.1, batch_size=None):
     probs = compute_probs(model, transform, waveform,
                           shape=[3, fs * wl],
-                          step=[1, int(g * fs)])
+                          step=[1, int(g * fs)],
+                          batch_size=batch_size)
 
     # compute cf
     cf_p, cf_s = probs2cfs(probs)

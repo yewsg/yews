@@ -13,12 +13,23 @@ def probs2cfs(probs, sigma=3):
 
     return cf_p, cf_s
 
-def compute_probs(model, transform, waveform, shape, step):
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+def compute_probs(model, transform, waveform, shape, step, batch_size=None):
     model.eval()
     with torch.no_grad():
         windows = np.squeeze(sliding_window_view(waveform, shape, step))
         windows = torch.stack([transform(window) for window in windows])
-        outputs = model(windows)
+        if batch_size:
+            outputs = []
+            for batch in chunks(windows, batch_size):
+                outputs.append(model(batch))
+            outputs = torch.cat(outputs, dim=0)
+        else:
+            outputs = model(windows)
 
     if next(model.parameters()).is_cuda:
         outputs = outputs.cpu().numpy()
