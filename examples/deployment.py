@@ -27,7 +27,7 @@ transform = tf.Compose([
 fig, axes = plt.subplots(4, 1, figsize=(6, 8), sharex=True)
 
 pick_results = pick(array, 100, 20, model, transform, 0.5)
-ts = st[0].times()
+ts = st[0].times()[:10000]
 ax1 = axes[0]
 ax1.plot(ts, array[2], 'k')
 ax1.set_ylabel('Amplitude (counts)')
@@ -118,11 +118,11 @@ ax2.set_ylabel('Probability ratio (log10)')
 ax1.set_xlabel('Time (second)')
 fig.tight_layout()
 
-fig, ax = plt.subplots(1,1, figsize=(10, 4))
+fig, axes = plt.subplots(2, 1, figsize=(10, 4), sharex=True)
 st = obspy.read('/data/sp.mseed',
                 starttime=origin_time,
                 endtime=origin_time + 7200)
-ts = st[0].times()
+ts = st[0].times()[:720000]
 array = stream2array(st)
 model = cpic(pretrained=True)
 model = nn.DataParallel(model)
@@ -134,17 +134,20 @@ transform = tf.Compose([
 ])
 
 pick_results = pick(array, 100, 20, model, transform, 0.5)
-ax1 = ax
+ax1 = axes[0]
 ax1.plot(ts, array[2], 'k')
 ax1.set_ylabel('Amplitude (counts)')
-ax2 = ax1.twinx()
+ax1.grid()
+ax2 = axes[1]
 tp = np.linspace(5, ts[-1]-15, len(pick_results['cf_p']))
-ax2.plot(tp, pick_results['cf_p'])
-ax2.plot(tp, pick_results['cf_s'])
+ax2.plot(tp, pick_results['cf_p'], label='P-wave')
+ax2.plot(tp, -pick_results['cf_s'], label='S-wave')
 ax2.set_xlim(0, 7200)
 ax2.grid()
 ax2.set_ylabel('Probability ratio (log10)')
+ax2.set_ylim([-2, 2])
+ax2.legend()
 
-ax1.set_xlabel('Time (second)')
+ax2.set_xlabel('Time (second)')
 fig.tight_layout()
 plt.show()

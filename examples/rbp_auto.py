@@ -4,11 +4,10 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from scipy.ndimage.filters import gaussian_filter1d
-from scipy.special import expit
 from torch import nn
 
 import yews.transforms as tf
+from yews.cpic import pick
 from yews.cpic.utils import sliding_window_view
 from yews.datasets.utils import stream2array
 from yews.models import cpic_v1
@@ -16,7 +15,6 @@ from yews.models import cpic_v1
 t0 = time.time()
 waveform = np.load('rbp.npy')
 print(f"Loading data takes {time.time() - t0} seconds.")
-print(waveform.shape)
 t0 = time.time()
 model = cpic_v1(pretrained=False)
 with open('cpic_model.pickle', 'rb') as f:
@@ -32,34 +30,10 @@ transform = tf.Compose([
 ])
 
 t0 = time.time()
-windows = np.squeeze(sliding_window_view(waveform, [3, 2000], [1, 20]))
-windows = torch.stack([transform(window) for window in windows])
-print(f"Breaking into windows takes {time.time() - t0} seconds.")
-print(windows.shape)
-
-t0 = time.time()
-outputs = []
-batch = 15
-with torch.no_grad():
-    for i in range(0, 1000, batch):
-        outputs.append(model(windows[i:(i+batch)]))
-outputs = np.concatenate(outputs, axis=0)
-print(f"Computing outputs on windows takes {time.time() - t0} seconds.")
-print(outputs.shape)
-
-# convert outputs to probabilities
-probs = expit(outputs).T
-probs /= probs.sum(axis=0)
-
-# convert probabilities to cfs
-cf_p = np.log10(probs[1] / (probs[0] + 1e-5))
-cf_s = np.log10(probs[2] / (probs[0] + 1e-5))
-cf_p[probs.argmax(axis=0) != 1] = 0
-cf_s[probs.argmax(axis=0) != 2] = 0
-sigma=3
-cf_p = gaussian_filter1d(cf_p, sigma=sigma)
-cf_s = gaussian_filter1d(cf_s, sigma=sigma)
-print(cf_p.shape)
+pick_results = pick(waveform, 100, 20, model, transform, 0.5, 15)
+print(f"Picking takes {time.time() - t0} seconds.")
+cf_p = pick_results['cf_p']
+cf_s = pick_results['cf_s']
 
 fig, axes = plt.subplots(2, 1, sharex=True, figsize=(12, 6))
 # Waveform
@@ -79,7 +53,7 @@ ax.set_ylabel('Waveforms')
 ax.legend(loc=1)
 # outputs
 ax = axes[1]
-td = np.linspace(-22, 225, cf_p.shape[0])
+td = np.linspace(5, 225, cf_p.shape[0])
 ax.plot(td, cf_p, 'b:', label='P CF')
 ax.plot(td, cf_s, 'g:', label='S CF')
 ax.axvline(x=120, color='b', linestyle='-', label='P catalog')
