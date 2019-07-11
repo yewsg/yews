@@ -45,7 +45,7 @@ class ToInt(BaseTransform):
         return self.lookup[label]
 
 
-class SoftClip(object):
+class SoftClip(BaseTransform):
     """Soft clip input to compress large amplitude signals.
 
     """
