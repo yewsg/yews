@@ -1,8 +1,8 @@
-from .dirs import DatasetArrayFolder
+from .base import Dataset
 from .utils import extract_tar
 from .utils import URL
 
-class PackagedDataset(DatasetArrayFolder):
+class PackagedDataset(Dataset):
     """Packaged Dataset in .tar.* foramt.
 
     Args:

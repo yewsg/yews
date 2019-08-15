@@ -3,16 +3,7 @@ from pathlib import Path
 from torch.utils import data
 
 from .utils import create_npy
-
-try:
-    from tqdm import tqdm
-except ModuleNotFoundError:
-    # fake tqdm if it's not installed
-    def tqdm(iterator):
-        for i, item in enumerate(iterator):
-            if i % 1000 == 0:
-                print(f"{i} / {len(iterator)}")
-            yield item
+from .utils import tqdm
 
 def is_dataset(obj):
     r"""Verfy if a object is ``dataset-like`` defined in
@@ -207,3 +198,101 @@ class PathDataset(BaseDataset):
 
     def handle_invalid(self):
         raise ValueError(f"{self.root} is not a valid path.")
+
+
+class DirDataset(PathDataset):
+    """An abstract class representing a Dataset in a directory.
+
+    Args:
+        path (object): Path to the directory.
+        sample_transform (callable, optional): A function/transform that takes
+            a sample and returns a transformed version.
+        target_transform (callable, optional): A function/transform that takes
+            a target and transform it.
+
+    Attributes:
+        samples (list): List of samples in the dataset.
+        targets (list): List of targets in teh dataset.
+
+    """
+
+    def is_valid(self):
+        """Determine if root is a valid directory.
+
+        """
+        path_exists = super().is_valid()
+        valid_dir = self.root.is_dir()
+        return path_exists and valid_dir
+
+    def handle_invalid(self):
+        raise ValueError(f"{self.root} is not a valid directory.")
+
+
+class FileDataset(PathDataset):
+    """An abstract class representing a Dataset in a file.
+
+    Args:
+        path (object): File of the file.
+        sample_transform (callable, optional): A function/transform that takes
+            a sample and returns a transformed version.
+        target_transform (callable, optional): A function/transform that takes
+            a target and transform it.
+
+    Attributes:
+        samples (list): List of samples in the dataset.
+        targets (list): List of targets in teh dataset.
+
+    """
+
+    def is_valid(self):
+        return self.root.is_file()
+
+    def handle_invalid(self):
+        raise ValueError(f"{self.root} is not a file.")
+
+
+class Dataset(DirDataset):
+    """Yew's standard data loader for a folder of ``.npy`` files where samples
+    are arranged in the following way: ::
+
+        root/samples.npy: each row is a sample
+        root/targets.npy: each row is a target
+
+    where both samples and targets can be arrays.
+
+    Args:
+        path (object): Path to the dataset folder.
+        sample_transform (callable, optional): A function/transform that takes
+            a sample and returns a transformed version.
+        target_transform (callable, optional): A function/transform that takes
+            a target and transform it.
+
+    Attributes:
+        samples (list): List of samples in the dataset.
+        targets (list): List of targets in the dataset.
+
+    """
+
+    def is_valid(self):
+        """Determine if root is a valid array folder.
+
+        """
+        valid_dir = super().is_valid()
+        has_samples = (self.root / 'samples.npy').exists()
+        has_targets = (self.root / 'targets.npy').exists()
+        return  valid_dir and has_samples and has_targets
+
+    def handle_invalid(self):
+        raise ValueError(f"{self.root} is not a valid array folder. Requires samples.npy and targets.npy.")
+
+    def build_dataset(self):
+        """Returns samples and targets.
+
+        """
+        samples_path = self.root / 'samples.npy'
+        targets_path = self.root / 'targets.npy'
+
+        samples = utils.load_npy(samples_path)
+        targets = utils.load_npy(targets_path)
+
+        return samples, targets

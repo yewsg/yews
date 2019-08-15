@@ -14,6 +14,17 @@ try:
 except ModuleNotFoundError:
     has_obspy = False
 
+###############################################################################
+#
+#                           Path related utils
+#
+###############################################################################
+def get_files_under_dir(root, pattern):
+    """Construct list of path objects given pattern under the root directory.
+
+    """
+    return [p for p in Paht(root).glob(pattern) if p.is_file()]
+
 ################################################################################
 #
 #                       ObsPy related reading and loading
