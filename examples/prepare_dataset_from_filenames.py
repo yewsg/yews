@@ -6,8 +6,8 @@ from obspy import read
 from obspy import UTCDateTime as utc
 from pandas import DataFrame
 
-from yews.utils import get_files_under_dir
-from yews.utils import read_frame_obspy
+from yews.datasets.utils import get_files_under_dir
+from yews.datasets.utils import read_frame_obspy
 
 def retrieve_info_from_path(path):
     name = path.name
@@ -55,6 +55,7 @@ def path2pattern(path):
     name[2] = '*'
     name = '.'.join(name)
     return root / name
+
 
 if __name__ == '__main__':
     ###########################################################################
@@ -113,19 +114,19 @@ if __name__ == '__main__':
         data = read_frame_obspy(str(row['path']))
         if data.shape != (3, 9600):
             print(f"Phase #{index} is invalid.")
-            continue # skip broekn data
+            continue # skip broken data
         phase = row['phase']
         samples_list.append(data[:, 4600:5400])
-        targets_list.append(phase)
+        targets_list.append([phase, index])
         if phase == 'P':
             samples_list.append(data[:, 1600:2400])
-            targets_list.append('N')
+            targets_list.append(['N', index])
         elif phase == 'S':
             samples_list.append(data[:, 7800:8600])
-            targets_list.append('N')
+            targets_list.append(['N', index])
         else:
             print(f"{index} has a invalid phase {phase}.")
-            continue
+            continue # skip unknown phases
     samples = np.stack(samples_list)
     targets = np.stack(targets_list)
 
