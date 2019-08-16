@@ -109,10 +109,14 @@ if __name__ == '__main__':
 
     samples_list = []
     targets_list = []
-    for index, row in phases.iloc[:100].iterrows():
+    for index, row in phases.iterrows():
         if index % 1000 == 0:
             print(index)
-        data = read_frame_obspy(str(row['path']))
+        try:
+            data = read_frame_obspy(str(row['path']))
+        except ValueError:
+            print(f"Waveform #{index} is broken. Skipped.")
+            continue
         if data.shape != (3, 9600):
             print(f"Phase #{index} is invalid.")
             continue # skip broken data
