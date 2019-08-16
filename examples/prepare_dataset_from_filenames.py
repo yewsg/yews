@@ -22,7 +22,7 @@ def retrieve_info_from_path(path):
     phase, station, channel = phase_info[:3]
     arrival_list = phase_info[3:]
     arrival_list.insert(6, '.')
-    arrival_list.insert(3,'T')
+    arrival_list.insert(3, 'T')
     arrival=float(utc(''.join(arrival_list)))
 
     return {
@@ -63,6 +63,7 @@ if __name__ == '__main__':
     #                   Construct info tables from filenames
     #
     ###########################################################################
+
     paths = [Path(a) for a in ['events.csv', 'phases.csv', 'stations.csv']]
     if all([a.exists for a in paths]):
         events = pd.read_csv(paths[0], index_col='id')
