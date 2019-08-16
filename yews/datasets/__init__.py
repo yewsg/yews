@@ -9,3 +9,15 @@ from .packaged_datasets import PackagedDataset
 from .packaged_datasets import SCSN
 from .packaged_datasets import Wenchuan
 from .utils import *
+
+__all__ = [
+    'BaseDataset',
+    'PathDataset',
+    'FileDataset',
+    'DirDataset',
+    'Dataset',
+    'PackagedDataset',
+    'Wenchuan',
+    'Mariana',
+    'SCSN',
+]
