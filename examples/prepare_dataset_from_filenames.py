@@ -65,7 +65,7 @@ if __name__ == '__main__':
     ###########################################################################
 
     paths = [Path(a) for a in ['events.csv', 'phases.csv', 'stations.csv']]
-    if all([a.exists for a in paths]):
+    if all([a.exists() for a in paths]):
         events = pd.read_csv(paths[0], index_col='id')
         phases = pd.read_csv(paths[1])
         events = pd.read_csv(paths[2], index_col='station')
