@@ -107,11 +107,12 @@ if __name__ == '__main__':
     #
     ###########################################################################
 
-    samples_list = []
-    targets_list = []
+    group_size = 10000
     for index, row in phases.iterrows():
-        if index % 1000 == 0:
+        if index % group_size == 0:
             print(index)
+            samples_list = []
+            targets_list = []
         try:
             data = read_frame_obspy(str(row['path']))
         except ValueError:
@@ -132,11 +133,14 @@ if __name__ == '__main__':
         else:
             print(f"{index} has a invalid phase {phase}.")
             continue # skip unknown phases
+
+        if index % group_size == (group_size - 1):
+            samples = np.stack(samples_list)
+            targets = np.stack(targets_list)
+            np.save(f'samples{index+1}.npy', samples)
+            np.save(f'targets{index+1}.npy', targets)
+
     samples = np.stack(samples_list)
     targets = np.stack(targets_list)
-
-    print(samples.shape)
-    print(targets.shape)
-
-    np.save('samples.npy', samples)
-    np.save('targets.npy', targets)
+    np.save(f'samples{index+1}.npy', samples)
+    np.save(f'targets{index+1}.npy', targets)
