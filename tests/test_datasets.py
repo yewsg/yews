@@ -158,6 +158,7 @@ class TestPathDataset:
             dset = self.DummyPathDataset(path='abc')
 
 
+@pytest.mark.smoke
 class TestDirDataset:
 
     class DummyDirDataset(datasets.DirDataset):
@@ -171,29 +172,24 @@ class TestDirDataset:
             dset = self.DummyDirDataset(path='setup.py')
 
 
-class TestDatasetArrayFolder:
+@pytest.mark.smoke
+class TestDataset:
 
     def test_loading_npy(self):
-        dset = datasets.DatasetArrayFolder(path=root_dir / 'array_folder')
+        dset = datasets.Dataset(path=root_dir / 'array_folder')
         assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
         default_memory_limit = datasets.utils.get_memory_limit()
         datasets.utils.set_memory_limit(1)
-        dset = datasets.DatasetArrayFolder(path=root_dir / 'array_folder')
+        dset = datasets.Dataset(path=root_dir / 'array_folder')
         assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
         datasets.utils.set_memory_limit(default_memory_limit)
 
     def test_invalid_root(self):
         with pytest.raises(ValueError):
-            dset = datasets.DatasetArrayFolder(path=root_dir)
+            dset = datasets.Dataset(path=root_dir)
 
 
-class TestDatasetFolder:
-
-    def test_loading_folder(self):
-        dset = datasets.DatasetFolder(path=root_dir/ 'folder', loader=np.load)
-        assert all([dset[0][0].shape == (3, 100), type(dset[0][1]) is str])
-
-
+@pytest.mark.smoke
 class TestFileDataset:
 
     class DummpyFileDataset(datasets.FileDataset):
@@ -205,13 +201,6 @@ class TestFileDataset:
         dset = self.DummpyFileDataset(path='setup.py')
         with pytest.raises(ValueError):
             dset = self.DummpyFileDataset(path='.')
-
-
-class TestDatasetArray:
-
-    def test_loading_array(self):
-        dset = datasets.DatasetArray(path=root_dir / 'array/data.npy')
-        assert all([dset[0][0].shape == (3, 100), dset[0][1].shape == ()])
 
 
 class TestPackagedDataset:

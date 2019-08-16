@@ -3,6 +3,7 @@ from pathlib import Path
 from torch.utils import data
 
 from .utils import create_npy
+from .utils import load_npy
 from .utils import tqdm
 
 def is_dataset(obj):
@@ -292,7 +293,7 @@ class Dataset(DirDataset):
         samples_path = self.root / 'samples.npy'
         targets_path = self.root / 'targets.npy'
 
-        samples = utils.load_npy(samples_path)
-        targets = utils.load_npy(targets_path)
+        samples = load_npy(samples_path)
+        targets = load_npy(targets_path)
 
         return samples, targets
