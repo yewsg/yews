@@ -186,7 +186,7 @@ class TestDataset:
 
     def test_invalid_root(self):
         with pytest.raises(ValueError):
-            dset = datasets.Dataset(path=root_dir)
+            datasets.Dataset(path=root_dir)
 
 
 @pytest.mark.smoke
