@@ -103,14 +103,23 @@ if __name__ == '__main__':
 
     ###########################################################################
     #
-    #                 Construct NPY for samples and targets
+    #                 Construct NPYs for samples and targets
     #
     ###########################################################################
 
-    group_size = 10000
+    group_size = 100000
     for index, row in phases.iterrows():
         if index % group_size == 0:
             print(index)
+            # save previous group
+            try:
+                samples = np.stack(samples_list)
+                targets = np.stack(targets_list)
+                np.save(f'samples{index}.npy', samples)
+                np.save(f'targets{index}.npy', targets)
+            except NameError:
+                pass
+            # initialized new group
             samples_list = []
             targets_list = []
         try:
