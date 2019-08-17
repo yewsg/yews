@@ -143,13 +143,29 @@ if __name__ == '__main__':
             print(f"{index} has a invalid phase {phase}.")
             continue # skip unknown phases
 
-        if index % group_size == (group_size - 1):
-            samples = np.stack(samples_list)
-            targets = np.stack(targets_list)
-            np.save(f'samples{index+1}.npy', samples)
-            np.save(f'targets{index+1}.npy', targets)
-
     samples = np.stack(samples_list)
     targets = np.stack(targets_list)
     np.save(f'samples{index+1}.npy', samples)
     np.save(f'targets{index+1}.npy', targets)
+
+    ###########################################################################
+    #
+    #                 Combine NPYs for samples and targets
+    #
+    ###########################################################################
+
+    sample_names = [str(p) for p in Path('.').glob('sample*.npy')]
+    sample_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+    target_names = [str(p) for p in Path('.').glob('target*.npy')]
+    target_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+
+    samples = np.concatenate(list(map(np.load, sample_names)), axis=0)
+    targets = np.concatenate(list(map(np.load, target_names)), axis=0)
+
+    # remove temp files
+    [p.unlink() for p in Path('.').glob('samples*.npy')]
+    [p.unlink() for p in Path('.').glob('targets*.npy')]
+
+    # create new files
+    np.save('samples.npy', samples)
+    np.save('targets.npy', targets)
