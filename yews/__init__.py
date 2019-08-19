@@ -6,3 +6,6 @@ from yews import transforms
 from yews import models
 from yews import train
 from yews import cpic
+
+# experimentally bring some modules to the top level
+from yews.datasets import Dataset
