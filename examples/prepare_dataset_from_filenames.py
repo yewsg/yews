@@ -154,6 +154,20 @@ if __name__ == '__main__':
     #
     ###########################################################################
 
+    # Note: the entire dataset is around 20GB whichs fit into the memory on the
+    # testing machine. In the case of dataset too large for the memory,
+    # consider using yews.dataset.utils.create_npy to create a memmap on disk
+    # and fill in the fractional npy files.
+    #
+    # Below is an example:
+    # >> total = yews.datasets.utils.create_npy('combined.npy', shape, dtype)
+    # >> total[:num_first_file, :, :] = np.load('first.npy', mmap_mode='r')
+    #
+    # continue doing it for all npy files, then flush and del the memmap
+    # object.
+    # >> total.flush()
+    # >> del total
+
     sample_names = [str(p) for p in Path('.').glob('sample*.npy')]
     sample_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
     target_names = [str(p) for p in Path('.').glob('target*.npy')]
