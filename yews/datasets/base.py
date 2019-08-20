@@ -74,7 +74,7 @@ class BaseDataset(data.Dataset):
         self.size = 0
 
     def build_dataset(self):
-        """Method to construct ``samples`` and ``targets`` from ``self.root``.
+        """Construct ``samples`` and ``targets`` from ``self.root``.
 
         Returns:
             Constructed dataset-like objects of samples and targets. They will
@@ -84,6 +84,11 @@ class BaseDataset(data.Dataset):
         raise NotImplementedError
 
     def export_dataset(self, path):
+        """Export ``self.samples`` and ``self.targets`` to ``npy`` files.
+
+        Returns:
+            create two ``npy`` files at the given ``path``.
+        """
         path = Path(path)
         # get array shape
         samples_shape = (self.__len__(), ) + self.__getitem__(0)[0].shape
