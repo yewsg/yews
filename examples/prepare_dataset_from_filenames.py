@@ -70,6 +70,7 @@ if __name__ == '__main__':
         phases = pd.read_csv(paths[1])
         events = pd.read_csv(paths[2], index_col='station')
     else:
+        # retrieve trace table
         files = get_files_under_dir('/data/ok_new','**/*.SAC')
         info = map(retrieve_info_from_path, files)
         trace_table = DataFrame(info)
@@ -131,8 +132,10 @@ if __name__ == '__main__':
             print(f"Phase #{index} is invalid.")
             continue # skip broken data
         phase = row['phase']
+        # 5 second before and 15 second after phase arrival
         samples_list.append(data[:, 4600:5400])
         targets_list.append([phase, index])
+        # one minute before P or one minute after S
         if phase == 'P':
             samples_list.append(data[:, 1600:2400])
             targets_list.append(['N', index])

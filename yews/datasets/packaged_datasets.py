@@ -84,7 +84,7 @@ class Mariana(PackagedDataset):
 
 
 class SCSN(PackagedDataset):
-    """`SCSN https://service.scedc.caltech.edu/ftp/ross_etal_2018_bssa/scsn_ps_2000_2017_shuf.hdf5`_ Dataset.
+    """`SCSN <https://service.scedc.caltech.edu/ftp/ross_etal_2018_bssa/scsn_ps_2000_2017_shuf.hdf5>`_ Dataset.
 
     Args:
         path (str): Root directory where ``scsn/samples.npy`
