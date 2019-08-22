@@ -11,6 +11,7 @@ except ModuleNotFoundError:
 __all__ = [
     "ToTensor",
     "ToInt",
+    "Select",
     "ZeroMean",
     "CutWaveform",
     "SoftClip",
@@ -45,14 +46,33 @@ class ToInt(BaseTransform):
         return self.lookup[label]
 
 
+class Select(BaseTransform):
+    """Select an item from the iterable of each datapoint.
+
+    Args:
+        index (int): Index to select the item.
+    """
+
+    def __init__(self, index):
+        if isinstance(index, int):
+            self.index = index
+        else:
+            raise ValueError("Index needs to be a int.")
+
+    def __call__(self, label):
+        return label[self.index]
+
+
 class SoftClip(BaseTransform):
     """Soft clip input to compress large amplitude signals.
 
     """
 
-    def __init__(self, scale=1):
-        super(SoftClip, self).__init__()
-        self.scale = scale
+    def __init__(self, scale=1.):
+        if isinstance(scale, float) or isinstance(scale, int):
+            self.scale = scale
+        else:
+            raise ValueError("Scale needs to be a float.")
 
     def __call__(self, wav):
         return expit(wav * self.scale)
