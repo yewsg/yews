@@ -147,7 +147,7 @@ if __name__ == '__main__':
     trainer = Trainer(model, CrossEntropyLoss(), lr=0.1)
 
     # Training process
-    trainer.train(train_loader, val_loader, epochs=10, print_freq=100)
+    trainer.train(train_loader, val_loader, epochs=200, print_freq=1000)
 
     # Save training results to disk
-    trainer.results(path='wenchuan_results.pth.tar')
+    trainer.results(path='ok_results.pth.tar')
