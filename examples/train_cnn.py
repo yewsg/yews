@@ -134,8 +134,8 @@ if __name__ == '__main__':
     # val_set = Subset(dset, range(train_length, len(dset)))
 
     # Dataloaders
-    train_loader = DataLoader(train_set, batch_size=100, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_set, batch_size=1000, shuffle=False, num_workers=8)
+    train_loader = DataLoader(train_set, batch_size=512, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_set, batch_size=10000, shuffle=False, num_workers=8)
 
     # CNN model
     model = Cpic40()
