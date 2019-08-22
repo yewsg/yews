@@ -8,6 +8,7 @@ from torch.utils.data import Subset
 from yews import Dataset
 from yews import models
 from yews import transforms
+from yews.datasets.utils import set_memory_limit
 from yews.train import Trainer
 
 class Cpic40(nn.Module):
@@ -106,6 +107,8 @@ class Cpic40(nn.Module):
         return out
 
 if __name__ == '__main__':
+    set_memory_limit(30 * 1024 ** 3)
+
     # Preprocessing
     waveform_transform = transforms.Compose([
         transforms.ZeroMean(),
