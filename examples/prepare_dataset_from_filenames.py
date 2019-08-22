@@ -49,6 +49,7 @@ def retrieve_station_info(path):
     }
 
 def path2pattern(path):
+    path = Path(path)
     root = path.parent
     name = path.name
     name = name.split('.')
@@ -90,7 +91,7 @@ if __name__ == '__main__':
 
         # retrive phase table
         phases = trace_table[['id','phase','arrival','station', 'path']].drop_duplicates(subset=['id', 'phase', 'arrival', 'station'])
-        phases['path'] = phases[['path']].applymap(path2pattern)
+        phases['path'] = phases['path'].apply(path2pattern)
         phases.reset_index(drop=True, inplace=True)
         phases.to_csv('phases.csv')
 
