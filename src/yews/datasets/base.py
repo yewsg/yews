@@ -101,11 +101,14 @@ class BaseDataset(data.Dataset):
         ft = create_npy(path / 'targets.npy', targets_shape, targets_dtype)
 
         # populate memmap numpy array
-        for i in tqdm(range(self.__len__())):
+        for i in range(self.__len__()):
             # add one item in the dataset
             data_point = self[i]
             fs[i] = data_point[0]
             ft[i] = data_point[1]
+
+            if (i % 100):
+                print(f"Exporting {i} / {self.__len__()}")
 
         del fs
         del ft
