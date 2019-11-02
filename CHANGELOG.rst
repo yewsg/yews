@@ -11,6 +11,17 @@ Experimental versions
 Version 0.0.5, Under Development
 --------------------------------
 
+- experiment with Raspberry Pi deployment
+- fix transforms bug during inference
+- simplify CPIC model
+- enable batch size during deployment
+- reorganize dataset module
+- create new examples based on functional programming interface
+- temporarily disable progress bar during data export
+
+Version 0.0.5, 2019-05-01
+--------------------------------
+
 - fix setup.cfg bug (tests_require instead of test_require)
 - sync meta.yaml and setup.cfg for consistent build
 - documents improvements
