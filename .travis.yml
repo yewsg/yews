@@ -24,7 +24,7 @@ before_install:
   # Create a conda environment using the required packages
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
   - source activate test-environment
-  - conda install pytorch -c pytorch
+  - conda install pytorch cpuonly -c pytorch
   - conda install obspy -c conda-forge
   - pip install pytest pytest-cov codecov
 
