@@ -7,7 +7,7 @@ release: test wait clean build wait
 	twine upload dist/* -r pypi
 
 test:
-	pytest -m "not password" --cov-config .coveragerc --cov yews tests
+	pytest -m "not large_download" --cov-config .coveragerc --cov yews tests
 
 wait:
 	sleep 10
