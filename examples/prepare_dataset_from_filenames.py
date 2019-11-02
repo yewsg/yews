@@ -5,7 +5,6 @@ import pandas as pd
 from obspy import read
 from obspy import UTCDateTime as utc
 from pandas import DataFrame
-
 from yews.datasets.utils import get_files_under_dir
 from yews.datasets.utils import read_frame_obspy
 
@@ -72,7 +71,7 @@ if __name__ == '__main__':
         events = pd.read_csv(paths[2], index_col='station')
     else:
         # retrieve trace table
-        files = get_files_under_dir('/data/ok_new','**/*.SAC')
+        files = get_files_under_dir('data/ok_full','**/*.SAC')
         info = map(retrieve_info_from_path, files)
         trace_table = DataFrame(info)
 
