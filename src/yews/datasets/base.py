@@ -103,12 +103,9 @@ class BaseDataset(data.Dataset):
         # populate memmap numpy array
         for i in tqdm(range(self.__len__())):
             # add one item in the dataset
-            fs[i] = self[i][0]
-            ft[i] = self[i][1]
-
-            # update disk files
-            fs.flush()
-            ft.flush()
+            data_point = self[i]
+            fs[i] = data_point[0]
+            ft[i] = data_point[1]
 
         del fs
         del ft
