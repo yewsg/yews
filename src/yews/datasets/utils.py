@@ -23,7 +23,11 @@ def get_files_under_dir(root, pattern):
     """Construct list of path objects given pattern under the root directory.
 
     """
-    return [p for p in Path(root).glob(pattern) if p.is_file()]
+    root = Path(root)
+    if root.exists():
+        return [p for p in root.glob(pattern) if p.is_file()]
+    else:
+        raise FileNotFoundError(f"Direcotry {root} does not exist.")
 
 ################################################################################
 #
