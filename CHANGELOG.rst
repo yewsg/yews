@@ -8,7 +8,14 @@ Development versions
 Experimental versions
 =====================
 
-Version 0.0.5, Under Development
+Version 0.0.7, Under Development
+--------------------------------
+
+- Move anaconda recipe to a separate directory to avoid building unintended
+  programs
+- Build anaconda package from github master branch instead local path
+
+Version 0.0.6, 2019-11-04
 --------------------------------
 
 - experiment with Raspberry Pi deployment

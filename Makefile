@@ -2,8 +2,10 @@
 
 .PHONY: clean test anaconda pypi build wait release
 
-release: test wait clean build wait
-	anaconda upload $(shell conda build . --output)
+release: test wait clean build wait upload
+
+upload:
+	$(MAKE) -C anaconda upload
 	twine upload dist/* -r pypi
 
 test:
@@ -15,7 +17,7 @@ wait:
 build: anaconda pypi
 
 anaconda:
-	time conda build . -c pytorch
+	$(MAKE) -C $@ build
 
 pypi:
 	python setup.py dists
@@ -23,4 +25,5 @@ pypi:
 
 clean:
 	find . | grep -E "(__pycache__|\.pyc|\.pyo)" | xargs rm -rf
+	$(MAKE) -C anaconda clean
 	rm -rf build dist .eggs htmlcov *.npy *.tar.bz2 ._* .coverage .pytest_cache
