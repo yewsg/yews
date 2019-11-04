@@ -1,3 +1,8 @@
+# project specific
+*.pth
+/rbp
+/experimental
+
 # ctags
 tags
 !tags/
@@ -106,6 +111,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-*.pth
-/rbp
-/experimental
