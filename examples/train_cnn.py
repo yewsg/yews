@@ -4,7 +4,6 @@ from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
 from torch.utils.data import Subset
-
 from yews import Dataset
 from yews import models
 from yews import transforms
@@ -126,7 +125,7 @@ if __name__ == '__main__':
     ])
 
     # Dataset
-    dset = Dataset(path='/data/ok',
+    dset = Dataset(path='data/ok',
                    sample_transform=waveform_transform,
                    target_transform=target_transform)
     train_length = int(len(dset) * 0.8)
