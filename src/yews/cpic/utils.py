@@ -12,7 +12,7 @@ def probs2cfs(probs, sigma=3):
     cf_s = gaussian_filter1d(cf_s, sigma=sigma)
 
     return cf_p, cf_s
-        
+
 def chunks(array, size, offset=0):
     """Yield successive n-sized chunks from array, starting at an offset before
     the end of the previous chunk."""

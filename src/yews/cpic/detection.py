@@ -25,7 +25,7 @@ def detect(waveform, fs, wl, model, transform, g, threshold=0.5,
     memory constraints. Should be an integer multiple of fs*wl"""
     if size_limit:
         if not (isinstance(size_limit, int)):
-            raise TypeError("size_limit must be type integer") 
+            raise TypeError("size_limit must be type integer")
         if size_limit % (fs*wl) != 0:
             raise ValueError("size_limit must be integer multiple of fs*wl")
         probs_list = []
@@ -37,7 +37,7 @@ def detect(waveform, fs, wl, model, transform, g, threshold=0.5,
                                   batch_size=batch_size)
             probs_list.append(probs)
         probs = np.concatenate(probs_list, axis=1)
-        
+
     else:
         probs = compute_probs(model, transform, waveform,
                               shape=[3, fs * wl],
