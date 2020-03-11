@@ -30,6 +30,7 @@ class PackagedDataset(Dataset):
             super().__init__(**kwargs)
         except ValueError:
             if download:
+                print(self.url)
                 url = URL(self.url)
                 # download compressed file from source if not exists
                 fpath = self.root / url.url_filename
@@ -61,7 +62,7 @@ class Wenchuan(PackagedDataset):
 
     """
 
-    url = 'https://www.dropbox.com/s/idk4eyyleodof2q/wenchuan.tar?dl=1'
+    url = 'http://geophysics.eas.gatech.edu/people/lijun/wenchuan.tar.xz'
 
 
 class Mariana(PackagedDataset):
@@ -80,7 +81,7 @@ class Mariana(PackagedDataset):
 
     """
 
-    url = 'https://www.dropbox.com/s/2hpurxeoo2ungim/mariana.tar?dl=1'
+    url = 'http://geophysics.eas.gatech.edu/people/lijun/mariana.tar.xz'
 
 
 class SCSN(PackagedDataset):
