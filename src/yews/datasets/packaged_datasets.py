@@ -62,7 +62,8 @@ class Wenchuan(PackagedDataset):
 
     """
 
-    url = 'http://geophysics.eas.gatech.edu/people/lijun/wenchuan.tar.xz'
+    #url = 'http://geophysics.eas.gatech.edu/people/lijun/wenchuan.tar.xz'
+    url = 'https://www.dropbox.com/s/idk4eyyleodof2q/wenchuan.tar?dl=0'
 
 
 class Mariana(PackagedDataset):
