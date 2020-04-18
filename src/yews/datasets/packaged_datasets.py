@@ -46,6 +46,10 @@ class PackagedDataset(Dataset):
                                  f"Consider set `download=True` and remove broken bz2 file.")
 
 
+class SCSN_polarity(PackagedDataset):
+    url = 'abc'
+
+
 class Wenchuan(PackagedDataset):
     """`Wenchuan <https://arxiv.org/abs/1901.06396>`_ Dataset.
 
@@ -62,8 +66,7 @@ class Wenchuan(PackagedDataset):
 
     """
 
-    #url = 'http://geophysics.eas.gatech.edu/people/lijun/wenchuan.tar.xz'
-    url = 'https://www.dropbox.com/s/idk4eyyleodof2q/wenchuan.tar?dl=0'
+    url = 'http://geophysics.eas.gatech.edu/people/lijun/wenchuan.tar.xz'
 
 
 class Mariana(PackagedDataset):
