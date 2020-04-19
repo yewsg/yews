@@ -13,9 +13,6 @@ class PolarityV1(nn.Module):
     def __init__(self):
         super().__init__()
         # 600 -> 512
-        # n*3*10*600
-        # nn.Cov2d(3,16,kernel_size=(3,7),stride=1,padding=....)
-        # (3,7) 3>10 7>600 in the end use (3,3).
         self.layer1 = nn.Sequential(
             nn.Conv1d(1, 16, kernel_size=3, stride=1, padding=425, bias=False),
             nn.BatchNorm1d(16),
