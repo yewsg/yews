@@ -9,3 +9,5 @@ class TestCPICModel:
         dummpy_input = torch.randn(1, 3, 2000)
         model = models.cpic(pretrained=True)
         model(dummpy_input)
+        model = models.cpic(pretrained=False)
+        model(dummpy_input)
