@@ -3,19 +3,33 @@ from pathlib import Path
 
 import obspy
 import pytest
-
 from yews.datasets import utils
 
 
 class TestObspyIO():
 
+    def TestGetFileUnderDir(self):
+        assert utils.get_files_under_dir('./assets/array') == [Path('/assets/array/data.npy')]
+        with pytest.raises(FileNotFoundError):
+            utils.get_files_under_dir('./no_exist_dir')
+
+
     def TestStream2Array(self):
         st = obspy.read()
         assert utils.stream2array(st).shape == (3, 3000)
+        utils.has_obspy = False
+        with pytest.raises(TypeError):
+            utils.stream2array(st).shape == (3, 3000)
+        utils.has_obspy = True
+
 
     def TestReadFrameObspy(self):
         path = 'tests/assets/sac/*.sac'
         assert utils.read_frame_obspy(path).shape == (3, 3000)
+        utils.has_obspy = False
+        with pytest.raises(TypeError):
+            utils.read_frame_obspy(path).shape == (3, 3000)
+        utils.has_obspy = True
 
 
 class TestMemoeryLimit():
