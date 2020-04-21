@@ -22,6 +22,7 @@ applying deep learning techniques on seismic waveform data.
 .. image:: https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true
     :target: https://ci.appveyor.com/project/lijunzh/yews
 
+..
 .. image:: https://codecov.io/gh/yewsg/yews/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/yewsg/yews
 
