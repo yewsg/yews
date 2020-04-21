@@ -8,26 +8,24 @@ from yews.datasets import utils
 
 class TestObspyIO():
 
-    def TestGetFileUnderDir(self):
-        assert utils.get_files_under_dir('./assets/array') == [Path('/assets/array/data.npy')]
+    def test_get_file_under_dir(self):
+        assert utils.get_files_under_dir('tests/assets/array', '*') == [Path('tests/assets/array/data.npy')]
         with pytest.raises(FileNotFoundError):
-            utils.get_files_under_dir('./no_exist_dir')
+            utils.get_files_under_dir('./no_exist_dir', '*')
 
-
-    def TestStream2Array(self):
+    def test_stream2array(self):
         st = obspy.read()
         assert utils.stream2array(st).shape == (3, 3000)
         utils.has_obspy = False
-        with pytest.raises(TypeError):
+        with pytest.raises(ModuleNotFoundError):
             utils.stream2array(st).shape == (3, 3000)
         utils.has_obspy = True
 
-
-    def TestReadFrameObspy(self):
+    def test_read_frame_obspy(self):
         path = 'tests/assets/sac/*.sac'
         assert utils.read_frame_obspy(path).shape == (3, 3000)
         utils.has_obspy = False
-        with pytest.raises(TypeError):
+        with pytest.raises(ModuleNotFoundError):
             utils.read_frame_obspy(path).shape == (3, 3000)
         utils.has_obspy = True
 
