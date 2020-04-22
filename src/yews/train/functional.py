@@ -17,7 +17,7 @@ def model_off_device(model):
     return model.module.to(torch.device('cpu'))
 
 def generate_tmp_name(prefix):
-    return f"{prefix}_{np.floor(time.time()):.0f}"
+    return f"{prefix}_{np.floor(time.time() * 1E6):.0f}"
 
 
 def rm_dir_content(path):
@@ -74,9 +74,9 @@ def accuracy(output, target, topk=(1,)):
 def train(model, train_loader, criterion, optimizer, epoch, print_freq):
     # performance metrics
     batch_time = CumulativeMovingAverageMeter()
-    data_time = CumulativeMovingAverageMeter()
-    losses = CumulativeMovingAverageMeter()
-    top1 = CumulativeMovingAverageMeter()
+    data_time  = CumulativeMovingAverageMeter()
+    losses     = CumulativeMovingAverageMeter()
+    top1       = CumulativeMovingAverageMeter()
 
     # swtich to train mode
     model.train()
