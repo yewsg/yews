@@ -1,8 +1,8 @@
 import torch.nn as nn
 
-# from .utils import load_state_dict_from_url
+from .utils import load_state_dict_from_url
 
-#import torch
+# import torch
 #try:
 #    from torch.hub import load_state_dict_from_url
 #except ImportError:
@@ -265,26 +265,43 @@ class FmV2(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(2),
             nn.Dropout(0.1),
+            
+            # 8,8 -> 4,4
 
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Dropout(0.1),
+
+        
+            # 4,4 -> 2,2
+
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Dropout(0.1),
+
+
+            # 2,2 -> 1,1
+
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Dropout(0.1),
+        
         )
 
 
-
-        self.avgpool = nn.AdaptiveAvgPool2d((8, 8))
         self.classifier = nn.Sequential(
-            nn.Linear(64 * 8 * 8, 128),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(128, 128),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(128, 3),
+            nn.Linear(64*1*1, 3),
         )
             
     def forward(self, x):
         x = self.features(x)
-        x = self.avgpool(x)
-        x = torch.flatten(x, 1)
+        x = x.view(x.size(0), -1)
         x = self.classifier(x)
         return x
 
