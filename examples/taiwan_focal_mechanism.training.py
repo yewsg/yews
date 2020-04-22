@@ -42,13 +42,13 @@ if __name__ == '__main__':
     train_set, val_set = random_split(dset, [train_length, val_length])
 
     # Prepare dataloaders
-    train_loader = DataLoader(train_set, batch_size=10, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_set, batch_size=10, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_set, batch_size=20, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_set, batch_size=20, shuffle=False, num_workers=4)
 
     # Prepare trainer
     #trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
     #trainer = Trainer(polarity(), CrossEntropyLoss(), lr=0.1)
-    trainer = Trainer(focal_mechanism(), CrossEntropyLoss(), lr=0.1)
+    trainer = Trainer(focal_mechanism(), CrossEntropyLoss(), lr=0.0001)
 
     # Train model over training dataset
     trainer.train(train_loader, val_loader, epochs=100, print_freq=10)
@@ -68,48 +68,48 @@ if __name__ == '__main__':
 
     print("Now: end : " + str(datetime.datetime.now()))
     
-    import matplotlib.pyplot as plt
-    import numpy as np
+#     import matplotlib.pyplot as plt
+#     import numpy as np
 
-    myfontsize1=14
-    myfontsize2=18
-    myfontsize3=24
+#     myfontsize1=14
+#     myfontsize2=18
+#     myfontsize3=24
 
-    results = torch.load('taiwan_focal_mechanism.pth.tar')
+#     results = torch.load('taiwan_focal_mechanism_results.pth.tar')
 
-    fig, axes = plt.subplots(2, 1, num=0, figsize=(6, 4), sharex=True)
-    axes[0].plot(results['val_acc'], label='Validation')
-    axes[0].plot(results['train_acc'], label='Training')
+#     fig, axes = plt.subplots(2, 1, num=0, figsize=(6, 4), sharex=True)
+#     axes[0].plot(results['val_acc'], label='Validation')
+#     axes[0].plot(results['train_acc'], label='Training')
 
-    #axes[1].set_xlabel("Epochs",fontsize=myfontsize2)
-    axes[0].set_xlim([1, 100])
-    axes[0].xaxis.set_tick_params(labelsize=myfontsize1)
+#     #axes[1].set_xlabel("Epochs",fontsize=myfontsize2)
+#     axes[0].set_xlim([1, 100])
+#     axes[0].xaxis.set_tick_params(labelsize=myfontsize1)
 
-    axes[0].set_ylabel("Accuracies (%)",fontsize=myfontsize2)
-    axes[0].set_ylim([0, 100])
-    axes[0].set_yticks(np.arange(0, 101, 10))
-    axes[0].yaxis.set_tick_params(labelsize=myfontsize1)
+#     axes[0].set_ylabel("Accuracies (%)",fontsize=myfontsize2)
+#     axes[0].set_ylim([0, 100])
+#     axes[0].set_yticks(np.arange(0, 101, 10))
+#     axes[0].yaxis.set_tick_params(labelsize=myfontsize1)
 
-    axes[0].grid(True, 'both')
-    axes[0].legend(loc=4)
+#     axes[0].grid(True, 'both')
+#     axes[0].legend(loc=4)
 
-    #axes[1].semilogx(results['val_loss'], label='Validation')
-    #axes[1].semilogx(results['train_loss'], label='Training')
-    axes[1].plot(results['val_loss'], label='Validation')
-    axes[1].plot(results['train_loss'], label='Training')
+#     #axes[1].semilogx(results['val_loss'], label='Validation')
+#     #axes[1].semilogx(results['train_loss'], label='Training')
+#     axes[1].plot(results['val_loss'], label='Validation')
+#     axes[1].plot(results['train_loss'], label='Training')
 
-    axes[1].set_xlabel("Epochs",fontsize=myfontsize2)
-    axes[1].set_xlim([1, 100])
-    axes[1].xaxis.set_tick_params(labelsize=myfontsize1)
+#     axes[1].set_xlabel("Epochs",fontsize=myfontsize2)
+#     axes[1].set_xlim([1, 100])
+#     axes[1].xaxis.set_tick_params(labelsize=myfontsize1)
 
-    axes[1].set_ylabel("Losses",fontsize=myfontsize2)
-    axes[1].set_ylim([0.0, 1.0])
-    axes[1].set_yticks(np.arange(0.0,1.01,0.2))
-    axes[1].yaxis.set_tick_params(labelsize=myfontsize1)
+#     axes[1].set_ylabel("Losses",fontsize=myfontsize2)
+#     axes[1].set_ylim([0.0, 1.0])
+#     axes[1].set_yticks(np.arange(0.0,1.01,0.2))
+#     axes[1].yaxis.set_tick_params(labelsize=myfontsize1)
 
-    axes[1].grid(True, 'both')
-    axes[1].legend(loc=1)
+#     axes[1].grid(True, 'both')
+#     axes[1].legend(loc=1)
 
-    fig.tight_layout()
-    plt.savefig('Accuracies_train_val.pdf')
+#     fig.tight_layout()
+#     plt.savefig('Accuracies_train_val.pdf')
     
