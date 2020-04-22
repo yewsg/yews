@@ -1,3 +1,5 @@
+import time
+
 import pytest
 import torch
 from yews.train import functional as F
@@ -24,4 +26,7 @@ class TestTorchDevice():
 class TestFileDir():
 
     def test_generate_tmp_name(self):
-        assert F.generate_tmp_name('tmp') != F.generate_tmp_name('tmp')
+        tmp_name0 = F.generate_tmp_name('tmp')
+        time.sleep(1)
+        tmp_name1 = F.generate_tmp_name('tmp')
+        assert tmp_name0 != tmp_name1

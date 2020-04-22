@@ -17,7 +17,7 @@ def model_off_device(model):
     return model.module.to(torch.device('cpu'))
 
 def generate_tmp_name(prefix):
-    return f"{prefix}_{np.floor(time.time() * 1E6):.0f}"
+    return f"{prefix}_{np.floor(time.time()):.0f}"
 
 
 def rm_dir_content(path):
