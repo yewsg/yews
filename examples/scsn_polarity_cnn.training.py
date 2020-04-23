@@ -14,6 +14,7 @@ from yews.train import Trainer
 #cpic = cpic_v1
 
 from yews.models import polarity_v1
+from yews.models import polarity_v2
 polarity=polarity_v1
 
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     # Prepare dataset
     dsets.set_memory_limit(10 * 1024 ** 3) # first number is GB
     # dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/cpic', download=False,sample_transform=waveform_transform)
-    dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/first_motion_polarity/scsn_data/npys', download=False, sample_transform=waveform_transform)
+    dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/first_motion_polarity/scsn_data/train_npy', download=False, sample_transform=waveform_transform)
 
     # Split datasets into training and validation
     train_length = int(len(dset) * 0.8)
@@ -39,15 +40,15 @@ if __name__ == '__main__':
     train_set, val_set = random_split(dset, [train_length, val_length])
 
     # Prepare dataloaders
-    train_loader = DataLoader(train_set, batch_size=5000, shuffle=True, num_workers=8)
-    val_loader = DataLoader(val_set, batch_size=10000, shuffle=False, num_workers=8)
+    train_loader = DataLoader(train_set, batch_size=5000, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_set, batch_size=10000, shuffle=False, num_workers=4)
 
     # Prepare trainer
     #trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
-    trainer = Trainer(polarity(), CrossEntropyLoss(), lr=0.1)
+    trainer = Trainer(polarity(), CrossEntropyLoss(), lr=0.01)
 
     # Train model over training dataset
-    trainer.train(train_loader, val_loader, epochs=100, print_freq=100)
+    trainer.train(train_loader, val_loader, epochs=50, print_freq=100)
                   #resume='checkpoint_best.pth.tar')
 
     # Save training results to disk
@@ -77,12 +78,13 @@ if __name__ == '__main__':
     axes[0].plot(results['train_acc'], label='Training')
     
     #axes[1].set_xlabel("Epochs",fontsize=myfontsize2)
+    axes[0].set_xscale('log')
     axes[0].set_xlim([1, 100])
     axes[0].xaxis.set_tick_params(labelsize=myfontsize1)
     
     axes[0].set_ylabel("Accuracies (%)",fontsize=myfontsize2)
-    axes[0].set_ylim([50, 100])
-    axes[0].set_yticks(np.arange(50, 101, 10))
+    axes[0].set_ylim([0, 100])
+    axes[0].set_yticks(np.arange(0, 101, 10))
     axes[0].yaxis.set_tick_params(labelsize=myfontsize1)
     
     axes[0].grid(True, 'both')
@@ -94,6 +96,7 @@ if __name__ == '__main__':
     axes[1].plot(results['train_loss'], label='Training')
     
     axes[1].set_xlabel("Epochs",fontsize=myfontsize2)
+    axes[1].set_xscale('log')
     axes[1].set_xlim([1, 100])
     axes[1].xaxis.set_tick_params(labelsize=myfontsize1)
     
