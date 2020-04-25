@@ -1,18 +1,18 @@
+import torch
 import torch.nn as nn
 
 from .utils import load_state_dict_from_url
 
-# import torch
 # try:
 #     from torch.hub import load_state_dict_from_url
 # except ImportError:
 #     from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
-__all__ = ['PolarityV1', 'polarity_v1','PolarityV2', 'polarity_v2']
+__all__ = ['PolarityV1', 'polarity_v1','PolarityV2', 'polarity_v2', 'PolarityLSTM', 'polarity_lstm']
 
 model_urls = {
     'polarity_v1': 'https://www.dropbox.com/s/ckb4glf35agi9xa/polarity_v1_wenchuan-bdd92da2.pth?dl=1',
-    'polarity_v2': 'https://www.dropbox.com/s/ckb4glf35agi9xa/polarity_v1_wenchuan-bdd92da2.pth?dl=1',
+    'polarity_v2': 'xxxx',
 }
 
 class PolarityV1(nn.Module):
@@ -96,6 +96,7 @@ class PolarityV1(nn.Module):
         self.fc = nn.Linear(64 * 1, 2)
 
     def forward(self, x):
+      
         out = self.layer1(x)
         out = self.layer2(out)
         out = self.layer3(out)
@@ -107,7 +108,7 @@ class PolarityV1(nn.Module):
         out = self.layer9(out)
         out = out.view(out.size(0), -1)
         out = self.fc(out)
-
+        
         return out
 
 def polarity_v1(pretrained=False, progress=True, **kwargs):
@@ -126,9 +127,9 @@ def polarity_v1(pretrained=False, progress=True, **kwargs):
                                               progress=progress)
         model.load_state_dict(state_dict)
     return model
-
-
-class PolarityV2(nn.Module):
+  
+  
+  class PolarityV2(nn.Module):
     
     #https://github.com/pytorch/vision/blob/master/torchvision/models/vgg.py
     
@@ -197,9 +198,11 @@ class PolarityV2(nn.Module):
         )
             
     def forward(self, x):
+      
         x = self.features(x)
         x = x.view(x.size(0), -1)
         x = self.classifier(x)
+        
         return x
 
     
@@ -209,6 +212,61 @@ def polarity_v2(pretrained=False, progress=True, **kwargs):
         state_dict = load_state_dict_from_url(model_urls['polarity_v2'],
                                               progress=progress)
         model.load_state_dict(state_dict)
+    return model
+
+class PolarityLSTM(nn.Module):
+    r"""a LSTM neural network
+    @author: Chujie Chen
+    @Email: chen8chu8jie6@gmail.com
+    @date: 04/24/2020
+    """
+    def __init__(self, **kwargs):
+        super().__init__()
+        input_size = 1
+        self.hidden_size = kwargs["hidden_size"]
+        self.bidirectional = kwargs["bidirectional"]
+        self.contains_unkown = kwargs["contains_unkown"]
+        self.start = kwargs['start']
+        self.end = kwargs['end']
+        self.num_layers = kwargs['num_layers']
+        self.lstm = nn.LSTM(input_size, self.hidden_size, self.num_layers, 
+                            bidirectional=self.bidirectional)
+        self.fc = nn.Linear(self.hidden_size * (2 if self.bidirectional else 1), 3 if self.contains_unkown else 2)
+
+    def forward(self, x):
+        x = x.narrow(2,self.start, self.end-self.start)
+        x = x.permute(2, 0, 1)    # seq_len, batch, input_size
+        output, (h_n, c_n) = self.lstm(x, None)
+        output = output[-1:, :, :]
+        output = output.view(output.size(1), -1)
+        out = self.fc(output)
+        return out
+      
+def polarity_lstm(**kwargs):
+    r"""A LSTM based model.
+    Kwargs (form like a dict and should be pass like **kwargs):
+      hidden_size (default 64): recommended to be similar as the length of trimmed subsequence
+      num_layers (default 2): layers are stacked and results are from the final layer
+      start (default 250): start index of the subsequence
+      end (default 350): end index of the subsequence
+      bidirectional (default False): run lstm from left to right and from right to left
+      contains_unkown (default False): True if targets have 0,1,2
+    """
+    default_kwargs = {"hidden_size":64, 
+                      "num_layers":2,
+                      "start": 250,
+                      "end": 350,
+                      "bidirectional":False, 
+                      "contains_unkown":False}
+    for k,v in kwargs.items():
+      if k in default_kwargs:
+        default_kwargs[k] = v
+    print("#### model parameters ####\n")
+    print(default_kwargs)
+    print("\n##########################")
+    if(default_kwargs['end'] < default_kwargs['start']):
+      raise ValueError('<-- end cannot be smaller than start -->')
+    model = PolarityLSTM(**default_kwargs)
     return model
 
 # if __name__ == '__main__':
