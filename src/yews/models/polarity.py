@@ -1,8 +1,9 @@
+import torch
 import torch.nn as nn
 
 from .utils import load_state_dict_from_url
 
-__all__ = ['PolarityV1', 'polarity_v1']
+__all__ = ['PolarityV1', 'polarity_v1', 'PolarityLSTM', 'polarity_lstm']
 
 model_urls = {
     'polarity_v1': 'https://www.dropbox.com/s/ckb4glf35agi9xa/polarity_v1_wenchuan-bdd92da2.pth?dl=1',
@@ -100,6 +101,9 @@ class PolarityV1(nn.Module):
         self.fc = nn.Linear(64 * 1, 3)
 
     def forward(self, x):
+        print("##### input to forward #####")
+        print(x.shape)
+
         out = self.layer1(x)
         out = self.layer2(out)
         out = self.layer3(out)
@@ -112,7 +116,6 @@ class PolarityV1(nn.Module):
         out = self.layer10(out)
         out = out.view(out.size(0), -1)
         out = self.fc(out)
-
         return out
 
 def polarity_v1(pretrained=False, progress=True, **kwargs):
@@ -132,3 +135,50 @@ def polarity_v1(pretrained=False, progress=True, **kwargs):
         model.load_state_dict(state_dict)
     return model
 
+
+class PolarityLSTM(nn.Module):
+    r"""a LSTM neural network
+    @author: Chujie Chen
+    @Email: chen8chu8jie6@gmail.com
+    @date: 04/24/2020
+    """
+    def __init__(self, **kwargs):
+        super().__init__()
+        input_size = 1
+        self.hidden_size = kwargs["hidden_size"]
+        self.bidirectional = kwargs["bidirectional"]
+        self.contains_unkown = kwargs["contains_unkown"]
+        self.start = kwargs['start']
+        self.end = kwargs['end']
+        self.lstm = nn.LSTM(input_size, self.hidden_size,bidirectional=self.bidirectional)
+        self.fc = nn.Linear(self.hidden_size * (2 if self.bidirectional else 1), 3 if self.contains_unkown else 2)
+
+    def forward(self, x):
+        x = x.narrow(2,self.start, self.end-self.start)
+        x = x.permute(2, 0, 1)    # seq_len, batch, input_size
+        output, (h_n, c_n) = self.lstm(x, None)
+        output = output[-1:, :, :]
+        output = output.view(output.size(1), -1)
+        out = self.fc(output)
+        return out
+def polarity_lstm(**kwargs):
+    r"""A LSTM based model.
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on Wenchuan)
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+    default_kwargs = {"hidden_size":64, 
+                      "start": 250,
+                      "end": 350,
+                      "bidirectional":False, 
+                      "contains_unkown":False}
+    for k,v in kwargs.items():
+      if k in default_kwargs:
+        default_kwargs[k] = v
+    print("#### model parameters ####\n")
+    print(default_kwargs)
+    print("\n##########################")
+    if(default_kwargs['end'] < default_kwargs['start']):
+      raise ValueError('<-- end must be largger than start -->')
+    model = PolarityLSTM(**default_kwargs)
+    return model
