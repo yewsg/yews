@@ -116,7 +116,6 @@ def polarity_v1(pretrained=False, progress=True, **kwargs):
     `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper. The
     pretrained model is trained on 60,000 Wenchuan aftershock dataset
     demonstrated in the paper.
-
     Args:
         pretrained (bool): If True, returns a model pre-trained on Wenchuan)
         progress (bool): If True, displays a progress bar of the download to stderr
@@ -127,7 +126,6 @@ def polarity_v1(pretrained=False, progress=True, **kwargs):
                                               progress=progress)
         model.load_state_dict(state_dict)
     return model
-  
   
 class PolarityV2(nn.Module):
     
@@ -259,13 +257,13 @@ def polarity_lstm(**kwargs):
                       "bidirectional":False, 
                       "contains_unkown":False}
     for k,v in kwargs.items():
-      if k in default_kwargs:
-        default_kwargs[k] = v
+        if k in default_kwargs:
+            default_kwargs[k] = v
     print("#### model parameters ####\n")
     print(default_kwargs)
     print("\n##########################")
     if(default_kwargs['end'] < default_kwargs['start']):
-      raise ValueError('<-- end cannot be smaller than start -->')
+        raise ValueError('<-- end cannot be smaller than start -->')
     model = PolarityLSTM(**default_kwargs)
     return model
 
