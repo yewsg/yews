@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # Prepare dataloaders
     train_loader = DataLoader(train_set, batch_size=100, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_set, batch_size=1000, shuffle=False, num_workers=8)
+    val_loader = DataLoader(val_set, batch_size=1000, shuffle=False, num_workers=4)
 
     # Prepare trainer
     trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
