@@ -129,7 +129,7 @@ def polarity_v1(pretrained=False, progress=True, **kwargs):
     return model
   
   
-  class PolarityV2(nn.Module):
+class PolarityV2(nn.Module):
     
     #https://github.com/pytorch/vision/blob/master/torchvision/models/vgg.py
     
