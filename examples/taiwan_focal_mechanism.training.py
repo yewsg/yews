@@ -1,8 +1,10 @@
 import datetime
+import numpy as np
 import torch
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
+from torch.utils.data.sampler import WeightedRandomSampler
 
 import yews.datasets as dsets
 import yews.transforms as transforms
@@ -17,7 +19,8 @@ from yews.train import Trainer
 # polarity=polarity_v1
 
 from yews.models import fm_v1
-focal_mechanism=fm_v1
+from yews.models import fm_v2
+focal_mechanism=fm_v2
 
 if __name__ == '__main__':
 
@@ -26,7 +29,7 @@ if __name__ == '__main__':
     # Preprocessing
     waveform_transform = transforms.Compose([
         transforms.ZeroMean(),
-        #transforms.SoftClip(1e-4),
+        transforms.SoftClip(1e-2),
         transforms.ToTensor(),
     ])
 
@@ -34,16 +37,39 @@ if __name__ == '__main__':
     dsets.set_memory_limit(10 * 1024 ** 3) # first number is GB
     # dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/cpic', download=False,sample_transform=waveform_transform)
 #     dset = dsets.SCSN_polarity(path='/home/qszhai/temp_project/deep_learning_course_project/first_motion_polarity/scsn_data/npys', download=False, sample_transform=waveform_transform)
-    dset = dsets.Taiwan_focal_mechanism(path='/home/qszhai/temp_project/deep_learning_course_project/focal_mechanism/npys_for_focal_mechanism', download=False, sample_transform=waveform_transform)
+#     dset = dsets.Taiwan_focal_mechanism(path='/home/qszhai/temp_project/deep_learning_course_project/focal_mechanism/npys_for_focal_mechanism', download=False, sample_transform=waveform_transform)
 
-    # Split datasets into training and validation
-    train_length = int(len(dset) * 0.8)
-    val_length = len(dset) - train_length
-    train_set, val_set = random_split(dset, [train_length, val_length])
+#     # Split datasets into training and validation
+#     train_length = int(len(dset) * 0.8)
+#     val_length = len(dset) - train_length
+#     train_set, val_set = random_split(dset, [train_length, val_length])
+    
+    train_set= dsets.Taiwan_focal_mechanism(path='/home/qszhai/temp_project/deep_learning_course_project/focal_mechanism/npys_for_focal_mechanism/train_npy', download=False, sample_transform=waveform_transform)
+    val_set= dsets.Taiwan_focal_mechanism(path='/home/qszhai/temp_project/deep_learning_course_project/focal_mechanism/npys_for_focal_mechanism/validation_npy', download=False, sample_transform=waveform_transform)
 
+    # prepare weights for dataloader of train, if want to balance the numbers of different labels in each batch
+    targets=np.load('/home/qszhai/temp_project/deep_learning_course_project/focal_mechanism/npys_for_focal_mechanism/train_npy/targets.npy')
+    targets_0_indexs=np.argwhere(targets==0).flatten()
+    targets_1_indexs=np.argwhere(targets==1).flatten()
+    targets_2_indexs=np.argwhere(targets==2).flatten()
+    weights=np.zeros(shape=targets.shape)
+    weights[targets_0_indexs]=targets.shape[0]/targets_0_indexs.shape[0]
+    weights[targets_1_indexs]=targets.shape[0]/targets_1_indexs.shape[0]
+    weights[targets_2_indexs]=targets.shape[0]/targets_2_indexs.shape[0]
+#     print(targets_0_indexs.shape[0],targets_1_indexs.shape[0],targets_2_indexs.shape[0])
+#     print(weights[targets_0_indexs])
+#     print(weights[targets_1_indexs])
+#     print(weights[targets_2_indexs])
+#     print(targets[0:10])
+#     print(weights[0:10])
+    weights=weights.tolist()
+    sampler = WeightedRandomSampler(weights,num_samples=len(weights), replacement=True)
+    
+    
     # Prepare dataloaders
-    train_loader = DataLoader(train_set, batch_size=20, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_set, batch_size=20, shuffle=False, num_workers=4)
+#     train_loader = DataLoader(train_set, batch_size=15, shuffle=True, num_workers=4)
+    train_loader = DataLoader(train_set, batch_size=15, shuffle=False, sampler=sampler, num_workers=4)
+    val_loader = DataLoader(val_set, batch_size=15, shuffle=False, num_workers=4)
 
     # Prepare trainer
     #trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
