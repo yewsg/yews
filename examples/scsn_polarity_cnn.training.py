@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # Prepare dataset
     dsets.set_memory_limit(10 * 1024 ** 3) # first number is GB
     # dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/cpic', download=False,sample_transform=waveform_transform)
-    dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/first_motion_polarity/scsn_data/train_npy', download=False, sample_transform=waveform_transform)
+    dset = dsets.SCSN_polarity(path='/home/qszhai/temp_project/deep_learning_course_project/first_motion_polarity/scsn_data/train_npy', download=False, sample_transform=waveform_transform)
 
     # Split datasets into training and validation
     train_length = int(len(dset) * 0.8)
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     trainer = Trainer(polarity(), CrossEntropyLoss(), lr=0.01)
 
     # Train model over training dataset
-    trainer.train(train_loader, val_loader, epochs=50, print_freq=100)
+    trainer.train(train_loader, val_loader, epochs=100, print_freq=100)
                   #resume='checkpoint_best.pth.tar')
 
     # Save training results to disk
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     #model = cpic()
     model = polarity()
     model.load_state_dict(results['model'])
-    trainer = Trainer(model, CrossEntropyLoss(), lr=0.1)
+    trainer = Trainer(model, CrossEntropyLoss(), lr=0.01)
     trainer.validate(val_loader, print_freq=100)
 
     print("Now: end : " + str(datetime.datetime.now()))
