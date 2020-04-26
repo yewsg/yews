@@ -212,6 +212,8 @@ def polarity_v2(pretrained=False, progress=True, **kwargs):
         model.load_state_dict(state_dict)
     return model
 
+
+# note: please use only 1 gpu to run LSTM, https://github.com/pytorch/pytorch/issues/21108
 class PolarityLSTM(nn.Module):
     r"""a LSTM neural network
     @author: Chujie Chen
