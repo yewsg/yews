@@ -74,7 +74,7 @@ if __name__ == '__main__':
     # Prepare trainer
     #trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
     #trainer = Trainer(polarity(), CrossEntropyLoss(), lr=0.1)
-    trainer = Trainer(focal_mechanism(), CrossEntropyLoss(), lr=0.0001)
+    trainer = Trainer(focal_mechanism(), CrossEntropyLoss(), lr=0.001)
 
     # Train model over training dataset
     trainer.train(train_loader, val_loader, epochs=100, print_freq=10)
