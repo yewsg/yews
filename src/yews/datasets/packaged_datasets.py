@@ -106,3 +106,6 @@ class SCSN_polarity(PackagedDataset):
 
 class Taiwan_focal_mechanism(PackagedDataset):
     url = 'abc'
+
+class Taiwan20092010(PackagedDataset):
+    url = 'abc'
