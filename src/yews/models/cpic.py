@@ -1,13 +1,19 @@
-# TO-DO: need to add model_zoo utility and pretrained models.
 import torch.nn as nn
 
 from .utils import load_state_dict_from_url
 
-__all__ = ['CpicV1', 'CpicV2', 'cpic_v1', 'cpic_v2']
+# import torch
+# try:
+#     from torch.hub import load_state_dict_from_url
+# except ImportError:
+#     from torch.utils.model_zoo import load_url as load_state_dict_from_url
+
+__all__ = ['CpicV1', 'cpic_v1', 'CpicV2', 'cpic_v2', 'CpicV3', 'cpic_v3']
 
 model_urls = {
     'cpic_v1': 'https://www.dropbox.com/s/ckb4glf35agi9xa/cpic_v1_wenchuan-bdd92da2.pth?dl=1',
-    'cpic_v2': 'https://www.dropbox.com/s/kyiuprnn8014fs5/cpic_v2_wenchuan-ee92060a.pth?dl=1'
+    'cpic_v2': 'https://www.dropbox.com/s/kyiuprnn8014fs5/cpic_v2_wenchuan-ee92060a.pth?dl=1',
+    'cpic_v3': 'xxxx'
 }
 
 class CpicV1(nn.Module):
@@ -122,6 +128,23 @@ class CpicV1(nn.Module):
         out = self.fc(out)
 
         return out
+    
+def cpic_v1(pretrained=False, progress=True, **kwargs):
+    r"""Original CPIC model architecture from the
+    `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper. The
+    pretrained model is trained on 60,000 Wenchuan aftershock dataset
+    demonstrated in the paper.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on Wenchuan)
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+    model = CpicV1(**kwargs)
+    if pretrained:
+        state_dict = load_state_dict_from_url(model_urls['cpic_v1'],
+                                              progress=progress)
+        model.load_state_dict(state_dict)
+    return model
 
 class CpicV2(nn.Module):
     def __init__(self):
@@ -217,23 +240,6 @@ class CpicV2(nn.Module):
 
         return out
 
-def cpic_v1(pretrained=False, progress=True, **kwargs):
-    r"""Original CPIC model architecture from the
-    `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper. The
-    pretrained model is trained on 60,000 Wenchuan aftershock dataset
-    demonstrated in the paper.
-
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on Wenchuan)
-        progress (bool): If True, displays a progress bar of the download to stderr
-    """
-    model = CpicV1(**kwargs)
-    if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['cpic_v1'],
-                                              progress=progress)
-        model.load_state_dict(state_dict)
-    return model
-
 def cpic_v2(pretrained=False, progress=True, **kwargs):
     r"""Simplified CPIC model architecture from the
     `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper. The
@@ -250,3 +256,107 @@ def cpic_v2(pretrained=False, progress=True, **kwargs):
                                               progress=progress)
         model.load_state_dict(state_dict)
     return model
+
+class CpicV3(nn.Module):
+    
+    #https://github.com/pytorch/vision/blob/master/torchvision/models/vgg.py
+    
+    def __init__(self):
+        super(CpicV3, self).__init__()
+        self.features = nn.Sequential(
+
+            # 2000 -> 1024
+            nn.Conv1d(3, 16, kernel_size=5, stride=1, padding=26, bias=False),
+            nn.BatchNorm1d(16),
+            nn.ReLU(),
+            # nn.Sigmoid(),
+            nn.MaxPool1d(2),
+
+            # 1024 -> 512
+            nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2, bias=False),
+            nn.BatchNorm1d(32),
+            nn.ReLU(),
+            # nn.Sigmoid(),
+            nn.MaxPool1d(2),
+
+            # 512 -> 256
+            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+
+
+            # 256 -> 128
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+
+            # 128 -> 64
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+
+            # 64 -> 32
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+
+            # 32 -> 16
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+
+            # 16 -> 8
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+
+            # 8 -> 4
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+
+#             # 4 -> 2
+#             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+#             nn.BatchNorm1d(64),
+#             nn.ReLU(),
+#             nn.MaxPool1d(2),
+
+#             # 2 -> 1
+#             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+#             nn.BatchNorm1d(64),
+#             nn.ReLU(),
+#             nn.MaxPool1d(2)
+
+        )
+        
+        self.classifier = nn.Sequential(
+            nn.Linear(64 * 4, 3),
+        )
+            
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
+        return x
+    
+def cpic_v3(pretrained=False, progress=True, **kwargs):
+    model = CpicV3(**kwargs)
+    if pretrained:
+        state_dict = load_state_dict_from_url(model_urls['cpic_v3'],
+                                              progress=progress)
+        model.load_state_dict(state_dict)
+    return model
+
+# if __name__ == '__main__':
+#     model = cpic_v3(pretrained=False)
+    
+#     x = torch.ones([1, 3, 2000])
+#     out = model(x)
+#     print(out.size())
