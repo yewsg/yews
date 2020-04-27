@@ -178,7 +178,6 @@ class FmV2(nn.Module):
         self.features = nn.Sequential(
 
             # 71,9000 -> 71,4507
-            
             nn.Conv2d(3, 16, kernel_size=(3,17), stride=1, padding=(2,16), bias=False),
             nn.BatchNorm2d(16),
             nn.ReLU(),
@@ -186,94 +185,95 @@ class FmV2(nn.Module):
 #             nn.BatchNorm2d(16),
 #             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=(1, 2)),
-#             nn.Dropout(0.1),
             
             # 71,4507 -> 71,2260
-
             nn.Conv2d(16, 32, kernel_size=(3,15), stride=1, padding=(2,14), bias=False),
             nn.BatchNorm2d(32),
             nn.ReLU(),
-            # nn.Sigmoid(),
+#             nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(32),
+#             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=(1, 2)),
-#             nn.Dropout(0.1),
 
             # 71,2260 -> 71,1135
-
             nn.Conv2d(32, 64, kernel_size=(3,13), stride=1, padding=(2,12), bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=(1, 2)),
-#             nn.Dropout(0.1),
-
 
             # 71,1135 -> 71,572
-
             nn.Conv2d(64, 64, kernel_size=(3,11), stride=1, padding=(2,10), bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=(1, 2)),
-#             nn.Dropout(0.1),
-
-
+            
             # 71,572 -> 71,289
-
             nn.Conv2d(64, 64, kernel_size=(3,9), stride=1, padding=(2,8), bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=(1, 2)),
-#             nn.Dropout(0.1),
-
 
             # 71,289 -> 71,143
-
             nn.Conv2d(64, 64, kernel_size=(3,7), stride=1, padding=2, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=(1, 2)),
-#             nn.Dropout(0.1),
-
 
             # 71,143 -> 71,71
-
             nn.Conv2d(64, 64, kernel_size=(3,5), stride=1, padding=2, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=(1, 2)),
-#             nn.Dropout(0.1),
 
             # 71,71 -> 35,35
-
             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(2),
-#             nn.Dropout(0.1),
-
 
             # 35,35 -> 17,17
-
             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(2),
-#             nn.Dropout(0.1),
-
-        
+            
             # 17,17 -> 8,8
-
             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
             nn.MaxPool2d(2),
-#             nn.Dropout(0.1),
                         
-            # 8,8 -> 4,4
+#             # 8,8 -> 4,4
 
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-#             nn.Dropout(0.1),
+#             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+#             nn.BatchNorm2d(64),
+#             nn.ReLU(),
+#             nn.MaxPool2d(2),
+# #             nn.Dropout(0.1),
                         
 #             # 4,4 -> 2,2
 
@@ -294,12 +294,22 @@ class FmV2(nn.Module):
 
         )
 
+#         self.avgpool = nn.AdaptiveAvgPool2d((4, 4))
+
         self.classifier = nn.Sequential(
-            nn.Linear(64 * 4 * 4, 3),
+            nn.Linear(64 * 8 * 8, 3),
+#             nn.Dropout(0.3),
+#             nn.Linear(64 * 4 * 4, 32),
+#             nn.ReLU(),
+#             nn.Dropout(0.3),
+#             nn.Linear(32, 32),
+#             nn.ReLU(),
+#             nn.Linear(32, 3)
         )
             
     def forward(self, x):
         x = self.features(x)
+#         x = self.avgpool(x)
         x = x.view(x.size(0), -1) 
         x = self.classifier(x)
         return x
