@@ -10,6 +10,7 @@ from .packaged_datasets import SCSN
 from .packaged_datasets import Wenchuan
 from .packaged_datasets import SCSN_polarity
 from .packaged_datasets import Taiwan_focal_mechanism
+from .packaged_datasets import Taiwan20092010
 from .utils import *
 
 __all__ = [
@@ -24,4 +25,5 @@ __all__ = [
     'SCSN',
     'SCSN_polarity',
     'Taiwan_focal_mechanism'
+    'Taiwan20092010'
 ]
