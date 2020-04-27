@@ -11,7 +11,8 @@ from yews.train import Trainer
 #from yews.models import cpic
 from yews.models import cpic_v1
 from yews.models import cpic_v2
-cpic = cpic_v1
+from yews.models import cpic_v3
+cpic = cpic_v3
 
 if __name__ == '__main__':
 
@@ -25,6 +26,7 @@ if __name__ == '__main__':
     ])
 
     # Prepare dataset
+    dsets.set_memory_limit(10 * 1024 ** 3) # first number is GB
     dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/cpic', download=False,sample_transform=waveform_transform)
 
     # Split datasets into training and validation
@@ -33,14 +35,14 @@ if __name__ == '__main__':
     train_set, val_set = random_split(dset, [train_length, val_length])
 
     # Prepare dataloaders
-    train_loader = DataLoader(train_set, batch_size=100, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_set, batch_size=1000, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_set, batch_size=1000, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_set, batch_size=2000, shuffle=False, num_workers=4)
 
     # Prepare trainer
     trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
 
     # Train model over training dataset
-    trainer.train(train_loader, val_loader, epochs=100, print_freq=100)
+    trainer.train(train_loader, val_loader, epochs=100, print_freq=10)
                   #resume='checkpoint_best.pth.tar')
 
     # Save training results to disk
