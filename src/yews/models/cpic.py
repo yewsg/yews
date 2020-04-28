@@ -265,79 +265,58 @@ class CpicV3(nn.Module):
         super(CpicV3, self).__init__()
         self.features = nn.Sequential(
 
-            # 2000 -> 1024
-            nn.Conv1d(3, 16, kernel_size=5, stride=1, padding=26, bias=False),
+            # 2000 -> 1000
+            nn.Conv1d(3, 16, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(16),
             nn.ReLU(),
-            # nn.Sigmoid(),
             nn.MaxPool1d(2),
 
-            # 1024 -> 512
-            nn.Conv1d(16, 32, kernel_size=5, stride=1, padding=2, bias=False),
+            # 1000 -> 500
+            nn.Conv1d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(32),
             nn.ReLU(),
-            # nn.Sigmoid(),
             nn.MaxPool1d(2),
 
-            # 512 -> 256
+            # 500 -> 250
             nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
 
-
-            # 256 -> 128
+            # 250 -> 125
             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
 
-            # 128 -> 64
+            # 125 -> 62
             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
 
-            # 64 -> 32
+            # 62 -> 31
             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
 
-            # 32 -> 16
+            # 31 -> 15
             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
 
-            # 16 -> 8
+            # 15 -> 7
             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
-
-            # 8 -> 4
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2),
-
-#             # 4 -> 2
-#             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-#             nn.BatchNorm1d(64),
-#             nn.ReLU(),
-#             nn.MaxPool1d(2),
-
-#             # 2 -> 1
-#             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-#             nn.BatchNorm1d(64),
-#             nn.ReLU(),
-#             nn.MaxPool1d(2)
-
+            
         )
         
         self.classifier = nn.Sequential(
-            nn.Linear(64 * 4, 3),
+            nn.Linear(64 * 7, 3),
         )
             
     def forward(self, x):
