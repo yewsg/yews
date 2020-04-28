@@ -21,13 +21,13 @@ if __name__ == '__main__':
     # Preprocessing
     waveform_transform = transforms.Compose([
         transforms.ZeroMean(),
-        transforms.SoftClip(1e-4),
+        transforms.SoftClip(1e-3),
         transforms.ToTensor(),
     ])
 
     # Prepare dataset
     dsets.set_memory_limit(10 * 1024 ** 3) # first number is GB
-    dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/cpic', download=False,sample_transform=waveform_transform)
+    dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/cpic/wenchuan_data/train_npy', download=False,sample_transform=waveform_transform)
 
     # Split datasets into training and validation
     train_length = int(len(dset) * 0.8)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=2000, shuffle=False, num_workers=4)
 
     # Prepare trainer
-    trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
+    trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.01)
 
     # Train model over training dataset
     trainer.train(train_loader, val_loader, epochs=100, print_freq=10)
