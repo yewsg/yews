@@ -19,7 +19,7 @@ class PolarityCNN(nn.Module):
     #https://github.com/pytorch/vision/blob/master/torchvision/models/vgg.py
     
     def __init__(self):
-        super(PolarityV2, self).__init__()
+        super().__init__()
         self.features = nn.Sequential(
 
             # 300 -> 150
