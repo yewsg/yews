@@ -8,14 +8,8 @@ import yews.datasets as dsets
 import yews.transforms as transforms
 from yews.train import Trainer
 
-#from yews.models import cpic
-#from yews.models import cpic_v1
-#from yews.models import cpic_v2
-#cpic = cpic_v1
-
-from yews.models import polarity_v1
-from yews.models import polarity_v2
-polarity=polarity_v1
+from yews.models import polarity_cnn
+model=polarity_cnn
 
 
 if __name__ == '__main__':
@@ -24,7 +18,7 @@ if __name__ == '__main__':
 
     # Preprocessing
     waveform_transform = transforms.Compose([
-        transforms.ZeroMean(),
+        #transforms.ZeroMean(),
         #transforms.SoftClip(1e-4),
         transforms.ToTensor(),
     ])
@@ -32,7 +26,7 @@ if __name__ == '__main__':
     # Prepare dataset
     dsets.set_memory_limit(10 * 1024 ** 3) # first number is GB
     # dset = dsets.Wenchuan(path='/home/qszhai/temp_project/deep_learning_course_project/cpic', download=False,sample_transform=waveform_transform)
-    dset = dsets.SCSN_polarity(path='/home/qszhai/temp_project/deep_learning_course_project/first_motion_polarity/scsn_data/train_npy', download=False, sample_transform=waveform_transform)
+    dset = dsets.SCSN(path='/data6/scsn/polarity/train_npy', download=False, sample_transform=waveform_transform)
 
     # Split datasets into training and validation
     train_length = int(len(dset) * 0.8)
@@ -44,8 +38,7 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=10000, shuffle=False, num_workers=4)
 
     # Prepare trainer
-    #trainer = Trainer(cpic(), CrossEntropyLoss(), lr=0.1)
-    trainer = Trainer(polarity(), CrossEntropyLoss(), lr=0.01)
+    trainer = Trainer(model(), CrossEntropyLoss(), lr=0.01)
 
     # Train model over training dataset
     trainer.train(train_loader, val_loader, epochs=100, print_freq=100)
@@ -56,10 +49,9 @@ if __name__ == '__main__':
 
     # Validate saved model
     results = torch.load('scsn_polarity_results.pth.tar')
-    #model = cpic()
-    model = polarity()
+    model = model()
     model.load_state_dict(results['model'])
-    trainer = Trainer(model, CrossEntropyLoss(), lr=0.01)
+    trainer = Trainer(model, CrossEntropyLoss(), lr=0.1)
     trainer.validate(val_loader, print_freq=100)
 
     print("Now: end : " + str(datetime.datetime.now()))
