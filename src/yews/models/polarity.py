@@ -8,118 +8,13 @@ from .utils import load_state_dict_from_url
 # except ImportError:
 #     from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
-__all__ = ['PolarityV1', 'polarity_v1','PolarityV2', 'polarity_v2', 'PolarityLSTM', 'polarity_lstm', 'PolarityCNNLSTM', 'polarity_cnn_lstm']
+__all__ = ['PolarityCNN', 'polarity_cnn', 'PolarityLSTM', 'polarity_lstm', 'PolarityCNNLSTM', 'polarity_cnn_lstm']
 
 model_urls = {
-    'polarity_v1': 'https://www.dropbox.com/s/ckb4glf35agi9xa/polarity_v1_wenchuan-bdd92da2.pth?dl=1',
+    'polarity_cnn': 'https://www.dr',
 }
 
-class PolarityV1(nn.Module):
-
-    def __init__(self):
-        super().__init__()
-        # 600 -> 300
-        self.layer1 = nn.Sequential(
-            nn.Conv1d(1, 16, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(16),
-            nn.ReLU(),
-            # nn.Sigmoid(),
-            nn.MaxPool1d(2)
-        )
-
-        # 300 -> 150
-        self.layer2 = nn.Sequential(
-            nn.Conv1d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(32),
-            nn.ReLU(),
-            # nn.Sigmoid(),
-            nn.MaxPool1d(2)
-        )
-
-        # 150 -> 75
-        self.layer3 = nn.Sequential(
-            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 75 -> 37
-        self.layer4 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 37 -> 18
-        self.layer5 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 18 -> 9
-        self.layer6 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 9 -> 4
-        self.layer7 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 4 -> 2
-        self.layer8 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        # 2 -> 1
-        self.layer9 = nn.Sequential(
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
-
-        self.fc = nn.Linear(64 * 1, 2)
-
-    def forward(self, x):
-      
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = self.layer5(out)
-        out = self.layer6(out)
-        out = self.layer7(out)
-        out = self.layer8(out)
-        out = self.layer9(out)
-        out = out.view(out.size(0), -1)
-        out = self.fc(out)
-        
-        return out
-
-def polarity_v1(pretrained=False, progress=True, **kwargs):
-
-    model = PolarityV1(**kwargs)
-    if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['polarity_v1'],
-                                              progress=progress)
-        model.load_state_dict(state_dict)
-    return model
-  
-class PolarityV2(nn.Module):
+class PolarityCNN(nn.Module):
     
     #https://github.com/pytorch/vision/blob/master/torchvision/models/vgg.py
     
@@ -127,7 +22,7 @@ class PolarityV2(nn.Module):
         super(PolarityV2, self).__init__()
         self.features = nn.Sequential(
 
-            # 600 -> 300
+            # 300 -> 150
 
             nn.Conv1d(1, 16, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(16),
@@ -135,7 +30,7 @@ class PolarityV2(nn.Module):
             nn.MaxPool1d(2),
 
 
-            # 300 -> 150
+            # 150 -> 75
 
             nn.Conv1d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(32),
@@ -143,7 +38,7 @@ class PolarityV2(nn.Module):
             nn.MaxPool1d(2),
 
 
-            # 150 -> 75
+            # 75 -> 37
 
             nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
@@ -151,16 +46,8 @@ class PolarityV2(nn.Module):
             nn.MaxPool1d(2),
 
 
-            # 75 -> 37
-  
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(2),
-
-
             # 37 -> 18
-
+  
             nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
@@ -173,10 +60,11 @@ class PolarityV2(nn.Module):
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
-            
-            # 9 -> 5
 
-            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=2, bias=False),
+
+            # 9 -> 4
+
+            nn.Conv1d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(64),
             nn.ReLU(),
             nn.MaxPool1d(2),
@@ -184,7 +72,7 @@ class PolarityV2(nn.Module):
         )
         
         self.classifier = nn.Sequential(
-            nn.Linear(64 * 5, 2),
+            nn.Linear(64 * 4, 2),
         )
             
     def forward(self, x):
@@ -195,10 +83,10 @@ class PolarityV2(nn.Module):
         
         return x
 
-def polarity_v2(pretrained=False, progress=True, **kwargs):
-    model = PolarityV2(**kwargs)
+def polarity_cnn(pretrained=False, progress=True, **kwargs):
+    model = PolarityCNN(**kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['polarity_v2'],
+        state_dict = load_state_dict_from_url(model_urls['polarity_cnn'],
                                               progress=progress)
         model.load_state_dict(state_dict)
     return model
@@ -263,28 +151,18 @@ class PolarityCNNLSTM(nn.Module):
 
     def __init__(self, **kwargs):
         super().__init__()
-        # 600 -> 300
+        # 300 -> 150
         self.layer1 = nn.Sequential(
             nn.Conv1d(1, 16, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(16),
             nn.ReLU(),
-            # nn.Sigmoid(),
-            nn.MaxPool1d(2)
-        )
-
-        # 300 -> 150
-        self.layer2 = nn.Sequential(
-            nn.Conv1d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(32),
-            nn.ReLU(),
-            # nn.Sigmoid(),
             nn.MaxPool1d(2)
         )
 
         # 150 -> 75
-        self.layer3 = nn.Sequential(
-            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm1d(64),
+        self.layer2 = nn.Sequential(
+            nn.Conv1d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm1d(32),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
@@ -340,7 +218,7 @@ def polarity_cnn_lstm(**kwargs):
     return model
 
 # if __name__ == '__main__':
-#     model = polarity_v2(pretrained=False)
+#     model = polarity_cnn(pretrained=False)
 #     x = torch.ones([1, 1, 600])
 #     out = model(x)
 #     print(out.size())
