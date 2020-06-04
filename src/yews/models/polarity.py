@@ -151,23 +151,22 @@ class PolarityCNNLSTM(nn.Module):
 
     def __init__(self, **kwargs):
         super().__init__()
-        # 300 -> 150
-        self.layer1 = nn.Sequential(
+        self.features = nn.Sequential( 
+
+            # 300 -> 150
             nn.Conv1d(1, 16, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(16),
             nn.ReLU(),
-            nn.MaxPool1d(2)
-        )
+            nn.MaxPool1d(2),
 
-        # 150 -> 75
-        self.layer2 = nn.Sequential(
+            # 150 -> 75
             nn.Conv1d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm1d(32),
             nn.ReLU(),
             nn.MaxPool1d(2)
         )
 
-        input_size = 64
+        input_size = 32
         self.hidden_size = kwargs["hidden_size"]
         self.bidirectional = kwargs["bidirectional"]
         self.contains_unkown = kwargs["contains_unkown"]
@@ -178,9 +177,7 @@ class PolarityCNNLSTM(nn.Module):
         self.fc = nn.Linear(self.hidden_size * (2 if self.bidirectional else 1), 3 if self.contains_unkown else 2)
 
     def forward(self, x):
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = self.layer3(out)
+        out = self.features(x)
 
         out = out.narrow(2,self.start, self.end-self.start)
         out = out.permute(2, 0, 1)    # seq_len, batch, input_size
