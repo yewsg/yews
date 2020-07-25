@@ -86,9 +86,8 @@ class PolarityCNN(nn.Module):
 def polarity_cnn(pretrained=False, progress=True, **kwargs):
     model = PolarityCNN(**kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['polarity_cnn'],
-                                              progress=progress)
-        model.load_state_dict(state_dict)
+        state_dict = load_state_dict_from_url(model_urls['polarity_cnn'],progress=progress)
+        model.load_state_dict(state_dict)        
     return model
 
 # note: please use only 1 gpu to run LSTM, https://github.com/pytorch/pytorch/issues/21108
