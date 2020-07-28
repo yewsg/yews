@@ -45,6 +45,10 @@ class PackagedDataset(Dataset):
                 raise ValueError(f"{self.root} contains no valid dataset. "
                                  f"Consider set `download=True` and remove broken bz2 file.")
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 class Wenchuan(PackagedDataset):
     """`Wenchuan <https://arxiv.org/abs/1901.06396>`_ Dataset.
 
@@ -100,6 +104,7 @@ class SCSN(PackagedDataset):
     """
 
     url = 'https://www.dropbox.com/s/u16lkjxliw8fouj/scsn.tar?dl=1'
+<<<<<<< HEAD
 
 class SCSN_polarity(PackagedDataset):
     url = 'abc'
@@ -109,3 +114,5 @@ class Taiwan_focal_mechanism(PackagedDataset):
 
 class Taiwan20092010(PackagedDataset):
     url = 'abc'
+=======
+>>>>>>> upstream/master

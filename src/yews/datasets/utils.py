@@ -69,7 +69,11 @@ def read_frame_obspy(path, **kwargs):
 ################################################################################
 
 # dynamically change this limit by Python code.
+<<<<<<< HEAD
 MEMORY_LIMIT =  10 * 1024 ** 3        # 2 GB limit
+=======
+MEMORY_LIMIT =  2 * 1024 ** 3        # 2 GB limit
+>>>>>>> upstream/master
 
 def over_memory_limit(path):
     return os.stat(path).st_size > MEMORY_LIMIT

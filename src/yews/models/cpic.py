@@ -1,7 +1,12 @@
+<<<<<<< HEAD
+=======
+# TO-DO: need to add model_zoo utility and pretrained models.
+>>>>>>> upstream/master
 import torch.nn as nn
 
 from .utils import load_state_dict_from_url
 
+<<<<<<< HEAD
 # import torch
 # try:
 #     from torch.hub import load_state_dict_from_url
@@ -14,6 +19,13 @@ model_urls = {
     'cpic_v1': 'https://www.dropbox.com/s/ckb4glf35agi9xa/cpic_v1_wenchuan-bdd92da2.pth?dl=1',
     'cpic_v2': 'https://www.dropbox.com/s/kyiuprnn8014fs5/cpic_v2_wenchuan-ee92060a.pth?dl=1',
     'cpic_v3': 'xxxx'
+=======
+__all__ = ['CpicV1', 'CpicV2', 'cpic_v1', 'cpic_v2']
+
+model_urls = {
+    'cpic_v1': 'https://www.dropbox.com/s/ckb4glf35agi9xa/cpic_v1_wenchuan-bdd92da2.pth?dl=1',
+    'cpic_v2': 'https://www.dropbox.com/s/kyiuprnn8014fs5/cpic_v2_wenchuan-ee92060a.pth?dl=1'
+>>>>>>> upstream/master
 }
 
 class CpicV1(nn.Module):
@@ -128,6 +140,7 @@ class CpicV1(nn.Module):
         out = self.fc(out)
 
         return out
+<<<<<<< HEAD
     
 def cpic_v1(pretrained=False, progress=True, **kwargs):
     r"""Original CPIC model architecture from the
@@ -145,6 +158,8 @@ def cpic_v1(pretrained=False, progress=True, **kwargs):
                                               progress=progress)
         model.load_state_dict(state_dict)
     return model
+=======
+>>>>>>> upstream/master
 
 class CpicV2(nn.Module):
     def __init__(self):
@@ -240,8 +255,13 @@ class CpicV2(nn.Module):
 
         return out
 
+<<<<<<< HEAD
 def cpic_v2(pretrained=False, progress=True, **kwargs):
     r"""Simplified CPIC model architecture from the
+=======
+def cpic_v1(pretrained=False, progress=True, **kwargs):
+    r"""Original CPIC model architecture from the
+>>>>>>> upstream/master
     `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper. The
     pretrained model is trained on 60,000 Wenchuan aftershock dataset
     demonstrated in the paper.
@@ -250,13 +270,20 @@ def cpic_v2(pretrained=False, progress=True, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on Wenchuan)
         progress (bool): If True, displays a progress bar of the download to stderr
     """
+<<<<<<< HEAD
     model = CpicV2(**kwargs)
     if pretrained:
         state_dict = load_state_dict_from_url(model_urls['cpic_v2'],
+=======
+    model = CpicV1(**kwargs)
+    if pretrained:
+        state_dict = load_state_dict_from_url(model_urls['cpic_v1'],
+>>>>>>> upstream/master
                                               progress=progress)
         model.load_state_dict(state_dict)
     return model
 
+<<<<<<< HEAD
 class CpicV3(nn.Module):
     
     #https://github.com/pytorch/vision/blob/master/torchvision/models/vgg.py
@@ -339,3 +366,21 @@ def cpic_v3(pretrained=False, progress=True, **kwargs):
 #     x = torch.ones([1, 3, 2000])
 #     out = model(x)
 #     print(out.size())
+=======
+def cpic_v2(pretrained=False, progress=True, **kwargs):
+    r"""Simplified CPIC model architecture from the
+    `"Deep learning for ..." <https://arxiv.org/abs/1901.06396>`_ paper. The
+    pretrained model is trained on 60,000 Wenchuan aftershock dataset
+    demonstrated in the paper.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on Wenchuan)
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+    model = CpicV2(**kwargs)
+    if pretrained:
+        state_dict = load_state_dict_from_url(model_urls['cpic_v2'],
+                                              progress=progress)
+        model.load_state_dict(state_dict)
+    return model
+>>>>>>> upstream/master

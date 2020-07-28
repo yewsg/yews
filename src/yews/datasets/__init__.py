@@ -8,9 +8,12 @@ from .packaged_datasets import Mariana
 from .packaged_datasets import PackagedDataset
 from .packaged_datasets import SCSN
 from .packaged_datasets import Wenchuan
+<<<<<<< HEAD
 from .packaged_datasets import SCSN_polarity
 from .packaged_datasets import Taiwan_focal_mechanism
 from .packaged_datasets import Taiwan20092010
+=======
+>>>>>>> upstream/master
 from .utils import *
 
 __all__ = [
@@ -23,7 +26,10 @@ __all__ = [
     'Wenchuan',
     'Mariana',
     'SCSN',
+<<<<<<< HEAD
     'SCSN_polarity',
     'Taiwan_focal_mechanism'
     'Taiwan20092010'
+=======
+>>>>>>> upstream/master
 ]

@@ -5,6 +5,10 @@ matrix:
   include:
     - python: "3.6"
     - python: "3.7"
+<<<<<<< HEAD
+=======
+    - python: "3.8"
+>>>>>>> upstream/master
 
 before_install:
   - sudo apt-get update
@@ -51,4 +55,8 @@ after_success:
   # /travis/env/path/site-packages/yews to actual path
   - coverage combine .coverage
   - coverage report
+<<<<<<< HEAD
   - codecov
+=======
+  - bash <(curl -s https://codecov.io/bash)
+>>>>>>> upstream/master

@@ -1,6 +1,9 @@
 from . import functional as F
 from .base import BaseTransform
+<<<<<<< HEAD
 from scipy import signal
+=======
+>>>>>>> upstream/master
 
 try:
     from scipy.special import expit
@@ -16,10 +19,13 @@ __all__ = [
     "ZeroMean",
     "CutWaveform",
     "SoftClip",
+<<<<<<< HEAD
     "RemoveMean",
     "RemoveTrend",
     "Taper",
     "BandpassFilter",
+=======
+>>>>>>> upstream/master
 ]
 
 class ToTensor(BaseTransform):
@@ -105,6 +111,7 @@ class CutWaveform(BaseTransform):
 
     def __call__(self, wav):
         return wav[:, self.start:self.end]
+<<<<<<< HEAD
 
 class RemoveMean(BaseTransform):
     """Remove mean from each waveforms.
@@ -153,3 +160,5 @@ class BandpassFilter(BaseTransform):
         wav = signal.filtfilt(b, a, wav, axis=-1, padtype=None, padlen=None, irlen=None)
 
         return wav
+=======
+>>>>>>> upstream/master
