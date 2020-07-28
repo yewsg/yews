@@ -13,12 +13,6 @@ def probs2cfs(probs, sigma=3):
 
     return cf_p, cf_s
 
-<<<<<<< HEAD
-def chunks(l, n):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-=======
 def chunks(array, size, offset=0):
     """Yield successive n-sized chunks from array, starting at an offset before
     the end of the previous chunk."""
@@ -29,7 +23,6 @@ def chunks(array, size, offset=0):
     for i in range(0, axis_length - offset, size - offset):
         range_end = min(i + size, axis_length)
         yield array.take(indices=range(i, range_end), axis=slice_axis)
->>>>>>> upstream/master
 
 def compute_probs(model, transform, waveform, shape, step, batch_size=None):
     model.eval()

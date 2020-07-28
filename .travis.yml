@@ -55,8 +55,4 @@ after_success:
   # /travis/env/path/site-packages/yews to actual path
   - coverage combine .coverage
   - coverage report
-<<<<<<< HEAD
-  - codecov
-=======
   - bash <(curl -s https://codecov.io/bash)
->>>>>>> upstream/master

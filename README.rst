@@ -16,24 +16,9 @@ applying deep learning techniques on seismic waveform data.
 
 
 
-<<<<<<< HEAD
-.. image:: https://travis-ci.com/lijunzh/yews.svg?branch=master
-    :target: https://travis-ci.com/lijunzh/yews
-=======
-.. image:: https://travis-ci.org/yewsg/yews.svg?branch=master
-    :target: https://travis-ci.org/yewsg/yews
->>>>>>> upstream/master
 
 .. image:: https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true
     :target: https://ci.appveyor.com/project/lijunzh/yews
-
-<<<<<<< HEAD
-.. image:: https://codecov.io/gh/lijunzh/yews/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/lijunzh/yews
-=======
-.. image:: https://codecov.io/gh/yewsg/yews/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/yewsg/yews
->>>>>>> upstream/master
 
 .. image:: https://anaconda.org/lijunzhu/yews/badges/version.svg
     :target: https://anaconda.org/lijunzhu/yews

@@ -4,10 +4,7 @@ from scipy.special import expit
 
 from .utils import compute_probs
 from .utils import sliding_window_view
-<<<<<<< HEAD
-=======
 from .utils import chunks
->>>>>>> upstream/master
 
 def find_nonzero_runs(a):
     # source: https://stackoverflow.com/
@@ -22,13 +19,6 @@ def find_nonzero_runs(a):
 
 
 def detect(waveform, fs, wl, model, transform, g, threshold=0.5,
-<<<<<<< HEAD
-           batch_size=None):
-    probs = compute_probs(model, transform, waveform,
-                          shape=[3, fs * wl],
-                          step=[1, int(g * fs)],
-                          batch_size=batch_size)
-=======
            batch_size=None, size_limit=None):
     """size_limit is the maximum number of waveform array elements in the
     long dimension to be processed at a time. Can be used when working with
@@ -53,7 +43,6 @@ def detect(waveform, fs, wl, model, transform, g, threshold=0.5,
                               shape=[3, fs * wl],
                               step=[1, int(g * fs)],
                               batch_size=batch_size)
->>>>>>> upstream/master
 
     probs[probs < threshold] = 0
     p_prob, s_prob = probs[1:]

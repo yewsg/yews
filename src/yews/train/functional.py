@@ -12,10 +12,7 @@ def get_torch_device():
 
 def model_on_device(model, device):
     return torch.nn.DataParallel(model.to(device))
-<<<<<<< HEAD
     #return torch.nn.DataParallel(model,device_ids=[0]).to("cuda")
-=======
->>>>>>> upstream/master
 
 def model_off_device(model):
     return model.module.to(torch.device('cpu'))

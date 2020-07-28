@@ -22,10 +22,7 @@ environment:
   MINICONDA: C:\\Miniconda3-x64
 
   matrix:
-<<<<<<< HEAD
-=======
     - PYTHON_VERSION: 3.8
->>>>>>> upstream/master
     - PYTHON_VERSION: 3.7
     - PYTHON_VERSION: 3.6
 

@@ -46,10 +46,6 @@ class Trainer(object):
 
     def reset_optimizer(self):
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
-<<<<<<< HEAD
-        #self.optimizer = optim.AdamW(self.model.parameters(), lr=self.lr, weight_decay=0.01)
-=======
->>>>>>> upstream/master
 
     def reset_scheduler(self):
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer,
