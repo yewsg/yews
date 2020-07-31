@@ -15,11 +15,28 @@ def probs2cfs(probs, sigma=3):
     return cf_p, cf_s
 
 
-def chunks(array, size, offset=0):
-    """Yield successive n-sized chunks from array, starting at an offset before
-    the end of the previous chunk."""
+def chunks(inputs, size, offset=0):
     if not (isinstance(size, int) and isinstance(offset, int)):
         raise TypeError("Arguments 'size' and 'offset' must be type integer")
+
+    if isinstance(inputs, np.ndarray):
+        return chunks_array(inputs, size, offset)
+
+    if isinstance(inputs, torch.Tensor):
+        return chunks_tensor(inputs, size, offset)
+
+def chunks_tensor(tensor, size, offset):
+    """Yield successive n-sized chunks from array, starting at an offset before
+    the end of the previous chunk."""
+    slice_axis = tensor.ndim - 1
+    axis_length = tensor.shape[slice_axis]
+    for i in range(0, axis_length - offset, size - offset):
+        range_end = min(i + size, axis_length)
+        yield tensor[:, :, i:range_end]
+
+def chunks_array(array, size, offset):
+    """Yield successive n-sized chunks from array, starting at an offset before
+    the end of the previous chunk."""
     slice_axis = array.ndim - 1
     axis_length = array.shape[slice_axis]
     for i in range(0, axis_length - offset, size - offset):
