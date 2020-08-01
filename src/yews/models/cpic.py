@@ -8,7 +8,7 @@ __all__ = ['CpicV1', 'cpic_v1', 'CpicV2', 'cpic_v2', 'CpicV3', 'cpic_v3']
 model_urls = {
     'cpic_v1': 'https://www.dropbox.com/s/ckb4glf35agi9xa/cpic_v1_wenchuan-bdd92da2.pth?dl=1',
     'cpic_v2': 'https://www.dropbox.com/s/kyiuprnn8014fs5/cpic_v2_wenchuan-ee92060a.pth?dl=1',
-    'cpic_v3': 'xxxx'
+    'cpic_v3': ''
 }
 
 class CpicV1(nn.Module):
