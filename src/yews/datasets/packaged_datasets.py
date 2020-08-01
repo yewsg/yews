@@ -101,3 +101,4 @@ class SCSN(PackagedDataset):
     """
 
     url = 'https://www.dropbox.com/s/u16lkjxliw8fouj/scsn.tar?dl=1'
+
