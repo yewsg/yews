@@ -1,9 +1,6 @@
 from . import functional as F
 from .base import BaseTransform
-<<<<<<< HEAD
 from scipy import signal
-=======
->>>>>>> upstream/master
 
 try:
     from scipy.special import expit
@@ -19,7 +16,6 @@ __all__ = [
     "ZeroMean",
     "CutWaveform",
     "SoftClip",
-    "RemoveMean",
     "RemoveTrend",
     "Taper",
     "BandpassFilter",
@@ -109,15 +105,6 @@ class CutWaveform(BaseTransform):
     def __call__(self, wav):
         return wav[:, self.start:self.end]
 
-class RemoveMean(BaseTransform):
-    """Remove mean from each waveforms.
-
-    """
-    def __call__(self, wav):
-        [x,y] = wav.shape
-        wav = wav - wav.mean(axis=-1).reshape((x,1))
-        return wav
-
 class RemoveTrend(BaseTransform):
     """Remove trend from each waveforms.
 
@@ -130,9 +117,7 @@ class Taper(BaseTransform):
     """Add taper in both ends of each waveforms.
 
     """
-    def __call__(self, wav):
-
-        half_taper = 0.05
+    def __call__(self, wav, half_taper = 0.05):
 
         [x,y] = wav.shape
         tukey_win = signal.tukey(y, alpha=2*half_taper, sym=True)
@@ -142,12 +127,7 @@ class Taper(BaseTransform):
 class BandpassFilter(BaseTransform):
     """Apply Bandpass filter to each waveforms.
     """
-    def __call__(self, wav):
-
-        delta = 0.01 #s, delta in sac file header. it is 1/sampling_rate
-        order = 4
-        lowfreq = 2 # Hz
-        highfreq = 16 # Hz
+    def __call__(self, wav, delta=0.01, order = 4, lowfreq = 2, highfreq = 16 ):
 
         nyq = 0.5 * (1 / delta)
         low = lowfreq / nyq
