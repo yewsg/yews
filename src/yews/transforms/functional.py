@@ -18,5 +18,4 @@ def _to_tensor(wav):
 
     if wav.ndim == 1:
         wav = wav[None, :]
-
     return torch.from_numpy(wav).float()
