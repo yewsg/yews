@@ -1,6 +1,7 @@
+from scipy import signal
+
 from . import functional as F
 from .base import BaseTransform
-from scipy import signal
 
 try:
     from scipy.special import expit
@@ -76,7 +77,7 @@ class SoftClip(BaseTransform):
         if isinstance(scale, float) or isinstance(scale, int):
             self.scale = scale
         else:
-            raise ValueError("Scale needs to be a float.")
+            raise ValueError("Scale needs to be a number.")
 
     def __call__(self, wav):
         return expit(wav * self.scale)
