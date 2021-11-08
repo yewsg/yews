@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "message-only": {
+      "class": "logging.Formatter",
+      "style": "{",
+      "datefmt": "%Y-%m-%d %H:%M:%S",
+      "format": "{message:s}"
+    },
+    "brief": {
+      "class": "logging.Formatter",
+      "style": "{",
+      "datefmt": "%Y-%m-%d %H:%M:%S",
+      "format": "[{asctime:s}]{levelname:>8s}: {message:s}"
+    },
+    "colored": {
+      "class": "colorlog.ColoredFormatter",
+      "style": "{",
+      "datefmt": "%Y-%m-%d %H:%M:%S",
+      "format": "{bold_black:s}{asctime:s}{reset:s} {log_color:s}{levelname:8s}{reset:s} {blue:s}[{name:<15s}:{lineno:4d}]{reset:s}: {log_color:s}{message:s}{reset:s}"
+    },
+    "single-line": {
+      "class": "logging.Formatter",
+      "style": "{",
+      "datefmt": "%H:%M:%S",
+      "format": "{asctime:s} {levelname:8s} [{name:<20s}:{lineno:4d}]: {message:s}"
+    },
+    "multi-process": {
+      "class": "logging.Formatter",
+      "style": "{",
+      "datefmt": "%I:%M:%S",
+      "format": "{levelname:8s}; {process:5d}; {asctime:s}; {name:<15s} {lineno:4d}; {message:s}"
+    },
+    "multi-thread": {
+      "class": "logging.Formatter",
+      "style": "{",
+      "datefmt": "%I:%M:%S",
+      "format": "{levelname:8s}; {threadName:5d}; {asctime:s}; {name:<15s} {lineno:4d}; {message:s}"
+    },
+    "verbose": {
+      "class": "logging.Formatter",
+      "style": "{",
+      "datefmt": "%Y-%m-%d %H:%M:%S",
+      "format": "{asctime:s} {levelname:8s} [{name:<20s}:{lineno:4d}]: {message:s}"
+    },
+    "multiline": {
+      "class": "logging.Formatter",
+      "style": "{",
+      "datefmt": "%I:%M:%S",
+      "format": "{levelname:8s}\n{process:5d}\n{threadName:8s}\n{asctime:s}\n{name:<15s}{lineno:4d}\n{message:s}\n"
+    }
+  },
+  "handlers": {
+    "console": {
+      "level": "DEBUG",
+      "class": "logging.StreamHandler",
+      "formatter": "colored",
+      "stream": "ext://sys.stdout"
+    },
+    "file_handler": {
+      "level": "INFO",
+      "class": "logging.handlers.WatchedFileHandler",
+      "formatter": "message-only",
+      "filename": "/tmp/file_handler.log",
+      "mode": "a",
+      "encoding": "utf-8"
+    },
+    "smtp": {
+      "level": "ERROR",
+      "class": "logging.handlers.SMTPHandler",
+      "formatter": "multiline",
+      "mailhost": [
+        "127.0.0.1",
+        60025
+      ],
+      "fromaddr": "sender@example.com",
+      "toaddrs": [
+        "recipient@example.com"
+      ],
+      "subject": "Something went wrong"
+    }
+  },
+  "loggers": {},
+  "root": {
+    "handlers": [
+      "console",
+      "file_handler"
+    ],
+    "level": "NOTSET"
+  }
+}

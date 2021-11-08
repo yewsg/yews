@@ -12,7 +12,7 @@ model_urls = {
 
 
 class CpicV1(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes: int=3):
         super().__init__()
         # 2000 -> 1024
         self.layer1 = nn.Sequential(
@@ -104,7 +104,7 @@ class CpicV1(nn.Module):
             nn.MaxPool1d(2),
         )
 
-        self.fc = nn.Linear(64 * 1, 3)
+        self.fc = nn.Linear(64 * 1, num_classes)
 
     def forward(self, x):
         out = self.layer1(x)
@@ -136,8 +136,9 @@ def cpic_v1(pretrained=False, progress=True, **kwargs):
     """
     model = CpicV1(**kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls["cpic_v1"], progress=progress)
-        model.load_state_dict(state_dict)
+        # state_dict = load_state_dict_from_url(model_urls["cpic_v1"], progress=progress)
+        # model.load_state_dict(state_dict)
+        pass
     return model
 
 

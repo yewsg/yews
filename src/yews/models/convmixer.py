@@ -12,7 +12,7 @@ class Residual(nn.Module):
         return self.fn(x) + x
 
 
-def ConvMixer(dim, depth, kernel_size=9, patch_size=7, n_classes=3):
+def ConvMixer(dim, depth, kernel_size=9, patch_size=7, num_classes=3):
     return nn.Sequential(
         nn.Conv1d(3, dim, kernel_size=patch_size, stride=patch_size),
         nn.GELU(),
@@ -34,10 +34,10 @@ def ConvMixer(dim, depth, kernel_size=9, patch_size=7, n_classes=3):
         ],
         nn.AdaptiveAvgPool1d(1),
         nn.Flatten(),
-        nn.Linear(dim, n_classes),
+        nn.Linear(dim, num_classes),
     )
 
 
 def convmixer(pretrained=False, progress=True, **kwargs):
-    model = ConvMixer(32, 10, n_classes=3)
+    model = ConvMixer(32, 10, **kwargs)
     return model
