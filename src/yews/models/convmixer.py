@@ -3,16 +3,7 @@ from __future__ import annotations
 from torch import nn
 from torch.nn import Module
 
-__all__ = ["ConvMixer", "convmixer"]
-
-
-class Residual(Module):
-    def __init__(self, fn):
-        super().__init__()
-        self.fn = fn
-
-    def forward(self, x):
-        return self.fn(x) + x
+__all__ = ["ConvMixer", "convmixer_64_20_9_14"]
 
 
 class ConvMixerStem(Module):
@@ -24,7 +15,7 @@ class ConvMixerStem(Module):
         activation=nn.GELU,
     ):
         super().__init__()
-        self.patch_embedding = nn.Conv1d(in_channels, dim, kernel_size=patch_size, stride=patch_size, bias=False)
+        self.patch_embedding = nn.Conv1d(in_channels, dim, kernel_size=patch_size, stride=patch_size)
         self.act = activation()
         self.norm = nn.BatchNorm1d(dim)
 
@@ -35,10 +26,10 @@ class ConvMixerStem(Module):
 class ConvMixerLayer(Module):
     def __init__(self, dim: int, kernel_size: int, activation=nn.GELU):
         super().__init__()
-        self.depth_conv = nn.Conv1d(dim, dim, kernel_size, groups=dim, padding="same", bias=False)
+        self.depth_conv = nn.Conv1d(dim, dim, kernel_size, groups=dim, padding="same")
         self.act1 = activation()
         self.norm1 = nn.BatchNorm1d(dim)
-        self.point_conv = nn.Conv1d(dim, dim, kernel_size=1, bias=False)
+        self.point_conv = nn.Conv1d(dim, dim, kernel_size=1)
         self.act2 = activation()
         self.norm2 = nn.BatchNorm1d(dim)
 
@@ -61,6 +52,12 @@ class ClassifierHead(Module):
         self.flatten = nn.Flatten(1)
         self.fc = nn.Linear(in_channels, num_classes) if num_classes > 0 else nn.Identity()
 
+    def forward(self, x):
+        x = self.global_pool(x)
+        x = self.flatten(x)
+        x = self.fc(x)
+        return x
+
 
 class ConvMixer(Module):
     def __init__(
@@ -76,31 +73,16 @@ class ConvMixer(Module):
     ):
         super().__init__()
         self.stem = ConvMixerStem(in_channels, dim, patch_size, activation)
-        self.blocks = nn.Sequential(
-            *[
-                nn.Sequential(
-                    Residual(
-                        nn.Sequential(
-                            nn.Conv1d(dim, dim, kernel_size, groups=dim, padding="same", bias=False),
-                            nn.GELU(),
-                            nn.BatchNorm1d(dim),
-                        )
-                    ),
-                    nn.Conv1d(dim, dim, kernel_size=1, bias=False),
-                    nn.GELU(),
-                    nn.BatchNorm1d(dim),
-                )
-                for _ in range(depth)
-            ],
-        )
+        for i in range(depth):
+            self.add_module(f"b{i+1}", ConvMixerLayer(dim, kernel_size, activation))
         self.head = ClassifierHead(dim, num_classes)
 
     def get_classifier(self):
         return self.head
 
     def forward_features(self, x):
-        x = self.stem(x)
-        x = self.blocks(x)
+        for block in list(self.children())[:-1]:
+            x = block(x)
         return x
 
     def forward(self, x):
@@ -110,6 +92,6 @@ class ConvMixer(Module):
         return x
 
 
-def convmixer(pretrained=False, progress=True, **kwargs):
-    model = ConvMixer(**kwargs)
+def convmixer_64_20_9_14(pretrained=False, progress=True, **kwargs):
+    model = ConvMixer(64, 20, 9, 14)
     return model
