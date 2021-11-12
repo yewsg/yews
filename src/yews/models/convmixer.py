@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from torch import nn
 from torch.nn import Module
+from .layers import ClassifierHead
 
 __all__ = ["ConvMixer", "convmixer_64_20_9_14"]
 
@@ -24,14 +25,14 @@ class ConvMixerStem(Module):
 
 
 class ConvMixerLayer(Module):
-    def __init__(self, dim: int, kernel_size: int, activation=nn.GELU):
+    def __init__(self, dim: int, kernel_size: int, norm_layer=nn.BatchNorm1d, act_layer=nn.GELU):
         super().__init__()
         self.depth_conv = nn.Conv1d(dim, dim, kernel_size, groups=dim, padding="same")
-        self.act1 = activation()
-        self.norm1 = nn.BatchNorm1d(dim)
+        self.act1 = act_layer()
+        self.norm1 = norm_layer(dim)
         self.point_conv = nn.Conv1d(dim, dim, kernel_size=1)
-        self.act2 = activation()
-        self.norm2 = nn.BatchNorm1d(dim)
+        self.act2 = act_layer()
+        self.norm2 = norm_layer(dim)
 
     def depth_forward(self, x):
         return self.norm1(self.act1(self.depth_conv(x))) + x
@@ -41,22 +42,6 @@ class ConvMixerLayer(Module):
 
     def forward(self, x):
         return self.point_forward(self.depth_forward(x))
-
-
-class ClassifierHead(Module):
-    """Classifier head w/ configurable global pooling and dropout."""
-
-    def __init__(self, in_channels: int, num_classes: int):
-        super().__init__()
-        self.global_pool = nn.AdaptiveAvgPool1d(1)
-        self.flatten = nn.Flatten(1)
-        self.fc = nn.Linear(in_channels, num_classes) if num_classes > 0 else nn.Identity()
-
-    def forward(self, x):
-        x = self.global_pool(x)
-        x = self.flatten(x)
-        x = self.fc(x)
-        return x
 
 
 class ConvMixer(Module):
@@ -69,7 +54,6 @@ class ConvMixer(Module):
         in_channels: int = 3,
         num_classes: int = 3,
         activation=nn.GELU,
-        **kwargs,
     ):
         super().__init__()
         self.stem = ConvMixerStem(in_channels, dim, patch_size, activation)
