@@ -53,16 +53,13 @@ class ConvMixer(Module):
         patch_size: int = 7,
         in_channels: int = 3,
         num_classes: int = 3,
-        activation=nn.GELU,
+        act_layer=nn.GELU,
     ):
         super().__init__()
-        self.stem = ConvMixerStem(in_channels, dim, patch_size, activation)
+        self.stem = ConvMixerStem(in_channels, dim, patch_size, act_layer)
         for i in range(depth):
-            self.add_module(f"b{i+1}", ConvMixerLayer(dim, kernel_size, activation))
+            self.add_module(f"b{i+1}", ConvMixerLayer(dim, kernel_size, act_layer))
         self.head = ClassifierHead(dim, num_classes)
-
-    def get_classifier(self):
-        return self.head
 
     def forward_features(self, x):
         for block in list(self.children())[:-1]:
