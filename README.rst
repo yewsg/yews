@@ -1,3 +1,7 @@
+**Archived (November 2026).** Yews is no longer maintained. The code and the
+last PyPI release (0.0.6, 2019) stay available, but issues and pull requests
+are closed, and the documentation site is offline.
+
 .. image:: https://raw.githubusercontent.com/lijunzh/yews-docs/master/source/_static/img/logo/yews_logo.gif
    :scale: 50 %
    :alt: Yews Logo
